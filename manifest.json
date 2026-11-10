@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "IT English Daily Split-View (19:00 Reminder)",
+  "version": "1.0.0",
+  "description": "Auto split-screen at 19:00 daily to practice essential IT English sentences for Standup, Code Review, Architecture, Incident, and Interview.",
+  "permissions": [
+    "alarms",
+    "notifications",
+    "storage",
+    "tabs",
+    "sidePanel",
+    "system.display"
+  ],
+  "action": {
+    "default_title": "IT English Split-View (19:00)",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel/sidepanel.html"
+  }
+}
