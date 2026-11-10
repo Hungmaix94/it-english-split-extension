@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT English Daily Split-View (19:00 Reminder)</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="app-container" id="app-container">
+    <!-- 19:00 ALARM REMINDER BANNER -->
+    <section id="alarm-banner" class="alarm-banner hidden" role="region" aria-label="19:00 Reminder Banner">
+      <div class="banner-content">
+        <span class="banner-icon" aria-hidden="true">⏰</span>
+        <div class="banner-text">
+          <strong>Đã đến giờ luyện IT English hôm nay!</strong>
+          <span class="banner-subtext">Dành 3 phút nâng cấp phản xạ giao tiếp công việc & phỏng vấn.</span>
+        </div>
+      </div>
+      <div class="banner-actions">
+        <button type="button" id="btn-snooze-15" class="btn btn-secondary btn-sm" title="Hoãn báo lại sau 15 phút">
+          ⏰ Snooze 15p
+        </button>
+        <button type="button" id="btn-dismiss-banner" class="btn btn-ghost btn-sm" aria-label="Bỏ qua lời nhắc">
+          ✕ Bỏ qua
+        </button>
+      </div>
+    </section>
+
+    <!-- HEADER: Streak, Progress, Settings & Quick Actions -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="streak-badge" id="streak-badge" title="Chuỗi ngày học liên tục">
+          <span class="streak-icon">🔥</span>
+          <span id="streak-count" class="streak-count">0 ngày</span>
+        </div>
+
+        <div class="header-quick-actions">
+          <button type="button" id="btn-trigger-split" class="btn btn-accent btn-sm" title="Kích hoạt chia đôi màn hình 70/30 và kiểm tra hẹn giờ">
+            ⚡ Test Lịch Hẹn 19:00
+          </button>
+          <button type="button" id="btn-snooze-header" class="btn btn-ghost btn-sm" title="Snooze 15 phút">
+            ⏰ Snooze
+          </button>
+        </div>
+      </div>
+
+      <!-- DAILY PROGRESS BAR -->
+      <div class="daily-progress-container">
+        <div class="progress-labels">
+          <span class="progress-title">Tiến độ hôm nay</span>
+          <span id="daily-progress-text" class="progress-counter">0 / 5 câu</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+          <div id="daily-progress-bar" class="progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- SCHEDULE SETTINGS DRAWER -->
+      <details id="schedule-details" class="schedule-details">
+        <summary class="schedule-summary">
+          <span class="summary-left">⚙️ Cài đặt hẹn giờ</span>
+          <span id="next-alarm-display" class="next-alarm-text">Hẹn giờ: 19:00 hàng ngày</span>
+        </summary>
+        <div class="schedule-panel">
+          <div class="form-row">
+            <label for="schedule-time-input" class="form-label">Giờ nhắc nhở:</label>
+            <input type="time" id="schedule-time-input" class="time-input" value="19:00">
+          </div>
+          <div class="form-row">
+            <label for="schedule-enabled-toggle" class="form-label">Bật nhắc nhở tự động:</label>
+            <input type="checkbox" id="schedule-enabled-toggle" class="toggle-checkbox" checked>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="btn-save-schedule" class="btn btn-primary btn-sm">
+              Lưu cấu hình
+            </button>
+            <span id="schedule-status-msg" class="status-msg" aria-live="polite"></span>
+          </div>
+        </div>
+      </details>
+    </header>
+
+    <!-- 5 IT CATEGORIES FILTER TABS -->
+    <nav class="category-nav" aria-label="5 Chủ đề IT">
+      <div id="category-tabs" class="category-tabs" role="tablist">
+        <!-- Rendered dynamically by sidepanel.js -->
+      </div>
+    </nav>
+
+    <!-- MAIN STUDY WORKSPACE -->
+    <main class="study-workspace">
+      <!-- HERO SENTENCE CARD -->
+      <article id="hero-sentence-card" class="card hero-card" aria-label="Thẻ câu học tập chính">
+        <div class="card-meta">
+          <span id="sentence-topic-badge" class="badge badge-topic">Daily Standup</span>
+          <span id="sentence-level-badge" class="badge badge-level">Professional</span>
+          <span id="sentence-mastered-indicator" class="mastered-pill hidden">✓ Đã thuộc</span>
+        </div>
+
+        <div class="sentence-hero-content">
+          <h1 id="sentence-english" class="sentence-english">
+            Loading sentence...
+          </h1>
+          <div id="sentence-ipa" class="sentence-ipa">
+            /.../
+          </div>
+        </div>
+
+        <!-- STRESS GUIDE & INTONATION -->
+        <div class="stress-box">
+          <div class="stress-title">🗣 Trọng âm & Ngữ điệu:</div>
+          <div id="sentence-stress" class="sentence-stress"></div>
+        </div>
+
+        <!-- INSTEAD OF SAYING... -->
+        <div class="instead-of-box">
+          <div class="instead-title">💡 Thay vì diễn đạt sơ sài:</div>
+          <div id="sentence-instead-of" class="sentence-instead-of"></div>
+        </div>
+
+        <!-- TTS AUDIO CONTROLS WITH WAVEFORM -->
+        <div class="tts-controller">
+          <div class="tts-buttons">
+            <button type="button" id="btn-tts-normal" class="btn btn-audio" title="Nghe với tốc độ tự nhiên chuẩn bản xứ">
+              <span class="btn-icon">▶</span>
+              <span class="btn-text">Nghe 1.0x</span>
+            </button>
+            <button type="button" id="btn-tts-slow" class="btn btn-audio btn-audio-slow" title="Nghe chậm phục vụ kỹ thuật Shadowing">
+              <span class="btn-icon">🐢</span>
+              <span class="btn-text">Shadowing 0.8x</span>
+            </button>
+          </div>
+
+          <!-- AUDIO WAVE ANIMATION -->
+          <div id="audio-wave" class="audio-wave" aria-hidden="true">
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+          </div>
+        </div>
+      </article>
+
+      <!-- MEANING & NUANCE CARD -->
+      <section class="card detail-card" aria-label="Ý nghĩa và sắc thái">
+        <div class="section-header">
+          <span class="section-icon">🇻🇳</span>
+          <h2 class="section-title">Ý Nghĩa & Sắc Thái Giao Tiếp</h2>
+        </div>
+        <div class="section-body">
+          <div class="meaning-item">
+            <span class="label-chip">Dịch nghĩa:</span>
+            <p id="card-vietnamese" class="body-text"></p>
+          </div>
+          <div class="meaning-item">
+            <span class="label-chip label-chip-accent">Sắc thái:</span>
+            <p id="card-nuance" class="body-text nuance-text"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- REAL IT DIALOGUE (A-B) CARD -->
+      <section id="card-dialogue" class="card detail-card" aria-label="Hội thoại thực tế trong công việc">
+        <div class="section-header">
+          <span class="section-icon">💬</span>
+          <h2 class="section-title">Hội Thoại Mẫu Hai Chiều (A - B)</h2>
+        </div>
+        <div class="section-body">
+          <div id="dialogue-scenario" class="scenario-banner"></div>
+          <div class="dialogue-chat">
+            <div class="chat-bubble chat-speaker-a">
+              <span id="speaker-a-label" class="speaker-role">Lead / Peer</span>
+              <p id="dialogue-speaker-a" class="chat-line"></p>
+            </div>
+            <div class="chat-bubble chat-speaker-b">
+              <span id="speaker-b-label" class="speaker-role">You (Candidate / Engineer)</span>
+              <p id="dialogue-speaker-b" class="chat-line"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KEY CHUNKS & ALTERNATIVES CARD -->
+      <section class="card detail-card" aria-label="Cụm từ ăn điểm và câu biến thể">
+        <div class="section-header">
+          <span class="section-icon">🔑</span>
+          <h2 class="section-title">Cụm Từ Ăn Điểm (Key Chunks)</h2>
+        </div>
+        <div class="section-body">
+          <ul id="card-key-chunks" class="key-chunks-list"></ul>
+
+          <div class="alternatives-wrapper">
+            <div class="alt-title">🔄 2 Cách Diễn Đạt Biến Thể:</div>
+            <div id="card-alternatives" class="alternatives-grid">
+              <div class="alt-card alt-casual">
+                <span class="alt-badge">Casual / Slack Chat</span>
+                <p id="alt-casual-text" class="alt-text"></p>
+              </div>
+              <div class="alt-card alt-formal">
+                <span class="alt-badge">Formal / Email & Docs</span>
+                <p id="alt-formal-text" class="alt-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRO TIP & INTERVIEW STRATEGY CARD -->
+      <section id="card-pro-tip" class="card detail-card tip-card" aria-label="Mẹo phỏng vấn và công việc">
+        <div class="section-header">
+          <span class="section-icon">🎯</span>
+          <h2 class="section-title">Mẹo Công Việc & Phỏng Vấn</h2>
+        </div>
+        <div class="section-body">
+          <p id="pro-tip-text" class="pro-tip-text"></p>
+        </div>
+      </section>
+    </main>
+
+    <!-- FIXED BOTTOM NAVIGATION BAR -->
+    <footer class="app-footer">
+      <div class="nav-controls">
+        <button type="button" id="btn-prev" class="btn btn-nav" title="Xem câu trước">
+          ◀ Trước
+        </button>
+
+        <button type="button" id="btn-mark-mastered" class="btn btn-mastered" title="Đánh dấu đã thuộc để cộng chuỗi Streak">
+          <span class="btn-fire-icon">🔥</span>
+          <span id="mark-mastered-label">Đã thuộc câu này</span>
+        </button>
+
+        <button type="button" id="btn-next" class="btn btn-nav" title="Xem câu kế tiếp">
+          Sau ▶
+        </button>
+      </div>
+
+      <div class="footer-meta">
+        <span id="current-index-display" class="index-display">Câu 1 / 18</span>
+        <span class="footer-subtext">IT English Split-View • 19:00 Habit</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- CONFETTI CANVAS FOR CELEBRATION -->
+  <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+  <!-- STRICT CSP MV3: NO INLINE SCRIPT, MODULE ONLY -->
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>
