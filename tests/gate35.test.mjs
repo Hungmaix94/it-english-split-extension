@@ -271,3 +271,14 @@ test('B8-data: keyChunks are {chunk, meaning} and every item has intonation with
     assert.match(s.intonation, /[↗↘]/, `${s.id} intonation has an arrow`);
   }
 });
+
+test('UPDATE_SCHEDULE validates displayMode', async () => {
+  resetEnv();
+  const bad = await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'popup' } });
+  assert.equal(bad.ok, false);
+  const good = await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'sidePanel' } });
+  assert.equal(good.ok, true);
+  assert.equal(good.state.schedule.displayMode, 'sidePanel');
+  assert.equal(savedState().schedule.displayMode, 'sidePanel');
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'split' } });
+});
