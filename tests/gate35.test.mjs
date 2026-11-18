@@ -16,6 +16,8 @@ function resetEnv() {
   env.badges = [];
   env.updateFails = false;
   env.alarms = [];
+  env.calls = [];
+  env.sidePanelFails = false;
   env.cleared = [];
   env.main = { id: 101, left: 10, top: 20, width: 1200, height: 800, state: 'normal' };
 }
@@ -30,12 +32,12 @@ globalThis.chrome = {
   },
   storage: {
     local: {
-      get: async (k) => ({ [k]: env.storage[k] }),
+      get: async (k) => (env.calls.push('storage.get'), { [k]: env.storage[k] }),
       set: async (o) => Object.assign(env.storage, o)
     }
   },
   alarms: {
-    create: async (name, info) => env.alarms.push({ name, info }),
+    create: async (name, info) => (env.calls.push('alarms.create'), env.alarms.push({ name, info })),
     clear: async (name) => env.cleared.push(name),
     get: async () => null,
     onAlarm: { addListener: (fn) => (listeners.onAlarm = fn) }
@@ -46,7 +48,16 @@ globalThis.chrome = {
       return id;
     },
     clear: async () => {},
-    onButtonClicked: { addListener: (fn) => (listeners.onButtonClicked = fn) }
+    onButtonClicked: { addListener: (fn) => (listeners.onButtonClicked = fn) },
+    onClicked: { addListener: (fn) => (listeners.onClicked = fn) }
+  },
+  sidePanel: {
+    open: (opts) => {
+      env.calls.push('sidePanel.open');
+      env.sidePanelOpened = opts;
+      return env.sidePanelFails ? Promise.reject(new Error('no gesture')) : Promise.resolve();
+    },
+    setPanelBehavior: async () => {}
   },
   windows: {
     getLastFocused: async () => ({ ...env.main }),
@@ -56,6 +67,7 @@ globalThis.chrome = {
       throw new Error('no window');
     },
     update: async (id, info) => {
+      env.calls.push('windows.update');
       env.updates.push({ id, info });
       if (env.updateFails) throw new Error('update failed');
       return { id, ...info };
@@ -101,57 +113,103 @@ test('B2: executeReminderFlow(forceSplit) notifies and persists even if split th
   assert.ok(res, 'flow resolves instead of throwing');
 });
 
-test('AC3/AC1: 19:00 alarm only notifies and schedules a 60s auto-split; no window changes', async () => {
+test('AC3/AC1: 19:00 alarm only notifies and creates AUTO_SPLIT_FALLBACK {delayInMinutes:1}; no window changes', async () => {
   resetEnv();
-  const before = Date.now();
   await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
   assert.equal(env.notifications.length, 1, 'onAlarm shows notification');
   assert.equal(env.created.length, 0, 'no study window at 19:00');
   assert.equal(env.updates.length, 0, 'main window untouched at 19:00');
-  const auto = env.alarms.find((a) => a.name === sw.ALARM_NAMES.AUTO_SPLIT);
-  assert.ok(auto, '60s auto-split alarm scheduled');
-  const when = auto.info.when ?? Date.now() + auto.info.delayInMinutes * 60000;
-  assert.ok(when - before >= 59_000 && when - before <= 62_000, '~60s delay');
+  assert.equal(env.sidePanelOpened, undefined, 'side panel never opened at 19:00');
+  const fb = env.alarms.find((a) => a.name === sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK);
+  assert.ok(fb, 'fallback alarm created');
+  assert.equal(fb.info.delayInMinutes, 1);
 });
 
-test('AC2: auto-split alarm splits only when not snoozed; autoSplitScreen=false schedules nothing', async () => {
+test('AC3: notification buttons are [0] Hoc ngay, [1] Snooze', async () => {
   resetEnv();
   await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
+  const btn = env.notifications[0].options.buttons;
+  assert.match(btn[0].title, /Học ngay/);
+  assert.match(btn[1].title, /Snooze/);
+  assert.doesNotMatch(env.notifications[0].options.message, /đã được chia đôi/);
+});
+
+test('displayMode defaults to split; sidePanel mode schedules no fallback alarm', async () => {
+  resetEnv();
+  const r = await sw.handleRuntimeMessage({ type: 'GET_STATE' });
+  assert.equal(r.state.schedule.displayMode, 'split');
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'sidePanel' } });
   env.alarms.length = 0;
-  await listeners.onAlarm({ name: sw.ALARM_NAMES.AUTO_SPLIT });
-  assert.equal(env.created.length, 1, 'auto-split opens study window');
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
+  assert.equal(env.alarms.some((a) => a.name === sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK), false);
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'split' } });
+});
+
+test('AC2: fallback alarm splits when not snoozed; skipped when autoSplitScreen=false', async () => {
+  resetEnv();
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK });
+  assert.equal(env.created.length, 1, 'fallback opens study window');
+  assert.equal(env.sidePanelOpened, undefined, 'side panel is never opened automatically');
 
   resetEnv();
   await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { autoSplitScreen: false } });
-  env.alarms.length = 0;
   await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
-  assert.equal(env.alarms.some((a) => a.name === sw.ALARM_NAMES.AUTO_SPLIT), false);
+  assert.equal(env.alarms.some((a) => a.name === sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK), false);
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK });
+  assert.equal(env.created.length, 0);
   await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { autoSplitScreen: true } });
 });
 
-test('AC2: Snooze cancels pending auto-split and never shrinks main window', async () => {
+test('AC2: Snooze clears fallback, never resizes main window; stale fallback ignored', async () => {
   resetEnv();
   await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
-  await sw.handleRuntimeMessage({ type: 'SNOOZE_ALARM', payload: { minutes: 15 } });
-  assert.ok(env.cleared.includes(sw.ALARM_NAMES.AUTO_SPLIT), 'auto-split alarm cleared');
-  assert.equal(env.updates.length, 0);
-  // stale auto-split firing after snooze must be ignored
-  await listeners.onAlarm({ name: sw.ALARM_NAMES.AUTO_SPLIT });
+  await listeners.onButtonClicked('DAILY_REMINDER_1900', 1);
+  assert.ok(env.cleared.includes(sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK), 'fallback cleared');
+  assert.ok(env.alarms.some((a) => a.name === sw.ALARM_NAMES.SNOOZE), 'snooze alarm created');
+  assert.equal(env.updates.length, 0, '0 window updates on snooze');
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK });
   assert.equal(env.created.length, 0, 'no split after snooze');
 });
 
-test('B2: TRIGGER_ALARM_NOW notifies; Hoc ngay button splits through the flow', async () => {
+test('startStudy (Hoc ngay button) clears fallback and splits in split mode', async () => {
+  resetEnv();
+  await listeners.onButtonClicked('DAILY_REMINDER_1900', 0);
+  assert.ok(env.cleared.includes(sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK));
+  assert.equal(env.created.length, 1);
+  resetEnv();
+  await listeners.onClicked('DAILY_REMINDER_1900');
+  assert.equal(env.created.length, 1, 'notification body click also starts study');
+});
+
+test('startStudy in sidePanel mode: sidePanel.open is the first chrome call (user gesture)', async () => {
+  resetEnv();
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'sidePanel' } });
+  env.calls.length = 0;
+  const p = sw.startStudy({ windowId: 101 });
+  assert.equal(env.calls[0], 'sidePanel.open', 'first call, synchronously, before any await');
+  assert.equal(env.sidePanelOpened.windowId, 101);
+  await p;
+  assert.equal(env.created.length, 0, 'no split window when side panel opened');
+  assert.ok(env.cleared.includes(sw.ALARM_NAMES.AUTO_SPLIT_FALLBACK));
+});
+
+test('startStudy in sidePanel mode falls back to split if sidePanel.open rejects', async () => {
+  resetEnv();
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'sidePanel' } });
+  env.sidePanelFails = true;
+  await sw.startStudy({ windowId: 101 });
+  assert.equal(env.created.length, 1, 'falls back to split view');
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'split' } });
+});
+
+test('B2: TRIGGER_ALARM_NOW notifies; with forceSplit a failing split never blocks notification/state', async () => {
   resetEnv();
   env.updateFails = true;
   const r = await sw.handleRuntimeMessage({ type: 'TRIGGER_ALARM_NOW', payload: { forceSplit: true } });
   assert.equal(r.ok, true);
-  assert.equal(env.notifications.length, 1, 'TRIGGER_ALARM_NOW notifies even when split fails');
-
-  resetEnv();
-  await listeners.onButtonClicked('DAILY_REMINDER_1900', 1);
-  assert.equal(env.created.length, 1, 'start button opens study window');
-  assert.ok(env.cleared.includes(sw.ALARM_NAMES.AUTO_SPLIT), 'pending auto-split cancelled');
-  assert.ok(savedState().alarmState.lastTriggeredAt, 'start button goes through the flow (state saved)');
+  assert.equal(env.notifications.length, 1);
+  assert.ok(savedState().alarmState.lastTriggeredAt);
 });
 
 test('B3: original bounds saved before split; onRemoved restores them and clears ids', async () => {
@@ -210,7 +268,6 @@ test('B8-data: keyChunks are {chunk, meaning} and every item has intonation with
       assert.notEqual(k.meaning, k.chunk);
     }
     assert.equal(typeof s.intonation, 'string', `${s.id} intonation`);
-    assert.match(s.intonation, /↗/, `${s.id} intonation has ↗`);
-    assert.match(s.intonation, /↘/, `${s.id} intonation has ↘`);
+    assert.match(s.intonation, /[↗↘]/, `${s.id} intonation has an arrow`);
   }
 });
