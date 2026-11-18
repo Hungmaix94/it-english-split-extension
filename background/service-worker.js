@@ -5,7 +5,8 @@ export const DEFAULT_STATE = {
     enabled: true,
     time: '19:00',
     autoSplitScreen: true,
-    splitRatio: 0.70 // 70% left work window, 30% right study window
+    splitRatio: 0.70, // 70% left work window, 30% right study window
+    displayMode: 'split' // 'split' | 'sidePanel'
   },
   progress: {
     learnedIds: [],
@@ -20,6 +21,8 @@ export const DEFAULT_STATE = {
     lastTriggeredAt: null,
     snoozedUntil: null,
     lastSplitWindowId: null,
+    mainWindowId: null,
+    originalMainBounds: null,
     activeBanner: false
   },
   selectedSentenceId: 'standup-01',
@@ -28,8 +31,14 @@ export const DEFAULT_STATE = {
 
 export const ALARM_NAMES = {
   DAILY: 'DAILY_ENGLISH_1900',
-  SNOOZE: 'SNOOZE_ENGLISH_ALARM'
+  SNOOZE: 'SNOOZE_ENGLISH_ALARM',
+  AUTO_SPLIT_FALLBACK: 'AUTO_SPLIT_FALLBACK'
 };
+
+export const DISPLAY_MODES = ['split', 'sidePanel'];
+
+// Cached so startStudy can call chrome.sidePanel.open synchronously (user gesture).
+let cachedDisplayMode = null;
 
 export function getLocalToday(date = new Date()) {
   const y = date.getFullYear();
@@ -81,6 +90,8 @@ export async function getState() {
     selectedSentenceId: saved.selectedSentenceId || DEFAULT_STATE.selectedSentenceId,
     selectedCategory: saved.selectedCategory || DEFAULT_STATE.selectedCategory
   };
+
+  cachedDisplayMode = state.schedule.displayMode;
 
   const today = getLocalToday();
   if (!state.progress.todayDate) {
@@ -215,13 +226,35 @@ export async function openAutoSplitViewWindow(customState) {
     height: workArea.height
   };
 
-  // 1. Normalize main window if it was maximized or fullscreen
-  if (mainWin.state && mainWin.state !== 'normal') {
-    await chrome.windows.update(mainWin.id, { state: 'normal' });
+  const isFullscreen = mainWin.state === 'fullscreen';
+  const alarm = state.alarmState;
+  const alreadySplit =
+    typeof alarm.lastSplitWindowId === 'number' &&
+    alarm.mainWindowId === mainWin.id &&
+    alarm.originalMainBounds;
+
+  // Remember original geometry so closing the study window can restore it (AC8)
+  if (!alreadySplit) {
+    alarm.mainWindowId = mainWin.id;
+    alarm.originalMainBounds = isFullscreen
+      ? null
+      : {
+          left: mainWin.left,
+          top: mainWin.top,
+          width: mainWin.width,
+          height: mainWin.height,
+          state: mainWin.state || 'normal'
+        };
+    await saveState(state);
   }
 
-  // 2. Resize and move main work window to the left (70%)
-  await chrome.windows.update(mainWin.id, leftBounds);
+  // Fullscreen main windows are never resized (AC9): study window only
+  if (!isFullscreen) {
+    if (mainWin.state && mainWin.state !== 'normal') {
+      await chrome.windows.update(mainWin.id, { state: 'normal' });
+    }
+    await chrome.windows.update(mainWin.id, leftBounds);
+  }
 
   // 3. Create or reuse right study window (30%)
   const studyUrl = chrome.runtime?.getURL
@@ -289,17 +322,180 @@ export async function showReminderNotification() {
   const notificationOptions = {
     type: 'basic',
     iconUrl,
-    title: '⏰ Đã đến 19:00 - Giờ luyện IT English Split-View!',
-    message: 'Màn hình đã được chia đôi 70/30. Dành 10 phút luyện phát âm và phản xạ IT English ngay!',
+    title: '🔔 Đã đến giờ luyện IT English hôm nay!',
+    message: 'Dành 10 phút luyện phát âm và phản xạ IT English. Bấm "Học ngay" để bắt đầu.',
     priority: 2,
     requireInteraction: true,
     buttons: [
-      { title: 'Snooze 15 phút' },
-      { title: 'Bắt đầu học ngay' }
+      { title: '🚀 Học ngay' },
+      { title: '⏰ Snooze 15 phút' }
     ]
   };
 
   return await chrome.notifications.create('DAILY_REMINDER_1900', notificationOptions);
+}
+
+/**
+ * Restores the main window when the study window is closed (AC8).
+ */
+export async function handleWindowRemoved(windowId) {
+  try {
+    const state = await getState();
+    const a = state.alarmState;
+    if (typeof windowId !== 'number' || windowId !== a.lastSplitWindowId) return;
+
+    const orig = a.originalMainBounds;
+    if (typeof a.mainWindowId === 'number' && orig) {
+      try {
+        if (orig.state === 'maximized') {
+          await chrome.windows.update(a.mainWindowId, { state: 'maximized' });
+        } else {
+          await chrome.windows.update(a.mainWindowId, {
+            left: orig.left,
+            top: orig.top,
+            width: orig.width,
+            height: orig.height,
+            state: 'normal'
+          });
+        }
+      } catch {
+        // Main window may be gone; still clear state
+      }
+    }
+
+    a.lastSplitWindowId = null;
+    a.mainWindowId = null;
+    a.originalMainBounds = null;
+    await saveState(state);
+  } catch {
+    // Never throw from a listener
+  }
+}
+
+async function clearFallbackAlarm() {
+  try {
+    await chrome.alarms?.clear?.(ALARM_NAMES.AUTO_SPLIT_FALLBACK);
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Reminder pipeline (architecture Addendum A.3): ONLY notifies, saves state and
+ * schedules the 60s fallback alarm. It never touches windows (no setTimeout: MV3 SW is killed).
+ * forceSplit (manual test button, a user gesture) additionally runs startStudy.
+ */
+export async function executeReminderFlow({ source = 'alarm', state: given, forceSplit = false } = {}) {
+  const state = given || (await getState());
+
+  state.alarmState.lastTriggeredAt = Date.now();
+  state.alarmState.activeBanner = true;
+  state.alarmState.snoozedUntil = null;
+  await saveState(state);
+
+  if (typeof chrome !== 'undefined' && chrome.action?.setBadgeText) {
+    chrome.action.setBadgeText({ text: '19h' }).catch(() => {});
+    chrome.action.setBadgeBackgroundColor({ color: '#EF4444' }).catch(() => {});
+  }
+
+  try {
+    await showReminderNotification();
+  } catch {
+    // Notification failure must not block the rest of the flow
+  }
+
+  if (
+    state.schedule.displayMode === 'split' &&
+    state.schedule.autoSplitScreen &&
+    typeof chrome !== 'undefined' &&
+    chrome.alarms?.create
+  ) {
+    try {
+      await chrome.alarms.create(ALARM_NAMES.AUTO_SPLIT_FALLBACK, { delayInMinutes: 1 });
+    } catch {
+      // ignore
+    }
+  }
+
+  if (forceSplit) {
+    await startStudy();
+  }
+
+  if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+    Promise.resolve(
+      chrome.runtime.sendMessage({ type: 'STATE_UPDATED', state, reason: `REMINDER_${source.toUpperCase()}` })
+    ).catch(() => {});
+  }
+
+  return { state };
+}
+
+/**
+ * "Học ngay": opens the study UI. NOT async on purpose: in sidePanel mode
+ * chrome.sidePanel.open is the first call, with no await before it, to keep the user gesture.
+ */
+export function startStudy({ windowId } = {}) {
+  let panelOpen = null;
+  if (cachedDisplayMode === 'sidePanel' && typeof chrome !== 'undefined' && chrome.sidePanel?.open) {
+    try {
+      panelOpen = Promise.resolve(
+        chrome.sidePanel.open({ windowId: windowId ?? chrome.windows?.WINDOW_ID_CURRENT ?? -2 })
+      );
+    } catch (err) {
+      panelOpen = Promise.reject(err);
+    }
+  }
+
+  return (async () => {
+    await clearFallbackAlarm();
+    let opened = false;
+    let splitResult = null;
+    const state = await getState();
+
+    if (panelOpen) {
+      try {
+        await panelOpen;
+        opened = true;
+      } catch {
+        opened = false;
+      }
+    } else if (state.schedule.displayMode === 'sidePanel' && chrome.sidePanel?.open) {
+      // Cold SW: mode unknown until storage read; gesture may already be consumed
+      try {
+        await chrome.sidePanel.open({ windowId: windowId ?? chrome.windows?.WINDOW_ID_CURRENT ?? -2 });
+        opened = true;
+      } catch {
+        opened = false;
+      }
+    }
+
+    if (!opened) {
+      try {
+        splitResult = await openAutoSplitViewWindow(state);
+      } catch {
+        splitResult = null;
+      }
+    }
+    return { opened, splitResult };
+  })();
+}
+
+/** 60s fallback fired: split only in split mode, auto-split on, and not snoozed. */
+export async function handleAutoSplitFallback() {
+  const state = await getState();
+  if (
+    state.schedule.displayMode !== 'split' ||
+    !state.schedule.autoSplitScreen ||
+    state.alarmState.snoozedUntil ||
+    !state.alarmState.activeBanner
+  ) {
+    return { skipped: true };
+  }
+  try {
+    return { splitResult: await openAutoSplitViewWindow(state) };
+  } catch {
+    return { splitResult: null };
+  }
 }
 
 /**
@@ -357,23 +553,12 @@ export async function handleRuntimeMessage(message, sender) {
     }
 
     case 'TRIGGER_ALARM_NOW': {
-      let splitResult = null;
-      if (state.schedule.autoSplitScreen || payload.forceSplit) {
-        splitResult = await openAutoSplitViewWindow(state);
-      }
-      await showReminderNotification();
-
-      state.alarmState.lastTriggeredAt = Date.now();
-      state.alarmState.activeBanner = true;
-      state.alarmState.snoozedUntil = null;
-
-      if (typeof chrome !== 'undefined' && chrome.action?.setBadgeText) {
-        chrome.action.setBadgeText({ text: '19h' }).catch(() => {});
-        chrome.action.setBadgeBackgroundColor({ color: '#EF4444' }).catch(() => {});
-      }
-
-      await saveState(state);
-      return { ok: true, state, data: { splitResult } };
+      await executeReminderFlow({
+        source: 'manual',
+        state,
+        forceSplit: payload.forceSplit === true
+      });
+      return { ok: true, state };
     }
 
     case 'SNOOZE_ALARM': {
@@ -382,6 +567,7 @@ export async function handleRuntimeMessage(message, sender) {
         await chrome.alarms.create(ALARM_NAMES.SNOOZE, { delayInMinutes: minutes });
       }
 
+      await clearFallbackAlarm();
       state.alarmState.snoozedUntil = Date.now() + minutes * 60_000;
       state.alarmState.activeBanner = false;
 
@@ -399,7 +585,15 @@ export async function handleRuntimeMessage(message, sender) {
         return { ok: false, error: 'Invalid time format (expected HH:mm)', state };
       }
 
+      if (payload.displayMode !== undefined && !DISPLAY_MODES.includes(payload.displayMode)) {
+        return { ok: false, error: "Invalid displayMode (expected 'split' or 'sidePanel')", state };
+      }
+
       if (payload.time) state.schedule.time = payload.time;
+      if (payload.displayMode) {
+        state.schedule.displayMode = payload.displayMode;
+        cachedDisplayMode = payload.displayMode;
+      }
       if (typeof payload.enabled === 'boolean') state.schedule.enabled = payload.enabled;
       if (typeof payload.autoSplitScreen === 'boolean') {
         state.schedule.autoSplitScreen = payload.autoSplitScreen;
@@ -444,10 +638,12 @@ export async function handleRuntimeMessage(message, sender) {
 
       if (state.progress.todayLearnedIds.length >= (state.progress.dailyGoal || 5)) {
         state.alarmState.activeBanner = false;
-        if (typeof chrome !== 'undefined' && chrome.action?.setBadgeText) {
-          chrome.action.setBadgeText({ text: '✓' }).catch(() => {});
-          chrome.action.setBadgeBackgroundColor({ color: '#10B981' }).catch(() => {});
-        }
+        await clearFallbackAlarm();
+      }
+
+      if (learned && typeof chrome !== 'undefined' && chrome.action?.setBadgeText) {
+        chrome.action.setBadgeText({ text: `${state.progress.streakDays || 0}d` }).catch(() => {});
+        chrome.action.setBadgeBackgroundColor({ color: '#10B981' }).catch(() => {});
       }
 
       await saveState(state);
@@ -496,42 +692,41 @@ if (typeof chrome !== 'undefined' && chrome.runtime?.onInstalled) {
   // 2. Alarm Trigger Listener
   if (chrome.alarms?.onAlarm) {
     chrome.alarms.onAlarm.addListener(async (alarm) => {
-      const state = await getState();
       if (alarm.name === ALARM_NAMES.DAILY || alarm.name === ALARM_NAMES.SNOOZE) {
-        if (state.schedule.autoSplitScreen) {
-          await openAutoSplitViewWindow(state);
-        }
-        await showReminderNotification();
-
-        state.alarmState.lastTriggeredAt = Date.now();
-        state.alarmState.activeBanner = true;
-        state.alarmState.snoozedUntil = null;
-        await saveState(state);
-
-        if (chrome.runtime?.sendMessage) {
-          chrome.runtime.sendMessage({
-            type: 'STATE_UPDATED',
-            state,
-            reason: 'ALARM_FIRED'
-          }).catch(() => {});
-        }
+        await executeReminderFlow({ source: alarm.name === ALARM_NAMES.SNOOZE ? 'snooze' : 'alarm' });
+      } else if (alarm.name === ALARM_NAMES.AUTO_SPLIT_FALLBACK) {
+        await handleAutoSplitFallback();
       }
     });
   }
 
-  // 3. Notification Button Click Listener (Snooze 15m or Start)
+  // 2b. Study window closed -> restore main window bounds (AC8)
+  if (chrome.windows?.onRemoved) {
+    chrome.windows.onRemoved.addListener((windowId) => handleWindowRemoved(windowId));
+  }
+
+  // 3. Notification listeners (index 0 = Học ngay, index 1 = Snooze 15m).
+  // Handlers are not async so startStudy runs synchronously inside the user gesture.
+  const dismiss = (id) => Promise.resolve(chrome.notifications.clear(id)).catch(() => {});
   if (chrome.notifications?.onButtonClicked) {
-    chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIndex) => {
-      if (notificationId === 'DAILY_REMINDER_1900') {
-        if (buttonIndex === 0) {
-          // Button 0: Snooze 15 minutes
-          await handleRuntimeMessage({ type: 'SNOOZE_ALARM', payload: { minutes: 15 } });
-        } else if (buttonIndex === 1) {
-          // Button 1: Start studying
-          await openAutoSplitViewWindow();
-        }
-        chrome.notifications.clear(notificationId).catch(() => {});
+    chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
+      if (notificationId !== 'DAILY_REMINDER_1900') return undefined;
+      if (buttonIndex === 0) {
+        const p = startStudy();
+        dismiss(notificationId);
+        return p;
       }
+      const p = handleRuntimeMessage({ type: 'SNOOZE_ALARM', payload: { minutes: 15 } });
+      dismiss(notificationId);
+      return p;
+    });
+  }
+  if (chrome.notifications?.onClicked) {
+    chrome.notifications.onClicked.addListener((notificationId) => {
+      if (notificationId !== 'DAILY_REMINDER_1900') return undefined;
+      const p = startStudy();
+      dismiss(notificationId);
+      return p;
     });
   }
 
