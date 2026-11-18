@@ -4,6 +4,6 @@
   "description": "Chrome Extension MV3 for IT English Split-View with 19:00 Reminder",
   "type": "module",
   "scripts": {
-    "test": "node --test tests/extension.test.mjs"
+    "test": "node --test tests/extension.test.mjs tests/gate35.test.mjs"
   }
 }
