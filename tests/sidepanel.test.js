@@ -256,3 +256,51 @@ describe('4. Sidepanel Controller Logic & State Persistence', () => {
     assert.ok(typeof snoozeRes.state.alarmState.snoozedUntil === 'number');
   });
 });
+
+describe('Gate 3.6 UX fixes', () => {
+  const dir = path.join(rootDir, 'sidepanel');
+  const css = () => fs.readFileSync(path.join(dir, 'sidepanel.css'), 'utf8');
+  const html = () => fs.readFileSync(path.join(dir, 'sidepanel.html'), 'utf8');
+  const js = () => fs.readFileSync(path.join(dir, 'sidepanel.js'), 'utf8');
+
+  test('focus-visible outline + reduced-motion (CSS and confetti)', () => {
+    assert.match(css(), /button:focus-visible[\s\S]*?outline:\s*2px solid var\(--accent-cyan-light\)/);
+    assert.match(css(), /outline-offset:\s*2px/);
+    assert.match(css(), /@media \(prefers-reduced-motion:\s*reduce\)/);
+    assert.match(js(), /prefers-reduced-motion:\s*reduce/);
+  });
+
+  test('mastered button: short label, nowrap, no duplicate emoji', () => {
+    assert.match(css(), /\.btn-mastered\s*\{[^}]*white-space:\s*nowrap/);
+    assert.doesNotMatch(js(), /'🔥 Đánh dấu/);
+    assert.doesNotMatch(js(), /'✅ Đã thuộc câu này'/);
+    assert.doesNotMatch(html(), /Đã thuộc câu này/);
+  });
+
+  test('header wraps at narrow widths', () => {
+    assert.match(css(), /\.header-top\s*\{[^}]*flex-wrap:\s*wrap/);
+    const m = css().match(/\.header-quick-actions\s*\{[^}]*\}/)[0];
+    assert.match(m, /flex-shrink:\s*1/);
+    assert.match(m, /min-width:\s*0/);
+    assert.match(m, /flex-wrap:\s*wrap/);
+  });
+
+  test('contrast: dark text on amber/orange buttons, subtle text token', () => {
+    const c = css();
+    assert.match(c, /\.btn-accent\s*\{[^}]*color:\s*#0f172a/);
+    assert.match(c, /\.btn-mastered\s*\{[^}]*color:\s*#0f172a/);
+    assert.match(c, /--text-subtle:\s*#94a3b8/);
+    assert.match(c, /\.banner-subtext\s*\{[^}]*color:\s*#fee2e2/);
+    assert.match(c, /\.alt-badge\s*\{[^}]*color:\s*#a5b4fc/);
+  });
+
+  test('touch targets, no side-tab borders, min text 11px, dev button hidden', () => {
+    const c = css();
+    assert.match(c, /\.btn-sm\s*\{[^}]*min-height:\s*32px/);
+    assert.match(c, /\.btn-audio\s*\{[^}]*min-height:\s*36px/);
+    assert.doesNotMatch(c, /border-left:\s*3px/);
+    assert.doesNotMatch(c, /font-size:\s*10px/);
+    assert.match(html(), /id="btn-trigger-split"[^>]*\bhidden\b/);
+    assert.match(js(), /debug/);
+  });
+});

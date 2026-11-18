@@ -338,11 +338,14 @@ export class SidepanelController {
         ? IT_SENTENCES.length
         : filterSentences(IT_SENTENCES, cat.id).length;
 
-      btn.innerHTML = `
-        <span class="tab-icon">${cat.icon || '📌'}</span>
-        <span class="tab-label">${cat.label}</span>
-        <span class="tab-count">${count}</span>
-      `;
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', String(cat.id === this.activeCategory));
+      [['tab-icon', cat.icon || '📌'], ['tab-label', cat.label], ['tab-count', String(count)]].forEach(([cls, text]) => {
+        const span = document.createElement('span');
+        span.className = cls;
+        span.textContent = text;
+        btn.appendChild(span);
+      });
 
       btn.addEventListener('click', () => {
         this.activeCategory = cat.id;
@@ -359,11 +362,9 @@ export class SidepanelController {
   updateCategoryTabsUI() {
     const buttons = document.querySelectorAll('.tab-btn');
     buttons.forEach((btn) => {
-      if (btn.dataset.category === this.activeCategory) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+      const isActive = btn.dataset.category === this.activeCategory;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', String(isActive));
     });
   }
 
@@ -386,7 +387,9 @@ export class SidepanelController {
     }
     if (progressBarEl) {
       const pct = Math.min(Math.round((learnedToday.length / dailyGoal) * 100), 100);
-      progressBarEl.style.width = `${pct}%`;
+      progressBarEl.style.transform = `scaleX(${pct / 100})`;
+      const track = progressBarEl.parentElement;
+      if (track) track.setAttribute('aria-valuenow', String(Math.min(learnedToday.length, dailyGoal)));
     }
 
     // 3. Alarm banner visibility
@@ -490,17 +493,14 @@ export class SidepanelController {
       rawChunks.forEach((item) => {
         const li = document.createElement('li');
         li.className = 'chunk-item';
-        if (typeof item === 'object' && item.chunk) {
-          li.innerHTML = `
-            <span class="chunk-text">🎯 ${item.chunk}</span>
-            <span class="chunk-meaning">${item.meaning || ''}</span>
-          `;
-        } else {
-          li.innerHTML = `
-            <span class="chunk-text">🎯 ${item}</span>
-            <span class="chunk-meaning">Cụm từ then chốt thường dùng</span>
-          `;
-        }
+        const isObj = typeof item === 'object' && item.chunk;
+        const text = document.createElement('span');
+        text.className = 'chunk-text';
+        text.textContent = `🎯 ${isObj ? item.chunk : item}`;
+        const meaning = document.createElement('span');
+        meaning.className = 'chunk-meaning';
+        meaning.textContent = isObj ? (item.meaning || '') : 'Cụm từ then chốt thường dùng';
+        li.append(text, meaning);
         chunksList.appendChild(li);
       });
     }
@@ -540,10 +540,10 @@ export class SidepanelController {
     if (markBtn && markLabel) {
       if (isMastered) {
         markBtn.classList.add('is-mastered');
-        markLabel.textContent = '✅ Đã thuộc câu này';
+        markLabel.textContent = '✅ Đã thuộc';
       } else {
         markBtn.classList.remove('is-mastered');
-        markLabel.textContent = '🔥 Đánh dấu Đã thuộc';
+        markLabel.textContent = 'Đã thuộc';
       }
     }
   }
@@ -645,6 +645,10 @@ export class SidepanelController {
 
     // 4. Test Alarm 19:00 Button
     const btnTriggerSplit = document.getElementById('btn-trigger-split');
+    // Dev-only control: visible only with ?debug=1 in the sidepanel URL
+    if (btnTriggerSplit && typeof location !== 'undefined' && /[?&]debug=1\b/.test(location.search)) {
+      btnTriggerSplit.hidden = false;
+    }
     if (btnTriggerSplit) {
       btnTriggerSplit.addEventListener('click', async () => {
         const originalText = btnTriggerSplit.textContent;
@@ -745,6 +749,7 @@ export class SidepanelController {
 
   launchConfetti() {
     if (typeof document === 'undefined') return;
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const canvas = document.getElementById('confetti-canvas');
     if (!canvas || !canvas.getContext) return;
 

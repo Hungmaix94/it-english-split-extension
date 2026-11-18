@@ -36,7 +36,7 @@
         </div>
 
         <div class="header-quick-actions">
-          <button type="button" id="btn-trigger-split" class="btn btn-accent btn-sm" title="Kích hoạt chia đôi màn hình 70/30 và kiểm tra hẹn giờ">
+          <button type="button" id="btn-trigger-split" hidden class="btn btn-accent btn-sm" title="Kích hoạt chia đôi màn hình 70/30 và kiểm tra hẹn giờ">
             ⚡ Test Lịch Hẹn 19:00
           </button>
           <button type="button" id="btn-snooze-header" class="btn btn-ghost btn-sm" title="Snooze 15 phút">
@@ -52,7 +52,7 @@
           <span id="daily-progress-text" class="progress-counter">0 / 5 câu</span>
         </div>
         <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
-          <div id="daily-progress-bar" class="progress-fill" style="width: 0%;"></div>
+          <div id="daily-progress-bar" class="progress-fill" style="transform: scaleX(0);"></div>
         </div>
       </div>
 
@@ -228,7 +228,7 @@
 
         <button type="button" id="btn-mark-mastered" class="btn btn-mastered" title="Đánh dấu đã thuộc để cộng chuỗi Streak">
           <span class="btn-fire-icon">🔥</span>
-          <span id="mark-mastered-label">Đã thuộc câu này</span>
+          <span id="mark-mastered-label">Đã thuộc</span>
         </button>
 
         <button type="button" id="btn-next" class="btn btn-nav" title="Xem câu kế tiếp">
