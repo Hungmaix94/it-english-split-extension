@@ -15,6 +15,8 @@ function resetEnv() {
   env.created = [];
   env.badges = [];
   env.updateFails = false;
+  env.alarms = [];
+  env.cleared = [];
   env.main = { id: 101, left: 10, top: 20, width: 1200, height: 800, state: 'normal' };
 }
 resetEnv();
@@ -33,8 +35,8 @@ globalThis.chrome = {
     }
   },
   alarms: {
-    create: async () => {},
-    clear: async () => {},
+    create: async (name, info) => env.alarms.push({ name, info }),
+    clear: async (name) => env.cleared.push(name),
     get: async () => null,
     onAlarm: { addListener: (fn) => (listeners.onAlarm = fn) }
   },
@@ -88,32 +90,67 @@ test('B1: fullscreen main window is not resized; study window still opens', asyn
   assert.ok(res.studyWindowId);
 });
 
-test('B2: executeReminderFlow shows notification even if split throws, and persists state first', async () => {
+test('B2: executeReminderFlow(forceSplit) notifies and persists even if split throws', async () => {
   resetEnv();
   env.updateFails = true;
   assert.equal(typeof sw.executeReminderFlow, 'function');
-  const res = await sw.executeReminderFlow({ source: 'alarm' });
+  const res = await sw.executeReminderFlow({ source: 'manual', forceSplit: true });
   assert.equal(env.notifications.length, 1, 'notification created despite windows.update rejecting');
   assert.ok(savedState().alarmState.lastTriggeredAt, 'lastTriggeredAt saved');
   assert.equal(savedState().alarmState.activeBanner, true);
   assert.ok(res, 'flow resolves instead of throwing');
 });
 
-test('B2: onAlarm, TRIGGER_ALARM_NOW and notification start button all use the flow', async () => {
+test('AC3/AC1: 19:00 alarm only notifies and schedules a 60s auto-split; no window changes', async () => {
   resetEnv();
+  const before = Date.now();
   await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
   assert.equal(env.notifications.length, 1, 'onAlarm shows notification');
-  assert.equal(env.created.length, 1, 'onAlarm splits');
+  assert.equal(env.created.length, 0, 'no study window at 19:00');
+  assert.equal(env.updates.length, 0, 'main window untouched at 19:00');
+  const auto = env.alarms.find((a) => a.name === sw.ALARM_NAMES.AUTO_SPLIT);
+  assert.ok(auto, '60s auto-split alarm scheduled');
+  const when = auto.info.when ?? Date.now() + auto.info.delayInMinutes * 60000;
+  assert.ok(when - before >= 59_000 && when - before <= 62_000, '~60s delay');
+});
+
+test('AC2: auto-split alarm splits only when not snoozed; autoSplitScreen=false schedules nothing', async () => {
+  resetEnv();
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
+  env.alarms.length = 0;
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.AUTO_SPLIT });
+  assert.equal(env.created.length, 1, 'auto-split opens study window');
 
   resetEnv();
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { autoSplitScreen: false } });
+  env.alarms.length = 0;
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
+  assert.equal(env.alarms.some((a) => a.name === sw.ALARM_NAMES.AUTO_SPLIT), false);
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { autoSplitScreen: true } });
+});
+
+test('AC2: Snooze cancels pending auto-split and never shrinks main window', async () => {
+  resetEnv();
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
+  await sw.handleRuntimeMessage({ type: 'SNOOZE_ALARM', payload: { minutes: 15 } });
+  assert.ok(env.cleared.includes(sw.ALARM_NAMES.AUTO_SPLIT), 'auto-split alarm cleared');
+  assert.equal(env.updates.length, 0);
+  // stale auto-split firing after snooze must be ignored
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.AUTO_SPLIT });
+  assert.equal(env.created.length, 0, 'no split after snooze');
+});
+
+test('B2: TRIGGER_ALARM_NOW notifies; Hoc ngay button splits through the flow', async () => {
+  resetEnv();
   env.updateFails = true;
-  const r = await sw.handleRuntimeMessage({ type: 'TRIGGER_ALARM_NOW' });
+  const r = await sw.handleRuntimeMessage({ type: 'TRIGGER_ALARM_NOW', payload: { forceSplit: true } });
   assert.equal(r.ok, true);
   assert.equal(env.notifications.length, 1, 'TRIGGER_ALARM_NOW notifies even when split fails');
 
   resetEnv();
   await listeners.onButtonClicked('DAILY_REMINDER_1900', 1);
   assert.equal(env.created.length, 1, 'start button opens study window');
+  assert.ok(env.cleared.includes(sw.ALARM_NAMES.AUTO_SPLIT), 'pending auto-split cancelled');
   assert.ok(savedState().alarmState.lastTriggeredAt, 'start button goes through the flow (state saved)');
 });
 
