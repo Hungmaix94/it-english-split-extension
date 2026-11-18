@@ -29,7 +29,8 @@ export const IT_SENTENCES = [
     context: "Báo cáo trở ngại (Blocker) trong buổi Daily Scrum",
     dialogue: "Scrum Master: 'Any blockers today?' - Dev: 'I'm currently blocked by the upstream authentication API downtime, so I shifted focus to writing unit tests for the checkout flow.' - Scrum Master: 'Thanks for the heads-up, I will ping the auth team right now.'",
     exampleResponse: "Thanks for the heads-up, I will ping the auth team right now.",
-    keyChunks: ["blocked by", "upstream API downtime", "shifted focus to", "checkout flow"],
+    keyChunks: [{ chunk: "blocked by", meaning: "bị kẹt bởi / bị chặn bởi" }, { chunk: "upstream API downtime", meaning: "downtime của API upstream" }, { chunk: "shifted focus to", meaning: "chuyển trọng tâm sang" }, { chunk: "checkout flow", meaning: "luồng thanh toán (checkout)" }],
+    intonation: "I'm currently blocked ↗ by the upstream authentication API downtime ↗, so I shifted focus ↗ to writing unit tests for the checkout flow ↘.",
     keyPhrases: ["blocked by", "upstream API downtime", "shifted focus to", "checkout flow"],
     alternatives: [
       "I'm blocked on the auth service outage, so in the meantime I'm tackling unit test coverage.",
@@ -54,7 +55,8 @@ export const IT_SENTENCES = [
     context: "Cập nhật tiến độ ngày & kế hoạch cộng tác",
     dialogue: "Alex: 'Hey, are you free this afternoon?' - Dev: 'Yes, yesterday I finalized the migration script for user permissions, and today I'm planning to pair with you on the Redis cache integration.'",
     exampleResponse: "Awesome! Let's jump on a quick huddle around 2 PM to walk through the cache keys.",
-    keyChunks: ["finalized the migration script", "pair with", "cache integration", "user permissions"],
+    keyChunks: [{ chunk: "finalized the migration script", meaning: "đã hoàn tất script migration" }, { chunk: "pair with", meaning: "làm việc cặp (pair) với" }, { chunk: "cache integration", meaning: "tích hợp cache" }, { chunk: "user permissions", meaning: "quyền của người dùng" }],
+    intonation: "Yesterday I finalized the migration script for user permissions ↗, and today I'm planning to pair with Alex ↗ on the Redis cache integration ↘.",
     keyPhrases: ["finalized the migration script", "pair with", "cache integration", "user permissions"],
     alternatives: [
       "I wrapped up the permissions migration yesterday, and today I'll sync with Alex to hook up Redis.",
@@ -79,7 +81,8 @@ export const IT_SENTENCES = [
     context: "Thông báo tiến độ đúng hạn và lộ trình nộp PR",
     dialogue: "Tech Lead: 'How is the webhook refactoring coming along?' - Dev: 'I'm on track with the payment webhook refactor and expect to open a draft pull request by end of day.'",
     exampleResponse: "Great, tag me as a reviewer once it's up so I can check the signature validation.",
-    keyChunks: ["on track with", "payment webhook refactor", "open a draft pull request", "by end of day"],
+    keyChunks: [{ chunk: "on track with", meaning: "đang đúng tiến độ với" }, { chunk: "payment webhook refactor", meaning: "refactor webhook thanh toán" }, { chunk: "open a draft pull request", meaning: "mở một pull request nháp" }, { chunk: "by end of day", meaning: "trước cuối ngày" }],
+    intonation: "I'm on track with the payment webhook refactor ↗ and expect to open a draft pull request ↗ by end of day ↘.",
     keyPhrases: ["on track with", "payment webhook refactor", "open a draft pull request", "by end of day"],
     alternatives: [
       "Payment webhook refactoring is progressing smoothly; I should have a PR ready for review by 5 PM.",
@@ -104,7 +107,8 @@ export const IT_SENTENCES = [
     context: "Kêu gọi hỗ trợ kỹ thuật chuyên môn sau standup",
     dialogue: "Dev: 'I ran into an unexpected edge case with concurrent database writes, so I'll need a quick five-minute sync with the database administrator.' - DBA: 'Sure thing, let's stay on this call right after standup concludes.'",
     exampleResponse: "Sure thing, let's stay on this call right after standup concludes.",
-    keyChunks: ["ran into an unexpected edge case", "concurrent database writes", "quick five-minute sync"],
+    keyChunks: [{ chunk: "ran into an unexpected edge case", meaning: "gặp một trường hợp biên bất ngờ" }, { chunk: "concurrent database writes", meaning: "ghi đồng thời vào cơ sở dữ liệu" }, { chunk: "quick five-minute sync", meaning: "buổi đồng bộ nhanh năm phút" }],
+    intonation: "I ran into an unexpected edge case with concurrent database writes ↗, so I'll need a quick five-minute sync ↗ with the database administrator ↘.",
     keyPhrases: ["ran into an unexpected edge case", "concurrent database writes", "quick five-minute sync"],
     alternatives: [
       "I hit a race condition during concurrent writes, so I'd appreciate a quick huddle with our DBA.",
@@ -133,7 +137,8 @@ export const IT_SENTENCES = [
     context: "Góp ý refactor cấu trúc mã nguồn trong PR",
     dialogue: "Reviewer: 'Could we extract this repetitive validation logic into a reusable middleware to keep the controller thin and clean?' - Author: 'Good catch! I was hesitating on that; I will refactor it into an auth middleware.'",
     exampleResponse: "Good catch! I will refactor it into an auth middleware right away.",
-    keyChunks: ["extract into", "reusable middleware", "keep the controller thin", "validation logic"],
+    keyChunks: [{ chunk: "extract into", meaning: "tách ra thành" }, { chunk: "reusable middleware", meaning: "middleware tái sử dụng được" }, { chunk: "keep the controller thin", meaning: "giữ controller mỏng" }, { chunk: "validation logic", meaning: "logic kiểm tra dữ liệu (validation)" }],
+    intonation: "Could we extract this repetitive validation logic ↗ into a reusable middleware ↗ to keep the controller thin and clean ↗?",
     keyPhrases: ["extract into", "reusable middleware", "keep the controller thin", "validation logic"],
     alternatives: [
       "Would it make sense to move this validation check into a shared middleware for consistency?",
@@ -158,7 +163,8 @@ export const IT_SENTENCES = [
     context: "Cảnh báo lỗi hiệu năng truy vấn cơ sở dữ liệu trong PR",
     dialogue: "Reviewer: 'I noticed this database query executes inside a loop, which might introduce an N+1 performance bottleneck under production load.' - Author: 'Thanks for spotting that! I will batch the IDs and use a single WHERE IN query.'",
     exampleResponse: "Thanks for spotting that! I will batch the IDs and use a single WHERE IN query.",
-    keyChunks: ["executes inside a loop", "N+1 performance bottleneck", "under production load", "batch query"],
+    keyChunks: [{ chunk: "executes inside a loop", meaning: "chạy bên trong vòng lặp" }, { chunk: "N+1 performance bottleneck", meaning: "nút thắt hiệu năng N+1" }, { chunk: "under production load", meaning: "dưới tải production" }, { chunk: "batch query", meaning: "truy vấn theo lô (batch)" }],
+    intonation: "I noticed this database query executes inside a loop ↗, which might introduce an N+1 performance bottleneck ↗ under production load ↘.",
     keyPhrases: ["executes inside a loop", "N+1 performance bottleneck", "under production load", "batch query"],
     alternatives: [
       "This looks like an N+1 query issue inside the loop; could we eagerly load the relationship instead?",
@@ -183,7 +189,8 @@ export const IT_SENTENCES = [
     context: "Góp ý nhỏ về tính tường minh và Clean Code",
     dialogue: "Reviewer: 'Nit: let's rename this variable to something more descriptive so it clearly conveys that it holds an epoch timestamp in milliseconds.' - Author: 'Renamed from t to createdAtMs. Pushed!'",
     exampleResponse: "Renamed from t to createdAtMs. Pushed!",
-    keyChunks: ["nit", "rename this variable", "more descriptive", "epoch timestamp in milliseconds"],
+    keyChunks: [{ chunk: "nit", meaning: "góp ý nhỏ (nit)" }, { chunk: "rename this variable", meaning: "đổi tên biến này" }, { chunk: "more descriptive", meaning: "mô tả rõ nghĩa hơn" }, { chunk: "epoch timestamp in milliseconds", meaning: "mốc thời gian epoch tính bằng mili giây" }],
+    intonation: "Nit: let's rename this variable ↗ to something more descriptive ↗ so it clearly conveys that it holds an epoch timestamp in milliseconds ↘.",
     keyPhrases: ["nit", "rename this variable", "more descriptive", "epoch timestamp in milliseconds"],
     alternatives: [
       "Small nit: renaming this to `expiresAtMs` would make its unit and purpose crystal clear.",
@@ -212,7 +219,8 @@ export const IT_SENTENCES = [
     context: "Thuyết trình phương án thiết kế hệ thống Stateless",
     dialogue: "Principal Engineer: 'How do we handle sessions when auto-scaling kicks in?' - Architect: 'To ensure horizontal scalability and prevent memory leaks, we should decouple session state from the application server and store it in Redis.'",
     exampleResponse: "Agreed. Keeping the app servers stateless will make rolling deployments much safer.",
-    keyChunks: ["horizontal scalability", "prevent memory leaks", "decouple session state", "stateless architecture"],
+    keyChunks: [{ chunk: "horizontal scalability", meaning: "khả năng mở rộng theo chiều ngang" }, { chunk: "prevent memory leaks", meaning: "ngăn rò rỉ bộ nhớ" }, { chunk: "decouple session state", meaning: "tách rời trạng thái phiên" }, { chunk: "stateless architecture", meaning: "kiến trúc stateless (phi trạng thái)" }],
+    intonation: "To ensure horizontal scalability and prevent memory leaks ↗, we should decouple session state from the application server ↗ and store it in Redis ↘.",
     keyPhrases: ["horizontal scalability", "prevent memory leaks", "decouple session state", "stateless architecture"],
     alternatives: [
       "By externalizing session storage into Redis, our web nodes can remain truly stateless and scale on demand.",
@@ -237,7 +245,8 @@ export const IT_SENTENCES = [
     context: "Đề xuất chiến lược tối ưu tải đọc (Read-Heavy Strategy)",
     dialogue: "Interviewer: 'How would you scale a product catalog with 100k reads per second?' - Candidate: 'Given the read-heavy nature of our catalog service, implementing an asynchronous cache-aside pattern with read replicas will significantly reduce database strain.'",
     exampleResponse: "Excellent choice. How would you handle cache invalidation on price updates?",
-    keyChunks: ["read-heavy nature", "cache-aside pattern", "read replicas", "reduce database strain"],
+    keyChunks: [{ chunk: "read-heavy nature", meaning: "đặc thù thiên về đọc" }, { chunk: "cache-aside pattern", meaning: "mẫu cache-aside" }, { chunk: "read replicas", meaning: "bản sao chỉ đọc (read replica)" }, { chunk: "reduce database strain", meaning: "giảm áp lực lên cơ sở dữ liệu" }],
+    intonation: "Given the read-heavy nature of our catalog service ↗, implementing an asynchronous cache-aside pattern with read replicas ↗ will significantly reduce database strain ↘.",
     keyPhrases: ["read-heavy nature", "cache-aside pattern", "read replicas", "reduce database strain"],
     alternatives: [
       "Since our access pattern is predominantly reads, introducing a cache-aside layer with replicas is our best bet.",
@@ -262,7 +271,8 @@ export const IT_SENTENCES = [
     context: "Bảo vệ quyết định kiến trúc Event-Driven",
     dialogue: "Product Lead: 'Why can't the order service just call the email service via HTTP?' - Architect: 'We decided to adopt an event-driven architecture with Apache Kafka so microservices can communicate asynchronously without tight coupling.'",
     exampleResponse: "That makes sense; if the email service goes down, orders will still process smoothly.",
-    keyChunks: ["event-driven architecture", "communicate asynchronously", "without tight coupling", "message broker"],
+    keyChunks: [{ chunk: "event-driven architecture", meaning: "kiến trúc hướng sự kiện" }, { chunk: "communicate asynchronously", meaning: "giao tiếp bất đồng bộ" }, { chunk: "without tight coupling", meaning: "không bị ràng buộc chặt" }, { chunk: "message broker", meaning: "bộ trung chuyển thông điệp (message broker)" }],
+    intonation: "We decided to adopt an event-driven architecture with Apache Kafka ↗ so microservices can communicate asynchronously ↗ without tight coupling ↘.",
     keyPhrases: ["event-driven architecture", "communicate asynchronously", "without tight coupling", "message broker"],
     alternatives: [
       "Transitioning to an event-driven model decouples our microservices and provides backpressure resilience.",
@@ -291,7 +301,8 @@ export const IT_SENTENCES = [
     context: "Thông báo phản ứng sự cố sản xuất (War Room / Alert)",
     dialogue: "Incident Commander: 'Status check on prod alert?' - On-Call: 'We've detected a sudden spike in 502 bad gateway errors on the production cluster and are currently rolling back the latest deployment.'",
     exampleResponse: "Understood. Keep the incident channel posted as soon as the rollback finishes.",
-    keyChunks: ["sudden spike in 502 errors", "production cluster", "rolling back the latest deployment"],
+    keyChunks: [{ chunk: "sudden spike in 502 errors", meaning: "tăng đột biến lỗi 502" }, { chunk: "production cluster", meaning: "cụm production" }, { chunk: "rolling back the latest deployment", meaning: "đang rollback bản triển khai mới nhất" }],
+    intonation: "We've detected a sudden spike in 502 bad gateway errors ↗ on the production cluster ↗ and are currently rolling back the latest deployment ↘.",
     keyPhrases: ["sudden spike in 502 errors", "production cluster", "rolling back the latest deployment"],
     alternatives: [
       "Alerts fired for 502 errors post-release; we are initiating an immediate rollback to the previous stable build.",
@@ -316,7 +327,8 @@ export const IT_SENTENCES = [
     context: "Trình bày phân tích nguyên nhân gốc rễ (Post-Mortem)",
     dialogue: "CTO: 'What took the API down during flash sale?' - Lead: 'The root cause was connection pool exhaustion caused by an unindexed query during peak traffic; we've increased pool capacity as an immediate mitigation.'",
     exampleResponse: "Good analysis. Let's make sure the database index is applied and tested by tomorrow morning.",
-    keyChunks: ["root cause", "connection pool exhaustion", "unindexed query", "immediate mitigation"],
+    keyChunks: [{ chunk: "root cause", meaning: "nguyên nhân gốc" }, { chunk: "connection pool exhaustion", meaning: "cạn kiệt connection pool" }, { chunk: "unindexed query", meaning: "truy vấn thiếu index" }, { chunk: "immediate mitigation", meaning: "biện pháp giảm thiểu tức thời" }],
+    intonation: "The root cause was connection pool exhaustion ↗ caused by an unindexed query during peak traffic ↗; we've increased pool capacity as an immediate mitigation ↘.",
     keyPhrases: ["root cause", "connection pool exhaustion", "unindexed query", "immediate mitigation"],
     alternatives: [
       "A missing index exhausted our database pool under load; we patched pool limits and are indexing the table.",
@@ -341,7 +353,8 @@ export const IT_SENTENCES = [
     context: "Điều phối thông tin liên lạc trong sự cố nghiêm trọng",
     dialogue: "Operations Manager: 'Who is leading communication for P1?' - Dev: 'I'm initiating the incident response bridge, and I'll post status updates in the incident Slack channel every fifteen minutes until the service is fully restored.'",
     exampleResponse: "Thank you. I will notify customer support to hold off on public announcements for now.",
-    keyChunks: ["incident response bridge", "status updates", "every fifteen minutes", "fully restored"],
+    keyChunks: [{ chunk: "incident response bridge", meaning: "phòng họp xử lý sự cố" }, { chunk: "status updates", meaning: "cập nhật trạng thái" }, { chunk: "every fifteen minutes", meaning: "mỗi mười lăm phút" }, { chunk: "fully restored", meaning: "được khôi phục hoàn toàn" }],
+    intonation: "I'm initiating the incident response bridge ↗, and I'll post status updates in the incident Slack channel every fifteen minutes ↗ until the service is fully restored ↘.",
     keyPhrases: ["incident response bridge", "status updates", "every fifteen minutes", "fully restored"],
     alternatives: [
       "I've spun up an incident bridge call; regular cadence updates will follow in #incident-prod every 15 mins.",
@@ -370,7 +383,8 @@ export const IT_SENTENCES = [
     context: "Trả lời câu hỏi phỏng vấn hành vi về thành tựu nổi bật (Behavioral STAR)",
     dialogue: "Interviewer: 'Can you share your proudest technical achievement?' - Candidate: 'In my previous role, I led the database sharding initiative which reduced p99 query latency by forty percent during our Black Friday surge.'",
     exampleResponse: "That is impressive. How did you choose your partition key to prevent hotspotting?",
-    keyChunks: ["led the database sharding initiative", "reduced p99 query latency", "by forty percent", "traffic surge"],
+    keyChunks: [{ chunk: "led the database sharding initiative", meaning: "dẫn dắt dự án sharding cơ sở dữ liệu" }, { chunk: "reduced p99 query latency", meaning: "giảm độ trễ truy vấn p99" }, { chunk: "by forty percent", meaning: "giảm bốn mươi phần trăm" }, { chunk: "traffic surge", meaning: "đợt tăng đột biến lưu lượng" }],
+    intonation: "In my previous role, I led the database sharding initiative ↗ which reduced p99 query latency by forty percent ↗ during our Black Friday surge ↘.",
     keyPhrases: ["led the database sharding initiative", "reduced p99 query latency", "by forty percent", "traffic surge"],
     alternatives: [
       "I spearheaded our database partitioning effort, cutting tail latency by 40% under peak holiday load.",
@@ -395,7 +409,8 @@ export const IT_SENTENCES = [
     context: "Nguyên lý thiết kế hệ thống sẵn sàng cao (System Design Philosophy)",
     dialogue: "Interviewer: 'How do you prevent cascading failures across services?' - Candidate: 'When designing for high availability, I always evaluate single points of failure and ensure automatic failover with circuit breakers.'",
     exampleResponse: "Great mindset. Which circuit breaker library or service mesh have you worked with?",
-    keyChunks: ["high availability", "single points of failure", "automatic failover", "circuit breakers"],
+    keyChunks: [{ chunk: "high availability", meaning: "tính sẵn sàng cao" }, { chunk: "single points of failure", meaning: "điểm lỗi đơn (single point of failure)" }, { chunk: "automatic failover", meaning: "tự động chuyển đổi dự phòng (failover)" }, { chunk: "circuit breakers", meaning: "bộ ngắt mạch (circuit breaker)" }],
+    intonation: "When designing for high availability ↗, I always evaluate single points of failure ↗ and ensure automatic failover with circuit breakers ↘.",
     keyPhrases: ["high availability", "single points of failure", "automatic failover", "circuit breakers"],
     alternatives: [
       "My approach to fault-tolerant design centers on eliminating SPOFs and isolating dependencies via circuit breakers.",
@@ -420,7 +435,8 @@ export const IT_SENTENCES = [
     context: "Kỹ năng giải quyết xung đột kỹ thuật trong nhóm (Conflict Resolution)",
     dialogue: "Interviewer: 'How do you handle disagreements on technical stack choices?' - Candidate: 'Whenever I encounter conflicting technical opinions within the team, I facilitate an objective proof-of-concept benchmark to let empirical data guide our decision.'",
     exampleResponse: "I love that data-driven approach. Can you walk me through a specific example?",
-    keyChunks: ["conflicting technical opinions", "proof-of-concept benchmark", "empirical data", "guide our decision"],
+    keyChunks: [{ chunk: "conflicting technical opinions", meaning: "các quan điểm kỹ thuật mâu thuẫn" }, { chunk: "proof-of-concept benchmark", meaning: "benchmark thử nghiệm khả thi (PoC)" }, { chunk: "empirical data", meaning: "dữ liệu thực nghiệm" }, { chunk: "guide our decision", meaning: "định hướng quyết định của chúng ta" }],
+    intonation: "Whenever I encounter conflicting technical opinions within the team ↗, I facilitate an objective proof-of-concept benchmark ↗ to let empirical data guide our decision ↘.",
     keyPhrases: ["conflicting technical opinions", "proof-of-concept benchmark", "empirical data", "guide our decision"],
     alternatives: [
       "In situations with divided technical views, I build small PoC prototypes so measurable metrics resolve the debate.",
@@ -445,7 +461,8 @@ export const IT_SENTENCES = [
     context: "Đặt câu hỏi làm rõ yêu cầu phi chức năng (System Design Clarification)",
     dialogue: "Interviewer: 'Design a URL shortener like bit.ly.' - Candidate: 'Could you elaborate on the expected read-to-write ratio and latency SLA so I can tailor the storage engine recommendation accordingly?'",
     exampleResponse: "Sure, let's assume a 100 to 1 read-to-write ratio with a strict p99 read latency under 10ms.",
-    keyChunks: ["elaborate on", "read-to-write ratio", "latency SLA", "storage engine recommendation"],
+    keyChunks: [{ chunk: "elaborate on", meaning: "nói rõ thêm về" }, { chunk: "read-to-write ratio", meaning: "tỷ lệ đọc/ghi" }, { chunk: "latency SLA", meaning: "SLA về độ trễ" }, { chunk: "storage engine recommendation", meaning: "đề xuất công cụ lưu trữ (storage engine)" }],
+    intonation: "Could you elaborate on the expected read-to-write ratio ↗ and latency SLA ↗ so I can tailor the storage engine recommendation accordingly ↘?",
     keyPhrases: ["elaborate on", "read-to-write ratio", "latency SLA", "storage engine recommendation"],
     alternatives: [
       "Before diving into schema design, what are our peak QPS targets and acceptable p99 latency boundaries?",
