@@ -282,3 +282,42 @@ test('UPDATE_SCHEDULE validates displayMode', async () => {
   assert.equal(savedState().schedule.displayMode, 'sidePanel');
   await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'split' } });
 });
+
+test('R1: notification id encodes displayMode; created id is DAILY_REMINDER_1900:<mode>', async () => {
+  resetEnv();
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'sidePanel' } });
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
+  assert.equal(env.notifications[0].id, 'DAILY_REMINDER_1900:sidePanel');
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'split' } });
+  env.notifications.length = 0;
+  await listeners.onAlarm({ name: sw.ALARM_NAMES.DAILY });
+  assert.equal(env.notifications[0].id, 'DAILY_REMINDER_1900:split');
+});
+
+test('R1: cold SW - sidePanel.open is the first call, mode parsed from notification id', async () => {
+  const warm = { ...listeners };
+  const cold = await import(`file://${ROOT_DIR}/background/service-worker.js?cold=1`);
+  assert.ok(cold && listeners.onButtonClicked !== warm.onButtonClicked, 'fresh module registered its own listeners');
+  for (const trigger of [
+    (l) => l.onButtonClicked('DAILY_REMINDER_1900:sidePanel', 0),
+    (l) => l.onClicked('DAILY_REMINDER_1900:sidePanel')
+  ]) {
+    resetEnv(); // empty storage, cold cache: displayMode unknown without reading storage
+    const coldListeners = { ...listeners };
+    trigger(coldListeners); // intentionally not awaited
+    assert.equal(env.calls[0], 'sidePanel.open', 'first chrome call, synchronously');
+    await new Promise((r) => setTimeout(r, 20));
+    assert.equal(env.created.length, 0, 'no split fallback when side panel opened');
+  }
+  Object.assign(listeners, warm);
+});
+
+test('R1: startStudy({mode:"split"}) ignores a stale sidePanel cache', async () => {
+  resetEnv();
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'sidePanel' } });
+  env.calls.length = 0;
+  await sw.startStudy({ mode: 'split' });
+  assert.equal(env.calls.includes('sidePanel.open'), false);
+  assert.equal(env.created.length, 1);
+  await sw.handleRuntimeMessage({ type: 'UPDATE_SCHEDULE', payload: { displayMode: 'split' } });
+});
