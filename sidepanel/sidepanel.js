@@ -209,16 +209,15 @@ function setStorageItem(key, value) {
 export async function requestServiceWorker(message) {
   if (
     typeof chrome !== 'undefined' &&
-    chrome.runtime &&
+    chrome.runtime?.id &&
     typeof chrome.runtime.sendMessage === 'function'
   ) {
+    // Inside the extension the SW is the single source of truth: no local fallback.
     try {
       const response = await chrome.runtime.sendMessage(message);
-      if (response && response.ok) {
-        return response;
-      }
-    } catch {
-      // SW might be inactive or not running; fallback to local
+      return response || { ok: false, error: 'No response from service worker' };
+    } catch (err) {
+      return { ok: false, error: err?.message || 'Service worker unavailable' };
     }
   }
 
@@ -292,6 +291,10 @@ export class SidepanelController {
       }
     }
 
+    if (this.state.selectedCategory) {
+      this.activeCategory = this.state.selectedCategory;
+    }
+
     // 2. Render Categories
     this.renderCategories();
 
@@ -350,6 +353,7 @@ export class SidepanelController {
       btn.addEventListener('click', () => {
         this.activeCategory = cat.id;
         this.currentIndex = 0;
+        requestServiceWorker({ type: 'SELECT_CATEGORY', payload: { categoryId: cat.id } });
         this.updateCategoryTabsUI();
         this.updateFilteredList();
         this.renderCurrentSentence();
@@ -454,7 +458,12 @@ export class SidepanelController {
     // Stress Guide & Instead Of
     const stressEl = document.getElementById('sentence-stress');
     const insteadEl = document.getElementById('sentence-instead-of');
-    if (stressEl) stressEl.textContent = sentence.stressGuide || sentence.intonation || 'Nhấn trọng âm từ khóa';
+    if (stressEl) stressEl.textContent = sentence.stressGuide || 'Nhấn trọng âm từ khóa';
+    const intonationEl = document.getElementById('sentence-intonation');
+    if (intonationEl) {
+      intonationEl.textContent = sentence.intonation || '';
+      intonationEl.hidden = !sentence.intonation;
+    }
     if (insteadEl) insteadEl.textContent = sentence.insteadOf;
 
     // Meaning & Nuance
@@ -499,7 +508,7 @@ export class SidepanelController {
         text.textContent = `🎯 ${isObj ? item.chunk : item}`;
         const meaning = document.createElement('span');
         meaning.className = 'chunk-meaning';
-        meaning.textContent = isObj ? (item.meaning || '') : 'Cụm từ then chốt thường dùng';
+        meaning.textContent = isObj ? (item.meaning || '') : '';
         li.append(text, meaning);
         chunksList.appendChild(li);
       });
@@ -730,13 +739,15 @@ export class SidepanelController {
           }
         });
 
-        if (res && res.state) {
-          this.state = res.state;
-        } else {
-          this.state.schedule.time = timeVal;
-          this.state.schedule.enabled = enabledVal;
+        if (!res || res.ok === false) {
+          if (statusMsg) {
+            statusMsg.textContent = `⚠ ${(res && res.error) || 'Không thể lưu cài đặt'}`;
+            setTimeout(() => { statusMsg.textContent = ''; }, 4000);
+          }
+          return;
         }
 
+        if (res.state) this.state = res.state;
         this.renderHeader();
 
         if (statusMsg) {

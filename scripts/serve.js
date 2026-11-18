@@ -24,7 +24,19 @@ const server = http.createServer((req, res) => {
     reqPath = '/sidepanel/sidepanel.html';
   }
 
-  const filePath = path.join(rootDir, reqPath);
+  let filePath;
+  try {
+    filePath = path.resolve(rootDir, '.' + decodeURIComponent(reqPath));
+  } catch {
+    res.writeHead(400, { 'Content-Type': 'text/plain' });
+    res.end('400 Bad Request');
+    return;
+  }
+  if (!filePath.startsWith(rootDir + path.sep)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('403 Forbidden');
+    return;
+  }
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
@@ -38,15 +50,12 @@ const server = http.createServer((req, res) => {
         res.end('500 Server Error: ' + err.code);
       }
     } else {
-      res.writeHead(200, {
-        'Content-Type': contentType,
-        'Access-Control-Allow-Origin': '*'
-      });
+      res.writeHead(200, { 'Content-Type': contentType });
       res.end(content, 'utf-8');
     }
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/sidepanel/sidepanel.html`);
+server.listen(PORT, '127.0.0.1', () => {
+  console.log(`Server running at http://127.0.0.1:${PORT}/sidepanel/sidepanel.html`);
 });

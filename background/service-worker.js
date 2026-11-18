@@ -22,7 +22,8 @@ export const DEFAULT_STATE = {
     lastSplitWindowId: null,
     activeBanner: false
   },
-  selectedSentenceId: 'standup-01'
+  selectedSentenceId: 'standup-01',
+  selectedCategory: 'all'
 };
 
 export const ALARM_NAMES = {
@@ -77,7 +78,8 @@ export async function getState() {
     schedule: { ...DEFAULT_STATE.schedule, ...(saved.schedule || {}) },
     progress: { ...DEFAULT_STATE.progress, ...(saved.progress || {}) },
     alarmState: { ...DEFAULT_STATE.alarmState, ...(saved.alarmState || {}) },
-    selectedSentenceId: saved.selectedSentenceId || DEFAULT_STATE.selectedSentenceId
+    selectedSentenceId: saved.selectedSentenceId || DEFAULT_STATE.selectedSentenceId,
+    selectedCategory: saved.selectedCategory || DEFAULT_STATE.selectedCategory
   };
 
   const today = getLocalToday();
@@ -461,6 +463,16 @@ export async function handleRuntimeMessage(message, sender) {
       state.selectedSentenceId = sentenceId;
       await saveState(state);
       return { ok: true, state, data: { sentenceId } };
+    }
+
+    case 'SELECT_CATEGORY': {
+      const categoryId = payload?.categoryId;
+      if (!categoryId || typeof categoryId !== 'string') {
+        return { ok: false, error: 'Missing categoryId', state };
+      }
+      state.selectedCategory = categoryId;
+      await saveState(state);
+      return { ok: true, state, data: { categoryId } };
     }
 
     default:
