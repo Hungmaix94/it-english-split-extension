@@ -310,7 +310,17 @@ export const performAutoSplitScreen = openAutoSplitViewWindow;
 /**
  * Creates and shows Chrome desktop notification with Snooze 15m option
  */
-export async function showReminderNotification() {
+export const NOTIFICATION_ID_PREFIX = 'DAILY_REMINDER_1900';
+
+/** Parses 'DAILY_REMINDER_1900:<mode>' synchronously. Returns null if not ours. */
+export function parseNotificationId(id) {
+  if (typeof id !== 'string') return null;
+  const [prefix, mode] = id.split(':');
+  if (prefix !== NOTIFICATION_ID_PREFIX) return null;
+  return { mode: DISPLAY_MODES.includes(mode) ? mode : undefined };
+}
+
+export async function showReminderNotification(mode = 'split') {
   if (typeof chrome === 'undefined' || !chrome.notifications?.create) {
     return 'notification-mock-id';
   }
@@ -332,7 +342,7 @@ export async function showReminderNotification() {
     ]
   };
 
-  return await chrome.notifications.create('DAILY_REMINDER_1900', notificationOptions);
+  return await chrome.notifications.create(`${NOTIFICATION_ID_PREFIX}:${DISPLAY_MODES.includes(mode) ? mode : 'split'}`, notificationOptions);
 }
 
 /**
@@ -399,7 +409,7 @@ export async function executeReminderFlow({ source = 'alarm', state: given, forc
   }
 
   try {
-    await showReminderNotification();
+    await showReminderNotification(state.schedule.displayMode);
   } catch {
     // Notification failure must not block the rest of the flow
   }
@@ -434,9 +444,12 @@ export async function executeReminderFlow({ source = 'alarm', state: given, forc
  * "Học ngay": opens the study UI. NOT async on purpose: in sidePanel mode
  * chrome.sidePanel.open is the first call, with no await before it, to keep the user gesture.
  */
-export function startStudy({ windowId } = {}) {
+export function startStudy({ windowId, mode } = {}) {
+  // mode comes synchronously from the notification id (cold-SW safe); cache is only a fallback
+  const explicitMode = DISPLAY_MODES.includes(mode) ? mode : null;
+  const effectiveMode = explicitMode ?? cachedDisplayMode;
   let panelOpen = null;
-  if (cachedDisplayMode === 'sidePanel' && typeof chrome !== 'undefined' && chrome.sidePanel?.open) {
+  if (effectiveMode === 'sidePanel' && typeof chrome !== 'undefined' && chrome.sidePanel?.open) {
     try {
       panelOpen = Promise.resolve(
         chrome.sidePanel.open({ windowId: windowId ?? chrome.windows?.WINDOW_ID_CURRENT ?? -2 })
@@ -459,7 +472,7 @@ export function startStudy({ windowId } = {}) {
       } catch {
         opened = false;
       }
-    } else if (state.schedule.displayMode === 'sidePanel' && chrome.sidePanel?.open) {
+    } else if (!explicitMode && state.schedule.displayMode === 'sidePanel' && chrome.sidePanel?.open) {
       // Cold SW: mode unknown until storage read; gesture may already be consumed
       try {
         await chrome.sidePanel.open({ windowId: windowId ?? chrome.windows?.WINDOW_ID_CURRENT ?? -2 });
@@ -710,9 +723,10 @@ if (typeof chrome !== 'undefined' && chrome.runtime?.onInstalled) {
   const dismiss = (id) => Promise.resolve(chrome.notifications.clear(id)).catch(() => {});
   if (chrome.notifications?.onButtonClicked) {
     chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
-      if (notificationId !== 'DAILY_REMINDER_1900') return undefined;
+      const parsed = parseNotificationId(notificationId);
+      if (!parsed) return undefined;
       if (buttonIndex === 0) {
-        const p = startStudy();
+        const p = startStudy({ mode: parsed.mode });
         dismiss(notificationId);
         return p;
       }
@@ -723,8 +737,9 @@ if (typeof chrome !== 'undefined' && chrome.runtime?.onInstalled) {
   }
   if (chrome.notifications?.onClicked) {
     chrome.notifications.onClicked.addListener((notificationId) => {
-      if (notificationId !== 'DAILY_REMINDER_1900') return undefined;
-      const p = startStudy();
+      const parsed = parseNotificationId(notificationId);
+      if (!parsed) return undefined;
+      const p = startStudy({ mode: parsed.mode });
       dismiss(notificationId);
       return p;
     });
