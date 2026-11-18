@@ -949,6 +949,7 @@ html, body {
 
 button:focus-visible,
 summary:focus-visible,
+select:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--accent-cyan-light);
   outline-offset: 2px;

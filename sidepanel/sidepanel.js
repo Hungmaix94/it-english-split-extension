@@ -32,6 +32,7 @@ export function createInitialState() {
       enabled: true,
       time: '19:00',
       autoSplitScreen: true,
+      displayMode: 'split',
       splitRatio: 0.55
     },
     progress: {
@@ -410,6 +411,10 @@ export class SidepanelController {
     const timeInput = document.getElementById('schedule-time-input');
     const toggleInput = document.getElementById('schedule-enabled-toggle');
     const nextAlarmDisplay = document.getElementById('next-alarm-display');
+    const modeInput = document.getElementById('schedule-display-mode');
+    if (modeInput) {
+      modeInput.value = this.state.schedule?.displayMode === 'sidePanel' ? 'sidePanel' : 'split';
+    }
 
     if (timeInput && this.state.schedule?.time) {
       timeInput.value = this.state.schedule.time;
@@ -725,6 +730,7 @@ export class SidepanelController {
       btnSaveSchedule.addEventListener('click', async () => {
         const timeInput = document.getElementById('schedule-time-input');
         const toggleInput = document.getElementById('schedule-enabled-toggle');
+        const modeSelect = document.getElementById('schedule-display-mode');
         const statusMsg = document.getElementById('schedule-status-msg');
 
         const timeVal = timeInput ? timeInput.value : '19:00';
@@ -735,7 +741,8 @@ export class SidepanelController {
           payload: {
             time: timeVal,
             enabled: enabledVal,
-            autoSplitScreen: true
+            autoSplitScreen: true,
+            displayMode: modeSelect && modeSelect.value === 'sidePanel' ? 'sidePanel' : 'split'
           }
         });
 
