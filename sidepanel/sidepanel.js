@@ -268,6 +268,11 @@ function handleStandaloneMessage(message) {
 // Sidepanel UI Controller Class
 // ============================================================================
 
+function preventOrphanWord(str) {
+  if (!str || typeof str !== 'string') return '';
+  return str.trim().replace(/\s+(\S+)\s+(\S+)$/, '\u00A0$1\u00A0$2');
+}
+
 export class SidepanelController {
   constructor() {
     this.state = createInitialState();
@@ -344,7 +349,7 @@ export class SidepanelController {
 
       btn.setAttribute('role', 'tab');
       btn.setAttribute('aria-selected', String(cat.id === this.activeCategory));
-      [['tab-icon', cat.icon || '📌'], ['tab-label', cat.label], ['tab-count', String(count)]].forEach(([cls, text]) => {
+      [['tab-label', cat.label], ['tab-count', String(count)]].forEach(([cls, text]) => {
         const span = document.createElement('span');
         span.className = cls;
         span.textContent = text;
@@ -474,8 +479,8 @@ export class SidepanelController {
     // Meaning & Nuance
     const viEl = document.getElementById('card-vietnamese');
     const nuanceEl = document.getElementById('card-nuance');
-    if (viEl) viEl.textContent = sentence.vietnamese || sentence.meaningVi;
-    if (nuanceEl) nuanceEl.textContent = sentence.nuanceVi || sentence.nuance || 'Tự tin, chuyên nghiệp';
+    if (viEl) viEl.textContent = preventOrphanWord(sentence.vietnamese || sentence.meaningVi);
+    if (nuanceEl) nuanceEl.textContent = preventOrphanWord(sentence.nuanceVi || sentence.nuance || 'Tự tin, chuyên nghiệp');
 
     // Dialogue (Supports both object { speakerA, speakerB } and formatted string)
     const scenarioEl = document.getElementById('dialogue-scenario');
@@ -484,7 +489,7 @@ export class SidepanelController {
     const speakerBLabel = document.getElementById('speaker-b-label');
     const speakerBLine = document.getElementById('dialogue-speaker-b');
 
-    if (scenarioEl) scenarioEl.textContent = `Scenario: ${sentence.context || sentence.contextTitle || 'Hội thoại IT'}`;
+    if (scenarioEl) scenarioEl.textContent = preventOrphanWord(`Scenario: ${sentence.context || sentence.contextTitle || 'Hội thoại IT'}`);
 
     if (sentence.dialogue && typeof sentence.dialogue === 'object' && sentence.dialogue.speakerA) {
       if (speakerALabel) speakerALabel.textContent = sentence.dialogue.speakerA.role || 'Speaker A';
@@ -510,7 +515,7 @@ export class SidepanelController {
         const isObj = typeof item === 'object' && item.chunk;
         const text = document.createElement('span');
         text.className = 'chunk-text';
-        text.textContent = `🎯 ${isObj ? item.chunk : item}`;
+        text.textContent = isObj ? item.chunk : item;
         const meaning = document.createElement('span');
         meaning.className = 'chunk-meaning';
         meaning.textContent = isObj ? (item.meaning || '') : '';
@@ -554,10 +559,10 @@ export class SidepanelController {
     if (markBtn && markLabel) {
       if (isMastered) {
         markBtn.classList.add('is-mastered');
-        markLabel.textContent = '✅ Đã thuộc';
+        markLabel.textContent = 'Đã thuộc';
       } else {
         markBtn.classList.remove('is-mastered');
-        markLabel.textContent = 'Đã thuộc';
+        markLabel.textContent = 'Đánh dấu thuộc';
       }
     }
   }

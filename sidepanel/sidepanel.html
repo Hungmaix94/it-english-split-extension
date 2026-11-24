@@ -11,7 +11,9 @@
     <!-- 19:00 ALARM REMINDER BANNER -->
     <section id="alarm-banner" class="alarm-banner hidden" role="region" aria-label="19:00 Reminder Banner">
       <div class="banner-content">
-        <span class="banner-icon" aria-hidden="true">⏰</span>
+        <span class="banner-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>
+        </span>
         <div class="banner-text">
           <strong>Đã đến giờ luyện IT English hôm nay!</strong>
           <span class="banner-subtext">Dành 3 phút nâng cấp phản xạ giao tiếp công việc & phỏng vấn.</span>
@@ -19,10 +21,10 @@
       </div>
       <div class="banner-actions">
         <button type="button" id="btn-snooze-15" class="btn btn-secondary btn-sm" title="Hoãn báo lại sau 15 phút">
-          ⏰ Snooze 15p
+          Hoãn 15p
         </button>
         <button type="button" id="btn-dismiss-banner" class="btn btn-ghost btn-sm" aria-label="Bỏ qua lời nhắc">
-          ✕ Bỏ qua
+          Bỏ qua
         </button>
       </div>
     </section>
@@ -30,17 +32,21 @@
     <!-- HEADER: Streak, Progress, Settings & Quick Actions -->
     <header class="app-header">
       <div class="header-top">
-        <div class="streak-badge" id="streak-badge" title="Chuỗi ngày học liên tục">
-          <span class="streak-icon">🔥</span>
-          <span id="streak-count" class="streak-count">0 ngày</span>
+        <div class="brand-cluster">
+          <div class="streak-badge" id="streak-badge" title="Chuỗi ngày học liên tục">
+            <svg class="streak-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1.5 3.5 4 5.5 4 9a4 4 0 0 1-8 0c0-1.5.5-3 1.5-4.5C8 8 6 10.5 6 13.5A6 6 0 0 0 18 13.5C18 8.5 14.5 5 12 2z"/></svg>
+            <span id="streak-count" class="streak-count">0 ngày</span>
+          </div>
+          <span class="header-brand-tag">19:00 Daily</span>
         </div>
 
         <div class="header-quick-actions">
           <button type="button" id="btn-trigger-split" hidden class="btn btn-accent btn-sm" title="Kích hoạt chia đôi màn hình 70/30 và kiểm tra hẹn giờ">
-            ⚡ Test Lịch Hẹn 19:00
+            Test Lịch Hẹn 19:00
           </button>
-          <button type="button" id="btn-snooze-header" class="btn btn-ghost btn-sm" title="Snooze 15 phút">
-            ⏰ Snooze
+          <button type="button" id="btn-snooze-header" class="btn btn-ghost btn-sm" title="Hoãn nhắc nhở 15 phút">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span>Hoãn 15p</span>
           </button>
         </div>
       </div>
@@ -48,10 +54,10 @@
       <!-- DAILY PROGRESS BAR -->
       <div class="daily-progress-container">
         <div class="progress-labels">
-          <span class="progress-title">Tiến độ hôm nay</span>
+          <span class="progress-title">Mục tiêu hôm nay</span>
           <span id="daily-progress-text" class="progress-counter">0 / 5 câu</span>
         </div>
-        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+        <div class="progress-track" role="progressbar" aria-label="Tiến độ học hôm nay" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
           <div id="daily-progress-bar" class="progress-fill" style="transform: scaleX(0);"></div>
         </div>
       </div>
@@ -59,7 +65,10 @@
       <!-- SCHEDULE SETTINGS DRAWER -->
       <details id="schedule-details" class="schedule-details">
         <summary class="schedule-summary">
-          <span class="summary-left">⚙️ Cài đặt hẹn giờ</span>
+          <span class="summary-left">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Cấu hình lịch nhắc</span>
+          </span>
           <span id="next-alarm-display" class="next-alarm-text">Hẹn giờ: 19:00 hàng ngày</span>
         </summary>
         <div class="schedule-panel">
@@ -114,28 +123,15 @@
           </div>
         </div>
 
-        <!-- STRESS GUIDE & INTONATION -->
-        <div class="stress-box">
-          <div class="stress-title">🗣 Trọng âm & Ngữ điệu:</div>
-          <div id="sentence-stress" class="sentence-stress"></div>
-        <div id="sentence-intonation" class="sentence-stress" hidden></div>
-        </div>
-
-        <!-- INSTEAD OF SAYING... -->
-        <div class="instead-of-box">
-          <div class="instead-title">💡 Thay vì diễn đạt sơ sài:</div>
-          <div id="sentence-instead-of" class="sentence-instead-of"></div>
-        </div>
-
-        <!-- TTS AUDIO CONTROLS WITH WAVEFORM -->
+        <!-- TTS AUDIO CONTROLS WITH WAVEFORM (Placed directly below sentence for immediate practice) -->
         <div class="tts-controller">
           <div class="tts-buttons">
             <button type="button" id="btn-tts-normal" class="btn btn-audio" title="Nghe với tốc độ tự nhiên chuẩn bản xứ">
-              <span class="btn-icon">▶</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>
               <span class="btn-text">Nghe 1.0x</span>
             </button>
             <button type="button" id="btn-tts-slow" class="btn btn-audio btn-audio-slow" title="Nghe chậm phục vụ kỹ thuật Shadowing">
-              <span class="btn-icon">🐢</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
               <span class="btn-text">Shadowing 0.8x</span>
             </button>
           </div>
@@ -149,21 +145,36 @@
             <span class="wave-bar"></span>
           </div>
         </div>
+
+        <!-- STRESS GUIDE & INTONATION (Editorial Divider Row - No Nested Card) -->
+        <div class="stress-box">
+          <div class="stress-title">Trọng âm &amp; Ngữ điệu</div>
+          <div id="sentence-stress" class="sentence-stress"></div>
+          <div id="sentence-intonation" class="sentence-stress sentence-intonation" hidden></div>
+        </div>
+
+        <!-- INSTEAD OF SAYING... (Editorial Divider Row - No Nested Card) -->
+        <div class="instead-of-box">
+          <div class="instead-title">Thay vì nói đơn giản</div>
+          <div id="sentence-instead-of" class="sentence-instead-of"></div>
+        </div>
       </article>
 
       <!-- MEANING & NUANCE CARD -->
       <section class="card detail-card" aria-label="Ý nghĩa và sắc thái">
         <div class="section-header">
-          <span class="section-icon">🇻🇳</span>
-          <h2 class="section-title">Ý Nghĩa & Sắc Thái Giao Tiếp</h2>
+          <span class="section-icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+          </span>
+          <h2 class="section-title">Ý Nghĩa &amp; Sắc Thái Giao Tiếp</h2>
         </div>
         <div class="section-body">
           <div class="meaning-item">
-            <span class="label-chip">Dịch nghĩa:</span>
+            <span class="label-chip">Dịch nghĩa</span>
             <p id="card-vietnamese" class="body-text"></p>
           </div>
-          <div class="meaning-item">
-            <span class="label-chip label-chip-accent">Sắc thái:</span>
+          <div class="meaning-item meaning-item-divider">
+            <span class="label-chip label-chip-accent">Sắc thái sử dụng</span>
             <p id="card-nuance" class="body-text nuance-text"></p>
           </div>
         </div>
@@ -172,18 +183,20 @@
       <!-- REAL IT DIALOGUE (A-B) CARD -->
       <section id="card-dialogue" class="card detail-card" aria-label="Hội thoại thực tế trong công việc">
         <div class="section-header">
-          <span class="section-icon">💬</span>
-          <h2 class="section-title">Hội Thoại Mẫu Hai Chiều (A - B)</h2>
+          <span class="section-icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          <h2 class="section-title">Hội Thoại Thực Tế (A – B)</h2>
         </div>
         <div class="section-body">
-          <div id="dialogue-scenario" class="scenario-banner"></div>
+          <p id="dialogue-scenario" class="scenario-banner"></p>
           <div class="dialogue-chat">
             <div class="chat-bubble chat-speaker-a">
               <span id="speaker-a-label" class="speaker-role">Lead / Peer</span>
               <p id="dialogue-speaker-a" class="chat-line"></p>
             </div>
             <div class="chat-bubble chat-speaker-b">
-              <span id="speaker-b-label" class="speaker-role">You (Candidate / Engineer)</span>
+              <span id="speaker-b-label" class="speaker-role">You (Engineer)</span>
               <p id="dialogue-speaker-b" class="chat-line"></p>
             </div>
           </div>
@@ -193,21 +206,23 @@
       <!-- KEY CHUNKS & ALTERNATIVES CARD -->
       <section class="card detail-card" aria-label="Cụm từ ăn điểm và câu biến thể">
         <div class="section-header">
-          <span class="section-icon">🔑</span>
-          <h2 class="section-title">Cụm Từ Ăn Điểm (Key Chunks)</h2>
+          <span class="section-icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5 4 4"/><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/><path d="m8 6 2-2"/><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"/></svg>
+          </span>
+          <h2 class="section-title">Cụm Từ Ăn Điểm &amp; Biến Thể</h2>
         </div>
         <div class="section-body">
           <ul id="card-key-chunks" class="key-chunks-list"></ul>
 
           <div class="alternatives-wrapper">
-            <div class="alt-title">🔄 2 Cách Diễn Đạt Biến Thể:</div>
+            <div class="alt-title">2 cách diễn đạt tương đương</div>
             <div id="card-alternatives" class="alternatives-grid">
               <div class="alt-card alt-casual">
-                <span class="alt-badge">Casual / Slack Chat</span>
+                <span class="alt-badge">Casual · Slack / Teams</span>
                 <p id="alt-casual-text" class="alt-text"></p>
               </div>
               <div class="alt-card alt-formal">
-                <span class="alt-badge">Formal / Email & Docs</span>
+                <span class="alt-badge">Formal · Email / PR Review</span>
                 <p id="alt-formal-text" class="alt-text"></p>
               </div>
             </div>
@@ -218,8 +233,10 @@
       <!-- PRO TIP & INTERVIEW STRATEGY CARD -->
       <section id="card-pro-tip" class="card detail-card tip-card" aria-label="Mẹo phỏng vấn và công việc">
         <div class="section-header">
-          <span class="section-icon">🎯</span>
-          <h2 class="section-title">Mẹo Công Việc & Phỏng Vấn</h2>
+          <span class="section-icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </span>
+          <h2 class="section-title">Ghi Điểm Công Việc &amp; Phỏng Vấn</h2>
         </div>
         <div class="section-body">
           <p id="pro-tip-text" class="pro-tip-text"></p>
@@ -230,23 +247,23 @@
     <!-- FIXED BOTTOM NAVIGATION BAR -->
     <footer class="app-footer">
       <div class="nav-controls">
-        <button type="button" id="btn-prev" class="btn btn-nav" title="Xem câu trước">
-          ◀ Trước
+        <button type="button" id="btn-prev" class="btn btn-nav" title="Xem câu trước (Phím mũi tên trái)">
+          ← Trước
         </button>
 
         <button type="button" id="btn-mark-mastered" class="btn btn-mastered" title="Đánh dấu đã thuộc để cộng chuỗi Streak">
-          <span class="btn-fire-icon">🔥</span>
+          <span class="btn-fire-icon" aria-hidden="true">✓</span>
           <span id="mark-mastered-label">Đã thuộc</span>
         </button>
 
-        <button type="button" id="btn-next" class="btn btn-nav" title="Xem câu kế tiếp">
-          Sau ▶
+        <button type="button" id="btn-next" class="btn btn-nav" title="Xem câu kế tiếp (Phím mũi tên phải)">
+          Tiếp →
         </button>
       </div>
 
       <div class="footer-meta">
-        <span id="current-index-display" class="index-display">Câu 1 / 18</span>
-        <span class="footer-subtext">IT English Split-View • 19:00 Habit</span>
+        <span id="current-index-display" class="index-display">Câu 1 / 17</span>
+        <span class="footer-subtext">Phím Space để nghe · ←/→ chuyển câu</span>
       </div>
     </footer>
   </div>
