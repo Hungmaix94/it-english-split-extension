@@ -30,6 +30,7 @@ export function createInitialState() {
   return {
     schedule: {
       enabled: true,
+      morningTime: '09:00',
       time: '19:00',
       autoSplitScreen: true,
       displayMode: 'split',
@@ -671,7 +672,8 @@ export class SidepanelController {
       }
     }
 
-    // 4. Schedule Drawer inputs
+    // 4. Schedule Drawer inputs (Morning 09:00 + Late Afternoon/Evening 19:00)
+    const morningTimeInput = document.getElementById('schedule-morning-time-input');
     const timeInput = document.getElementById('schedule-time-input');
     const toggleInput = document.getElementById('schedule-enabled-toggle');
     const nextAlarmDisplay = document.getElementById('next-alarm-display');
@@ -680,6 +682,9 @@ export class SidepanelController {
       modeInput.value = this.state.schedule?.displayMode === 'sidePanel' ? 'sidePanel' : 'split';
     }
 
+    if (morningTimeInput) {
+      morningTimeInput.value = this.state.schedule?.morningTime || '09:00';
+    }
     if (timeInput && this.state.schedule?.time) {
       timeInput.value = this.state.schedule.time;
     }
@@ -688,9 +693,10 @@ export class SidepanelController {
     }
     if (nextAlarmDisplay) {
       const isEnabled = this.state.schedule?.enabled;
+      const morningTime = this.state.schedule?.morningTime || '09:00';
       const scheduledTime = this.state.schedule?.time || '19:00';
       nextAlarmDisplay.textContent = isEnabled
-        ? `Hẹn giờ: ${scheduledTime} hàng ngày`
+        ? `Hẹn giờ: ${morningTime} & ${scheduledTime} hàng ngày`
         : 'Đã tạm tắt hẹn giờ';
     }
   }
@@ -1157,17 +1163,20 @@ export class SidepanelController {
     const btnSaveSchedule = document.getElementById('btn-save-schedule');
     if (btnSaveSchedule) {
       btnSaveSchedule.addEventListener('click', async () => {
+        const morningTimeInput = document.getElementById('schedule-morning-time-input');
         const timeInput = document.getElementById('schedule-time-input');
         const toggleInput = document.getElementById('schedule-enabled-toggle');
         const modeSelect = document.getElementById('schedule-display-mode');
         const statusMsg = document.getElementById('schedule-status-msg');
 
+        const morningTimeVal = morningTimeInput ? morningTimeInput.value : '09:00';
         const timeVal = timeInput ? timeInput.value : '19:00';
         const enabledVal = toggleInput ? toggleInput.checked : true;
 
         const res = await requestServiceWorker({
           type: 'UPDATE_SCHEDULE',
           payload: {
+            morningTime: morningTimeVal,
             time: timeVal,
             enabled: enabledVal,
             autoSplitScreen: true,

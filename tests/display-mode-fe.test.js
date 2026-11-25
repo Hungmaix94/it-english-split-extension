@@ -27,4 +27,21 @@ describe('Addendum A rev2 (4): schedule.displayMode control', () => {
     assert.match(js, /displayMode:\s*modeSelect/);
     assert.match(js, /schedule\?*\.displayMode/);
   });
+
+  test('dual daily reminders: morningTime (09:00) and late-afternoon/evening time (19:00) exist in UI and SW', async () => {
+    const html = read('sidepanel', 'sidepanel.html');
+    assert.match(html, /id="schedule-morning-time-input"/);
+    assert.match(html, /id="schedule-time-input"/);
+
+    const { createInitialState } = await import(`file://${path.join(rootDir, 'sidepanel', 'sidepanel.js')}`);
+    const init = createInitialState();
+    assert.strictEqual(init.schedule.morningTime, '09:00');
+    assert.strictEqual(init.schedule.time, '19:00');
+
+    const { DEFAULT_STATE, ALARM_NAMES } = await import(`file://${path.join(rootDir, 'background', 'service-worker.js')}`);
+    assert.strictEqual(DEFAULT_STATE.schedule.morningTime, '09:00');
+    assert.strictEqual(DEFAULT_STATE.schedule.time, '19:00');
+    assert.strictEqual(ALARM_NAMES.MORNING, 'DAILY_ENGLISH_MORNING');
+    assert.strictEqual(ALARM_NAMES.DAILY, 'DAILY_ENGLISH_1900');
+  });
 });

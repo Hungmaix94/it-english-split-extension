@@ -3,6 +3,7 @@
 export const DEFAULT_STATE = {
   schedule: {
     enabled: true,
+    morningTime: '09:00',
     time: '19:00',
     autoSplitScreen: true,
     splitRatio: 0.70, // 70% left work window, 30% right study window
@@ -30,6 +31,7 @@ export const DEFAULT_STATE = {
 };
 
 export const ALARM_NAMES = {
+  MORNING: 'DAILY_ENGLISH_MORNING',
   DAILY: 'DAILY_ENGLISH_1900',
   SNOOZE: 'SNOOZE_ENGLISH_ALARM',
   AUTO_SPLIT_FALLBACK: 'AUTO_SPLIT_FALLBACK'
@@ -512,11 +514,12 @@ export async function handleAutoSplitFallback() {
 }
 
 /**
- * Schedules daily alarm at configured time (default 19:00)
+ * Schedules both Morning (default 09:00) and Late Afternoon/Evening (default 19:00) daily alarms
  */
 export async function scheduleDailyAlarm(state) {
   if (typeof chrome === 'undefined' || !chrome.alarms) return;
 
+  await chrome.alarms.clear(ALARM_NAMES.MORNING);
   await chrome.alarms.clear(ALARM_NAMES.DAILY);
   await chrome.alarms.clear(ALARM_NAMES.SNOOZE);
 
@@ -526,13 +529,23 @@ export async function scheduleDailyAlarm(state) {
     return;
   }
 
-  const nextTimestamp = computeNextAlarmTimestamp(state.schedule.time);
-  await chrome.alarms.create(ALARM_NAMES.DAILY, {
-    when: nextTimestamp,
-    periodInMinutes: 1440 // Daily
+  const morningTimeStr = state.schedule.morningTime || '09:00';
+  const eveningTimeStr = state.schedule.time || '19:00';
+
+  const nextMorning = computeNextAlarmTimestamp(morningTimeStr);
+  const nextEvening = computeNextAlarmTimestamp(eveningTimeStr);
+
+  await chrome.alarms.create(ALARM_NAMES.MORNING, {
+    when: nextMorning,
+    periodInMinutes: 1440 // Daily morning slot
   });
 
-  state.alarmState.nextAlarmTime = nextTimestamp;
+  await chrome.alarms.create(ALARM_NAMES.DAILY, {
+    when: nextEvening,
+    periodInMinutes: 1440 // Daily late-afternoon / evening slot
+  });
+
+  state.alarmState.nextAlarmTime = Math.min(nextMorning, nextEvening);
   await saveState(state);
 }
 
@@ -597,11 +610,15 @@ export async function handleRuntimeMessage(message, sender) {
       if (payload.time && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(payload.time)) {
         return { ok: false, error: 'Invalid time format (expected HH:mm)', state };
       }
+      if (payload.morningTime && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(payload.morningTime)) {
+        return { ok: false, error: 'Invalid morningTime format (expected HH:mm)', state };
+      }
 
       if (payload.displayMode !== undefined && !DISPLAY_MODES.includes(payload.displayMode)) {
         return { ok: false, error: "Invalid displayMode (expected 'split' or 'sidePanel')", state };
       }
 
+      if (payload.morningTime) state.schedule.morningTime = payload.morningTime;
       if (payload.time) state.schedule.time = payload.time;
       if (payload.displayMode) {
         state.schedule.displayMode = payload.displayMode;
@@ -705,7 +722,11 @@ if (typeof chrome !== 'undefined' && chrome.runtime?.onInstalled) {
   // 2. Alarm Trigger Listener
   if (chrome.alarms?.onAlarm) {
     chrome.alarms.onAlarm.addListener(async (alarm) => {
-      if (alarm.name === ALARM_NAMES.DAILY || alarm.name === ALARM_NAMES.SNOOZE) {
+      if (
+        alarm.name === ALARM_NAMES.MORNING ||
+        alarm.name === ALARM_NAMES.DAILY ||
+        alarm.name === ALARM_NAMES.SNOOZE
+      ) {
         await executeReminderFlow({ source: alarm.name === ALARM_NAMES.SNOOZE ? 'snooze' : 'alarm' });
       } else if (alarm.name === ALARM_NAMES.AUTO_SPLIT_FALLBACK) {
         await handleAutoSplitFallback();
