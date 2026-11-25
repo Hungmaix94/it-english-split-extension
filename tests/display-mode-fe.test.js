@@ -43,5 +43,17 @@ describe('Addendum A rev2 (4): schedule.displayMode control', () => {
     assert.strictEqual(DEFAULT_STATE.schedule.time, '19:00');
     assert.strictEqual(ALARM_NAMES.MORNING, 'DAILY_ENGLISH_MORNING');
     assert.strictEqual(ALARM_NAMES.DAILY, 'DAILY_ENGLISH_1900');
+    assert.strictEqual(ALARM_NAMES.WEEKLY_SYNC, 'WEEKLY_AI_SYNC');
+  });
+
+  test('weekly AI sync: #btn-sync-ai exists in UI and WEEKLY_AI_FEED_URL points to Cloudflare R2', async () => {
+    const html = read('sidepanel', 'sidepanel.html');
+    assert.match(html, /id="btn-sync-ai"/);
+
+    const { WEEKLY_AI_FEED_URL, syncWeeklyAiSentences } = await import(
+      `file://${path.join(rootDir, 'background', 'service-worker.js')}`
+    );
+    assert.match(WEEKLY_AI_FEED_URL, /r2\.dev\/it-english\/weekly-sentences\.json$/);
+    assert.strictEqual(typeof syncWeeklyAiSentences, 'function');
   });
 });

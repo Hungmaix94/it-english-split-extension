@@ -265,8 +265,40 @@ function handleStandaloneMessage(message) {
       setStorageItem('itEnglishState', JSON.stringify(state));
       return { ok: true, state };
     }
+    case 'SYNC_AI_SENTENCES': {
+      return syncStandaloneAiSentences(state);
+    }
     default:
       return { ok: true, state };
+  }
+}
+
+export const WEEKLY_AI_FEED_URL =
+  'https://pub-dd118e9f58254711a5ec2f75e6bf0530.r2.dev/it-english/weekly-sentences.json';
+
+async function syncStandaloneAiSentences(state) {
+  if (typeof fetch !== 'function') {
+    return { ok: false, error: 'fetch unavailable', state };
+  }
+  try {
+    const resp = await fetch(`${WEEKLY_AI_FEED_URL}?t=${Date.now()}`, { cache: 'no-store' });
+    if (!resp.ok) {
+      return { ok: false, error: `HTTP ${resp.status}`, state };
+    }
+    const data = await resp.json();
+    const list = Array.isArray(data?.sentences) ? data.sentences : [];
+    if (list.length === 0) {
+      return { ok: false, error: 'Empty AI sentence pack', state };
+    }
+    state.aiSync = {
+      weekLabel: data.weekLabel || 'AI-Weekly',
+      lastSyncedAt: Date.now(),
+      sentences: list
+    };
+    setStorageItem('itEnglishState', JSON.stringify(state));
+    return { ok: true, state, data: state.aiSync };
+  } catch (err) {
+    return { ok: false, error: err?.message || 'Failed to fetch weekly AI feed', state };
   }
 }
 
@@ -457,8 +489,9 @@ function buildSceneIllustrationSvg(sentence) {
 
 function buildRolePresetAnswer(sentence, preset) {
   const base = sentence.english || sentence.sentence || '';
-  if (sentence.presets && sentence.presets[preset]) {
-    return sentence.presets[preset];
+  const candidate = sentence.presets && sentence.presets[preset];
+  if (typeof candidate === 'string' && candidate.length > 25 && !/^n\/a$/i.test(candidate.trim())) {
+    return candidate;
   }
   const alts = Array.isArray(sentence.alternatives) ? sentence.alternatives : [];
   if ((preset === 'backend' || preset === 'mobile') && alts[0]) return alts[0];
@@ -529,7 +562,14 @@ export class SidepanelController {
   }
 
   getAllSentences() {
-    return [...(this.customCards || []), ...IT_SENTENCES];
+    const aiList = Array.isArray(this.state?.aiSync?.sentences) ? this.state.aiSync.sentences : [];
+    const merged = [...(this.customCards || []), ...aiList, ...IT_SENTENCES];
+    const seen = new Set();
+    return merged.filter((item) => {
+      if (!item || !item.id || seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    });
   }
 
   getEffectiveQuestion(sentence, defaultLineA = '') {
@@ -582,6 +622,36 @@ export class SidepanelController {
     this.updateFilteredList();
     this.renderHeader();
     this.renderCurrentSentence();
+
+    // 6. Auto-sync weekly AI sentences from Cloudflare R2 if stale (>7 days) or empty
+    const lastSync = Number(this.state?.aiSync?.lastSyncedAt) || 0;
+    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+    if (!lastSync || Date.now() - lastSync > sevenDaysMs) {
+      this.syncAiSentences({ silent: true });
+    }
+  }
+
+  async syncAiSentences({ silent = false } = {}) {
+    const btnSyncAi = document.getElementById('btn-sync-ai');
+    if (btnSyncAi) btnSyncAi.classList.add('is-syncing');
+    try {
+      const res = await requestServiceWorker({ type: 'SYNC_AI_SENTENCES' });
+      if (res && res.ok && res.state) {
+        this.state = res.state;
+        this.updateFilteredList();
+        if (!silent) {
+          this.currentIndex = 0;
+        }
+        this.renderCategories();
+        this.renderHeader();
+        this.renderCurrentSentence();
+      }
+      return res;
+    } catch {
+      return { ok: false };
+    } finally {
+      if (btnSyncAi) btnSyncAi.classList.remove('is-syncing');
+    }
   }
 
   updateFilteredList() {
@@ -603,9 +673,10 @@ export class SidepanelController {
       btn.className = `tab-btn ${cat.id === this.activeCategory ? 'active' : ''}`;
       btn.dataset.category = cat.id;
 
+      const allItems = this.getAllSentences();
       const count = cat.id === 'all'
-        ? IT_SENTENCES.length
-        : filterSentences(IT_SENTENCES, cat.id).length;
+        ? allItems.length
+        : filterSentences(allItems, cat.id).length;
 
       btn.setAttribute('role', 'tab');
       btn.setAttribute('aria-selected', String(cat.id === this.activeCategory));
@@ -1028,6 +1099,13 @@ export class SidepanelController {
     if (btnToggleSettings && scheduleDetails) {
       btnToggleSettings.addEventListener('click', () => {
         scheduleDetails.open = !scheduleDetails.open;
+      });
+    }
+
+    const btnSyncAi = document.getElementById('btn-sync-ai');
+    if (btnSyncAi) {
+      btnSyncAi.addEventListener('click', () => {
+        this.syncAiSentences({ silent: false });
       });
     }
 

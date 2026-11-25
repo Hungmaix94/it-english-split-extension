@@ -1,0 +1,449 @@
+{
+  "version": "1.1.0",
+  "weekLabel": "2026-W48",
+  "generatedAt": "2026-11-25T12:49:46.018149+00:00",
+  "source": "slackbot-gemini-ai",
+  "count": 10,
+  "sentences": [
+    {
+      "id": "ai-2026-w48-01",
+      "category": "interview",
+      "categoryLabel": "IT Technical Interview [AI Tuần 2026-W48]",
+      "scenePhoto": "../assets/photo-interview.jpg",
+      "sentence": "We leverage composite indexes and `select_related`/`prefetch_related` extensively to preemptively resolve N+1 query issues in Django.",
+      "english": "We leverage composite indexes and `select_related`/`prefetch_related` extensively to preemptively resolve N+1 query issues in Django.",
+      "ipa": "/wi ˈliːvərɪdʒ ˈkɒmpəzɪt ˈɪndɛksɪz ænd ˈsɛlɛkt rɪˈleɪtɪd prɪˈfiːtʃərɪlˈeɪtɪd ɪksˈtɛnsɪvli tuː prɪˈɛmptɪvli rɪˈzɒlv ˈɛn ˈwʌn ˈkwɔːri ˈɪʃuːz ɪn ˈdʒæŋɡoʊ/",
+      "stressGuide": "Nhấn mạnh: leverage, composite indexes, select_related, prefetch_related, preemptively, N+1 query issues.",
+      "meaningVi": "Chúng tôi sử dụng rộng rãi các composite indexes và các phương thức `select_related`/`prefetch_related` để giải quyết sớm các vấn đề truy vấn N+1 trong Django.",
+      "vietnamese": "Chúng tôi sử dụng rộng rãi các composite indexes và các phương thức `select_related`/`prefetch_related` để giải quyết sớm các vấn đề truy vấn N+1 trong Django.",
+      "nuanceVi": "Sử dụng 'leverage' thay vì 'use' thể hiện sự khai thác tối ưu công nghệ. 'Preemptively resolve' cho thấy tư duy chủ động ngăn chặn vấn đề trước khi nó xảy ra.",
+      "insteadOf": "We use indexes and `select_related`/`prefetch_related` to fix N+1 problems in Django.",
+      "contextTitle": "Phỏng vấn về tối ưu hóa hiệu năng cơ sở dữ liệu",
+      "context": "Phỏng vấn về tối ưu hóa hiệu năng cơ sở dữ liệu",
+      "dialogue": "Interviewer: 'Can you describe your approach to optimizing database query performance in Django?' - Candidate: 'We leverage composite indexes and `select_related`/`prefetch_related` extensively to preemptively resolve N+1 query issues in Django.'",
+      "presets": {
+        "backend": "We leverage composite indexes and `select_related`/`prefetch_related` extensively to preemptively resolve N+1 query issues in Django.",
+        "frontend": "Frontend performance is optimized by code splitting and efficient data fetching strategies, ensuring rapid load times for the 3D masterplan.",
+        "mobile": "For Flutter, we employ efficient state management with GetX and optimize network calls to ensure a responsive user experience across different backends.",
+        "fullstack": "Our full-stack strategy combines proactive backend query optimization with performant frontend rendering and robust mobile architecture for seamless user interaction."
+      },
+      "keyChunks": [
+        {
+          "chunk": "leverage composite indexes",
+          "meaning": "khai thác các chỉ mục tổng hợp"
+        },
+        {
+          "chunk": "preemptively resolve N+1",
+          "meaning": "giải quyết sớm vấn đề N+1"
+        },
+        {
+          "chunk": "extensively",
+          "meaning": "một cách rộng rãi, thường xuyên"
+        }
+      ],
+      "intonation": "We ↗leverage composite indexes and `select_related`/`prefetch_related` extensively to preemptively ↘resolve N+1 query issues in Django.",
+      "alternatives": [
+        "Our Django strategy proactively tackles N+1 queries using composite indexes and optimized ORM relationships.",
+        "We employ composite indexes and eager loading techniques to mitigate N+1 query performance bottlenecks in Django."
+      ],
+      "interviewTip": "Khi trả lời câu hỏi về kỹ thuật, hãy sử dụng các thuật ngữ chuyên ngành chính xác và mô tả cách bạn áp dụng chúng để giải quyết vấn đề cụ thể.",
+      "difficulty": "C1"
+    },
+    {
+      "id": "ai-2026-w48-02",
+      "category": "interview",
+      "categoryLabel": "IT Technical Interview [AI Tuần 2026-W48]",
+      "scenePhoto": "../assets/photo-interview.jpg",
+      "sentence": "We ensure type safety in Next.js by generating TypeScript interfaces directly from our OpenAPI schema definitions.",
+      "english": "We ensure type safety in Next.js by generating TypeScript interfaces directly from our OpenAPI schema definitions.",
+      "ipa": "/wi ˈɛnʃʊər ˈtaɪp ˈseɪfti ɪn ˈnɛkst dʒɛˈɛs baɪ ˈdʒɛnəreɪtɪŋ ˈtaɪpskript ˈɪntərfeɪsɪz ˈdaɪrɛktli frɒm ˈaʊər ˈoʊpən ˈeɪpiˈaɪ ˈskiːmə ˌdɛfɪˈnɪʃənz/",
+      "stressGuide": "Nhấn mạnh: ensure type safety, generating, TypeScript interfaces, directly, OpenAPI schema.",
+      "meaningVi": "Chúng tôi đảm bảo an toàn kiểu dữ liệu trong Next.js bằng cách tạo các TypeScript interfaces trực tiếp từ định nghĩa lược đồ OpenAPI của chúng tôi.",
+      "vietnamese": "Chúng tôi đảm bảo an toàn kiểu dữ liệu trong Next.js bằng cách tạo các TypeScript interfaces trực tiếp từ định nghĩa lược đồ OpenAPI của chúng tôi.",
+      "nuanceVi": "Cụm từ 'ensure type safety' và 'generating TypeScript interfaces directly' nhấn mạnh quy trình tự động hóa và độ tin cậy, cho thấy sự chuyên nghiệp trong việc quản lý contract.",
+      "insteadOf": "We use OpenAPI to make TypeScript types for Next.js.",
+      "contextTitle": "Phỏng vấn về phát triển Frontend và API contract",
+      "context": "Phỏng vấn về phát triển Frontend và API contract",
+      "dialogue": "Interviewer: 'How do you maintain consistency between your frontend and backend APIs?' - Candidate: 'We ensure type safety in Next.js by generating TypeScript interfaces directly from our OpenAPI schema definitions.'",
+      "presets": {
+        "backend": "Our DRF endpoints adhere strictly to the OpenAPI schema, providing a clear contract for frontend consumption and automated documentation.",
+        "frontend": "We ensure type safety in Next.js by generating TypeScript interfaces directly from our OpenAPI schema definitions.",
+        "mobile": "Flutter's Dart code generation from OpenAPI specs guarantees contract adherence, simplifying integration with multiple backend services.",
+        "fullstack": "Automated OpenAPI schema-driven code generation for TypeScript and Dart enforces API contracts across our full-stack applications."
+      },
+      "keyChunks": [
+        {
+          "chunk": "ensure type safety",
+          "meaning": "đảm bảo an toàn kiểu dữ liệu"
+        },
+        {
+          "chunk": "generating TypeScript interfaces",
+          "meaning": "tạo các TypeScript interfaces"
+        },
+        {
+          "chunk": "directly from our OpenAPI schema",
+          "meaning": "trực tiếp từ lược đồ OpenAPI của chúng tôi"
+        }
+      ],
+      "intonation": "We ↗ensure type safety in Next.js by generating TypeScript interfaces directly from our OpenAPI ↘schema definitions.",
+      "alternatives": [
+        "Generating TypeScript types straight from the OpenAPI spec guarantees robust API contract adherence in Next.js.",
+        "We automate TypeScript interface generation from OpenAPI schemas to enforce API contracts within Next.js."
+      ],
+      "interviewTip": "Chứng minh bạn có quy trình làm việc tự động hóa và dựa trên hợp đồng (contract-driven) sẽ gây ấn tượng mạnh với nhà tuyển dụng.",
+      "difficulty": "C1"
+    },
+    {
+      "id": "ai-2026-w48-03",
+      "category": "interview",
+      "categoryLabel": "IT Technical Interview [AI Tuần 2026-W48]",
+      "scenePhoto": "../assets/photo-interview.jpg",
+      "sentence": "Our Multi-Agent Agile Squad employs a Two-phase TDD approach, focusing on RED->GREEN cycles within Gate reviews.",
+      "english": "Our Multi-Agent Agile Squad employs a Two-phase TDD approach, focusing on RED->GREEN cycles within Gate reviews.",
+      "ipa": "/ˈaʊər ˈmʌlti ˈeɪdʒənt ˈædʒaɪl skwɒd ˈɛmplɔɪz ə ˈtuːfeɪz ˈtiːdiːˈtiː ˈəˈproʊtʃ ˈfoʊkəsɪŋ ɒn ˈrɛd ˈɡriːn ˈsaɪkəlz ˈwɪðɪn ˈɡeɪt rɪˈvjuːz/",
+      "stressGuide": "Nhấn mạnh: Multi-Agent Agile Squad, Two-phase TDD, RED->GREEN cycles, Gate reviews.",
+      "meaningVi": "Đội Agile Đa Tác tử của chúng tôi áp dụng phương pháp TDD hai giai đoạn, tập trung vào các chu kỳ ĐỎ->XANH trong các đánh giá Gate.",
+      "vietnamese": "Đội Agile Đa Tác tử của chúng tôi áp dụng phương pháp TDD hai giai đoạn, tập trung vào các chu kỳ ĐỎ->XANH trong các đánh giá Gate.",
+      "nuanceVi": "Việc đề cập đến 'Multi-Agent Agile Squad', 'Two-phase TDD', và 'Gate reviews' cho thấy kinh nghiệm làm việc trong các quy trình phát triển phức tạp và có cấu trúc chặt chẽ.",
+      "insteadOf": "Our team uses TDD and reviews.",
+      "contextTitle": "Phỏng vấn về quy trình phát triển Agile và TDD",
+      "context": "Phỏng vấn về quy trình phát triển Agile và TDD",
+      "dialogue": "Interviewer: 'Describe your team's development methodology and testing strategy.' - Candidate: 'Our Multi-Agent Agile Squad employs a Two-phase TDD approach, focusing on RED->GREEN cycles within Gate reviews.'",
+      "presets": {
+        "backend": "Our backend development adheres to Two-phase TDD within the Agile Squad, ensuring robust code through RED->GREEN cycles before Gate reviews.",
+        "frontend": "Frontend development within the squad follows the Two-phase TDD methodology, validating UI logic via RED->GREEN cycles before Gate review approval.",
+        "mobile": "Flutter development within our squad utilizes Two-phase TDD, prioritizing RED->GREEN test cycles and strict Gate reviews for quality assurance.",
+        "fullstack": "Our Multi-Agent Agile Squad enforces Two-phase TDD with RED->GREEN cycles and rigorous Gate reviews across all layers for consistent quality."
+      },
+      "keyChunks": [
+        {
+          "chunk": "Multi-Agent Agile Squad",
+          "meaning": "Đội Agile Đa Tác tử"
+        },
+        {
+          "chunk": "Two-phase TDD",
+          "meaning": "TDD hai giai đoạn"
+        },
+        {
+          "chunk": "RED->GREEN cycles",
+          "meaning": "chu kỳ ĐỎ->XANH"
+        }
+      ],
+      "intonation": "Our ↗Multi-Agent Agile Squad employs a Two-phase TDD approach, focusing on RED->GREEN cycles within Gate ↘reviews.",
+      "alternatives": [
+        "We practice a disciplined Two-phase TDD approach within our Agile Squad, integrating RED->GREEN cycles with Gate reviews.",
+        "Our squad's development process emphasizes Two-phase TDD, ensuring code quality through RED->GREEN iterations and Gate reviews."
+      ],
+      "interviewTip": "Khi mô tả quy trình, hãy sử dụng các thuật ngữ cụ thể của ngành và nêu bật các giai đoạn quan trọng như TDD, Gate reviews để thể hiện sự am hiểu.",
+      "difficulty": "C1"
+    },
+    {
+      "id": "ai-2026-w48-04",
+      "category": "interview",
+      "categoryLabel": "IT Technical Interview [AI Tuần 2026-W48]",
+      "scenePhoto": "../assets/photo-interview.jpg",
+      "sentence": "We utilize automated headless browser E2E video recordings uploaded to Cloudflare R2 for comprehensive debugging and validation.",
+      "english": "We utilize automated headless browser E2E video recordings uploaded to Cloudflare R2 for comprehensive debugging and validation.",
+      "ipa": "/wi ˈjuːtəlaɪz ˈɔːtəmeɪtɪd ˈhɛdlɛs ˈbraʊzər ˈiːtuːˈiː ˈvɪdiəʊ rɪˈkɔːrdɪŋz ˈʌploʊdɪd tuː ˈklaʊdflɛər ˈɑːr ˈtuː fɔːr ˌkɒmprɪˈhɛnsɪv ˈdiːbʌɡɪŋ ænd ˌvælɪˈdeɪʃən/",
+      "stressGuide": "Nhấn mạnh: utilize, automated, headless browser E2E video recordings, Cloudflare R2, comprehensive debugging.",
+      "meaningVi": "Chúng tôi sử dụng video ghi lại E2E tự động từ trình duyệt headless, tải lên Cloudflare R2 để gỡ lỗi và xác thực toàn diện.",
+      "vietnamese": "Chúng tôi sử dụng video ghi lại E2E tự động từ trình duyệt headless, tải lên Cloudflare R2 để gỡ lỗi và xác thực toàn diện.",
+      "nuanceVi": "Việc sử dụng 'utilize', 'automated headless browser E2E video recordings', và 'comprehensive debugging' cho thấy một quy trình QA tiên tiến, tập trung vào việc cung cấp bằng chứng trực quan và chi tiết.",
+      "insteadOf": "We record E2E tests and store them on R2.",
+      "contextTitle": "Phỏng vấn về chiến lược kiểm thử tự động và DevOps",
+      "context": "Phỏng vấn về chiến lược kiểm thử tự động và DevOps",
+      "dialogue": "Interviewer: 'How does your team approach end-to-end testing and quality assurance?' - Candidate: 'We utilize automated headless browser E2E video recordings uploaded to Cloudflare R2 for comprehensive debugging and validation.'",
+      "presets": {
+        "backend": "Backend tests are validated through integration with E2E flows, where failures are debugged using headless browser recordings stored in Cloudflare R2.",
+        "frontend": "Our Next.js E2E tests generate video recordings uploaded to Cloudflare R2, aiding in the comprehensive debugging of visual and functional issues.",
+        "mobile": "Flutter E2E test failures are diagnosed using video evidence from headless browsers, stored centrally for effective debugging and validation.",
+        "fullstack": "We ensure robust E2E validation via automated headless browser recordings on Cloudflare R2, facilitating rapid debugging across the stack."
+      },
+      "keyChunks": [
+        {
+          "chunk": "automated headless browser E2E video recordings",
+          "meaning": "video ghi lại E2E tự động từ trình duyệt headless"
+        },
+        {
+          "chunk": "uploaded to Cloudflare R2",
+          "meaning": "tải lên Cloudflare R2"
+        },
+        {
+          "chunk": "comprehensive debugging",
+          "meaning": "gỡ lỗi toàn diện"
+        }
+      ],
+      "intonation": "We ↗utilize automated headless browser E2E video recordings uploaded to Cloudflare R2 for comprehensive ↘debugging and validation.",
+      "alternatives": [
+        "Automated E2E test recordings via headless browsers, stored on Cloudflare R2, enable thorough debugging and validation.",
+        "We leverage Cloudflare R2 storage for automated headless browser E2E video captures, enhancing debugging capabilities."
+      ],
+      "interviewTip": "Khi nói về QA và DevOps, hãy nêu bật các công cụ và quy trình cụ thể (như headless browser recordings, Cloudflare R2) để thể hiện sự quen thuộc với các thực tiễn hiện đại.",
+      "difficulty": "C1"
+    },
+    {
+      "id": "ai-2026-w48-05",
+      "category": "standup",
+      "categoryLabel": "Daily Standup [AI]",
+      "scenePhoto": "../assets/photo-teamwork.jpg",
+      "sentence": "Yesterday, I finalized the Celery task optimization for background job processing and addressed the Sentry alert regarding Redis latency.",
+      "english": "Yesterday, I finalized the Celery task optimization for background job processing and addressed the Sentry alert regarding Redis latency.",
+      "ipa": "/ˈjɛstərdeɪ aɪ ˈfaɪnəlaɪzd ðə ˈsɛləri ˈtæsk ˌɒptɪmaɪˈzeɪʃən fɔːr ˈbækɡraʊnd dʒɒb ˈprəʊsɛsɪŋ ænd əˈdrɛst ðə ˈsɛntri əˈlɜːrt rɪˈɡɑːrdɪŋ ˈriːdɪs ˈleɪtənsi/",
+      "stressGuide": "Nhấn mạnh: finalized, Celery task optimization, background job processing, addressed, Sentry alert, Redis latency.",
+      "meaningVi": "Hôm qua, tôi đã hoàn tất tối ưu hóa tác vụ Celery cho việc xử lý công việc nền và giải quyết cảnh báo Sentry về độ trễ của Redis.",
+      "vietnamese": "Hôm qua, tôi đã hoàn tất tối ưu hóa tác vụ Celery cho việc xử lý công việc nền và giải quyết cảnh báo Sentry về độ trễ của Redis.",
+      "nuanceVi": "Sử dụng 'finalized' và 'addressed' cho thấy sự hoàn thành công việc và chủ động giải quyết vấn đề. Đề cập cụ thể 'Celery task optimization', 'background job processing', 'Sentry alert', và 'Redis latency' thể hiện sự nắm bắt chi tiết kỹ thuật.",
+      "insteadOf": "I worked on Celery and fixed a Redis issue.",
+      "contextTitle": "Cập nhật công việc hàng ngày (Standup)",
+      "context": "Cập nhật công việc hàng ngày (Standup)",
+      "dialogue": "Team Lead: 'What did you accomplish yesterday?' - Engineer: 'Yesterday, I finalized the Celery task optimization for background job processing and addressed the Sentry alert regarding Redis latency.'",
+      "presets": {
+        "backend": "Yesterday, I finalized the Celery task optimization for background job processing and addressed the Sentry alert regarding Redis latency.",
+        "frontend": "Yesterday, I refactored the Three.js instantiation logic for performance and resolved a styling conflict in Tailwind CSS components.",
+        "mobile": "Yesterday, I completed the GetX state management refactor for the user profile screen and fixed a DI issue with GetIt.",
+        "fullstack": "Yesterday, I finalized backend Celery optimizations and addressed frontend performance bottlenecks, ensuring smooth background processing and UI responsiveness."
+      },
+      "keyChunks": [
+        {
+          "chunk": "finalized Celery task optimization",
+          "meaning": "hoàn tất tối ưu hóa tác vụ Celery"
+        },
+        {
+          "chunk": "addressed the Sentry alert",
+          "meaning": "giải quyết cảnh báo Sentry"
+        },
+        {
+          "chunk": "Redis latency",
+          "meaning": "độ trễ của Redis"
+        }
+      ],
+      "intonation": "Yesterday, I ↗finalized the Celery task optimization for background job processing and addressed the Sentry alert regarding Redis ↘latency.",
+      "alternatives": [
+        "My focus yesterday was optimizing Celery background jobs and resolving a critical Sentry alert for Redis performance.",
+        "I completed Celery task tuning and investigated a Sentry alert concerning elevated Redis latency yesterday."
+      ],
+      "interviewTip": "Trong standup, hãy cụ thể về những gì bạn đã hoàn thành và những vấn đề bạn đã giải quyết, sử dụng các thuật ngữ kỹ thuật chính xác.",
+      "difficulty": "B2"
+    },
+    {
+      "id": "ai-2026-w48-06",
+      "category": "standup",
+      "categoryLabel": "Daily Standup [AI]",
+      "scenePhoto": "../assets/photo-teamwork.jpg",
+      "sentence": "Today, I'll be focusing on implementing the Multi-LOD feature for the WebGL2 masterplan and preparing the release branch for deployment.",
+      "english": "Today, I'll be focusing on implementing the Multi-LOD feature for the WebGL2 masterplan and preparing the release branch for deployment.",
+      "ipa": "/təˈdeɪ aɪl bi ˈfoʊkəsɪŋ ɒn ˈɪmplɪmɛntɪŋ ðə ˈmʌlti ˈɛl ˈoʊ ˈfiːtʃər fɔːr ðə ˈwɛb dʒiː ˈɛl ˈtuː ˈmɑːstərplæn ænd prɪˈpɛrɪŋ ðə rɪˈliːs brɑːntʃ fɔːr dɪˈplɔɪmənt/",
+      "stressGuide": "Nhấn mạnh: Today, focusing, implementing, Multi-LOD feature, WebGL2 masterplan, preparing, release branch, deployment.",
+      "meaningVi": "Hôm nay, tôi sẽ tập trung vào việc triển khai tính năng Multi-LOD cho bản masterplan WebGL2 và chuẩn bị nhánh release cho việc triển khai.",
+      "vietnamese": "Hôm nay, tôi sẽ tập trung vào việc triển khai tính năng Multi-LOD cho bản masterplan WebGL2 và chuẩn bị nhánh release cho việc triển khai.",
+      "nuanceVi": "Câu nói này thể hiện sự rõ ràng về mục tiêu công việc trong ngày ('focusing on implementing', 'preparing') và đề cập đến các công nghệ cụ thể ('Multi-LOD', 'WebGL2 masterplan', 'release branch', 'deployment'), cho thấy sự chuẩn bị kỹ lưỡng.",
+      "insteadOf": "Today I'll work on the 3D model and deploy.",
+      "contextTitle": "Cập nhật công việc hàng ngày (Standup)",
+      "context": "Cập nhật công việc hàng ngày (Standup)",
+      "dialogue": "Team Lead: 'What are your priorities for today?' - Engineer: 'Today, I'll be focusing on implementing the Multi-LOD feature for the WebGL2 masterplan and preparing the release branch for deployment.'",
+      "presets": {
+        "backend": "Today, I'll focus on optimizing DRF serializers for performance and ensuring the Django admin interface is ready for the upcoming release.",
+        "frontend": "Today, I'll be focusing on implementing the Multi-LOD feature for the WebGL2 masterplan and preparing the release branch for deployment.",
+        "mobile": "Today, I'll integrate the new ERP backend endpoint into the Flutter app and prepare the release candidate build.",
+        "fullstack": "Today, I'm focusing on the WebGL2 Multi-LOD implementation and prepping the release branch, ensuring seamless integration across the stack."
+      },
+      "keyChunks": [
+        {
+          "chunk": "implementing the Multi-LOD feature",
+          "meaning": "triển khai tính năng Multi-LOD"
+        },
+        {
+          "chunk": "WebGL2 masterplan",
+          "meaning": "bản masterplan WebGL2"
+        },
+        {
+          "chunk": "preparing the release branch",
+          "meaning": "chuẩn bị nhánh release"
+        }
+      ],
+      "intonation": "Today, I'll be ↗focusing on implementing the Multi-LOD feature for the WebGL2 masterplan and preparing the release branch for ↘deployment.",
+      "alternatives": [
+        "My main tasks today involve coding the Multi-LOD feature for WebGL2 and staging the release branch.",
+        "I'm prioritizing the WebGL2 masterplan's Multi-LOD implementation and release branch preparation today."
+      ],
+      "interviewTip": "Trong standup, hãy nêu rõ mục tiêu công việc của bạn trong ngày, bao gồm cả các công nghệ hoặc tính năng cụ thể bạn sẽ làm việc.",
+      "difficulty": "B2"
+    },
+    {
+      "id": "ai-2026-w48-07",
+      "category": "codereview",
+      "categoryLabel": "Code Review & PR [AI]",
+      "scenePhoto": "../assets/photo-teamwork.jpg",
+      "sentence": "Consider using `select_for_update` here to prevent race conditions during concurrent transaction processing.",
+      "english": "Consider using `select_for_update` here to prevent race conditions during concurrent transaction processing.",
+      "ipa": "/kənˈsɪdər ˈjuːzɪŋ ˈsɛlɛkt fɔːr ˈʌpdeɪt hɪər tuː prɪˈvɛnt ˈreɪs kənˈdɪʃənz ˈdʊərɪŋ ˈkɒŋkərənt trænˈzækʃən ˈprəʊsɛsɪŋ/",
+      "stressGuide": "Nhấn mạnh: Consider, select_for_update, prevent race conditions, concurrent transaction processing.",
+      "meaningVi": "Hãy cân nhắc sử dụng `select_for_update` ở đây để ngăn chặn các race condition trong quá trình xử lý giao dịch đồng thời.",
+      "vietnamese": "Hãy cân nhắc sử dụng `select_for_update` ở đây để ngăn chặn các race condition trong quá trình xử lý giao dịch đồng thời.",
+      "nuanceVi": "Đề xuất 'Consider using...' thay vì 'You should use...' thể hiện sự tôn trọng và mang tính gợi ý. Việc chỉ ra 'race conditions' và 'concurrent transaction processing' cho thấy sự hiểu biết sâu sắc về các vấn đề tiềm ẩn trong hệ thống.",
+      "insteadOf": "Add `select_for_update`.",
+      "contextTitle": "Review code liên quan đến giao dịch cơ sở dữ liệu",
+      "context": "Review code liên quan đến giao dịch cơ sở dữ liệu",
+      "dialogue": "Reviewer: 'This section handles concurrent updates. Any thoughts on potential issues?' - Author: 'Consider using `select_for_update` here to prevent race conditions during concurrent transaction processing.'",
+      "presets": {
+        "backend": "Consider using `select_for_update` here to prevent race conditions during concurrent transaction processing.",
+        "frontend": "This component correctly handles state updates, but ensure all asynchronous operations are properly awaited to avoid UI inconsistencies.",
+        "mobile": "The GetX state updates look good; however, double-check the GetIt registration for potential singleton conflicts in concurrent scenarios.",
+        "fullstack": "The proposed solution addresses the concurrency issue; consider `select_for_update` on the backend and robust state management on the frontend."
+      },
+      "keyChunks": [
+        {
+          "chunk": "Consider using `select_for_update`",
+          "meaning": "Cân nhắc sử dụng `select_for_update`"
+        },
+        {
+          "chunk": "prevent race conditions",
+          "meaning": "ngăn chặn các race condition"
+        },
+        {
+          "chunk": "concurrent transaction processing",
+          "meaning": "xử lý giao dịch đồng thời"
+        }
+      ],
+      "intonation": "Consider ↗using `select_for_update` here to prevent race conditions during concurrent transaction ↘processing.",
+      "alternatives": [
+        "To avoid race conditions in concurrent transactions, implementing `select_for_update` is advisable.",
+        "We should employ `select_for_update` to mitigate potential race conditions during simultaneous transaction handling."
+      ],
+      "interviewTip": "Khi review code, hãy đưa ra các đề xuất cụ thể và giải thích lý do đằng sau chúng, đặc biệt là khi liên quan đến các vấn đề hiệu năng hoặc an toàn dữ liệu.",
+      "difficulty": "C1"
+    },
+    {
+      "id": "ai-2026-w48-08",
+      "category": "codereview",
+      "categoryLabel": "Code Review & PR [AI]",
+      "scenePhoto": "../assets/photo-teamwork.jpg",
+      "sentence": "The use of `InstancedMesh` is appropriate here for efficiently rendering multiple identical objects in Three.js.",
+      "english": "The use of `InstancedMesh` is appropriate here for efficiently rendering multiple identical objects in Three.js.",
+      "ipa": "/ðə ˈjuːs ɒv ˈɪnstəns mɛʃ ɪz əˈproʊpriɪt hɪər fɔːr ɪˈfɪʃəntli ˈrɛndərɪŋ ˈmɛni ˈaɪˈdɛntɪkəl ˈɒbdʒɛkts ɪn ˈθriː dʒiː ˈɛls/",
+      "stressGuide": "Nhấn mạnh: use, InstancedMesh, appropriate, efficiently rendering, multiple identical objects, Three.js.",
+      "meaningVi": "Việc sử dụng `InstancedMesh` là phù hợp ở đây để hiển thị hiệu quả nhiều đối tượng giống hệt nhau trong Three.js.",
+      "vietnamese": "Việc sử dụng `InstancedMesh` là phù hợp ở đây để hiển thị hiệu quả nhiều đối tượng giống hệt nhau trong Three.js.",
+      "nuanceVi": "Nhận xét 'The use of... is appropriate' thể hiện sự đánh giá tích cực và chuyên môn. Việc đề cập đến 'InstancedMesh' và 'efficiently rendering multiple identical objects' cho thấy sự hiểu biết về tối ưu hóa đồ họa 3D.",
+      "insteadOf": "Good use of `InstancedMesh`.",
+      "contextTitle": "Review code liên quan đến đồ họa 3D",
+      "context": "Review code liên quan đến đồ họa 3D",
+      "dialogue": "Reviewer: 'This part handles rendering the property models. Any comments?' - Author: 'The use of `InstancedMesh` is appropriate here for efficiently rendering multiple identical objects in Three.js.'",
+      "presets": {
+        "backend": "The backend correctly prepares the data structure; however, ensure the API response payload is optimized for frontend consumption.",
+        "frontend": "The use of `InstancedMesh` is appropriate here for efficiently rendering multiple identical objects in Three.js.",
+        "mobile": "The Flutter rendering approach is solid; consider optimizing asset loading to further improve initial screen performance.",
+        "fullstack": "The frontend's efficient use of `InstancedMesh` complements the backend's optimized data delivery for high-performance 3D rendering."
+      },
+      "keyChunks": [
+        {
+          "chunk": "use of `InstancedMesh`",
+          "meaning": "việc sử dụng `InstancedMesh`"
+        },
+        {
+          "chunk": "appropriate here",
+          "meaning": "phù hợp ở đây"
+        },
+        {
+          "chunk": "efficiently rendering multiple identical objects",
+          "meaning": "hiển thị hiệu quả nhiều đối tượng giống hệt nhau"
+        }
+      ],
+      "intonation": "The ↗use of `InstancedMesh` is appropriate here for efficiently rendering multiple identical objects in Three.js↘.",
+      "alternatives": [
+        "Leveraging `InstancedMesh` is the correct approach for optimizing the rendering of numerous identical geometries in Three.js.",
+        "Using `InstancedMesh` effectively addresses the need for high-performance rendering of duplicate objects within the Three.js scene."
+      ],
+      "interviewTip": "Khi review code, hãy khen ngợi những phần làm tốt và giải thích tại sao chúng hiệu quả, đặc biệt khi liên quan đến việc áp dụng các kỹ thuật tối ưu hóa.",
+      "difficulty": "B2"
+    },
+    {
+      "id": "ai-2026-w48-09",
+      "category": "architecture",
+      "categoryLabel": "System & Architecture [AI]",
+      "scenePhoto": "../assets/photo-architecture.jpg",
+      "sentence": "We design Wagtail Headless CMS with a focus on StreamField flexibility and robust API contracts for diverse client integrations.",
+      "english": "We design Wagtail Headless CMS with a focus on StreamField flexibility and robust API contracts for diverse client integrations.",
+      "ipa": "/wi dɪˈzaɪn ˈwɑːktɛl ˈhɛdlɛs ˈsiː ˈɛm ˈɛs wɪð ə ˈfoʊkəs ɒn ˈstriːmfiːld ˈflɛksəˈbɪlɪti ænd ˈroʊbʌst ˈeɪpiˈaɪ ˈkɒntræcts fɔːr daɪˈvɜːrs ˈklaɪənt ˌɪntəˈɡreɪʃənz/",
+      "stressGuide": "Nhấn mạnh: design, Wagtail Headless CMS, StreamField flexibility, robust API contracts, diverse client integrations.",
+      "meaningVi": "Chúng tôi thiết kế Wagtail Headless CMS với sự tập trung vào tính linh hoạt của StreamField và các hợp đồng API mạnh mẽ cho các tích hợp client đa dạng.",
+      "vietnamese": "Chúng tôi thiết kế Wagtail Headless CMS với sự tập trung vào tính linh hoạt của StreamField và các hợp đồng API mạnh mẽ cho các tích hợp client đa dạng.",
+      "nuanceVi": "Sử dụng 'design... with a focus on...' và 'robust API contracts' thể hiện tư duy kiến trúc có mục tiêu và chú trọng vào sự ổn định, khả năng mở rộng, cũng như khả năng tích hợp.",
+      "insteadOf": "We use Wagtail for content and APIs.",
+      "contextTitle": "Thảo luận về kiến trúc CMS",
+      "context": "Thảo luận về kiến trúc CMS",
+      "dialogue": "Architect: 'What are the key considerations for our new CMS architecture?' - Tech Lead: 'We design Wagtail Headless CMS with a focus on StreamField flexibility and robust API contracts for diverse client integrations.'",
+      "presets": {
+        "backend": "Our Django REST Framework backend leverages Wagtail's StreamField for content modeling, ensuring flexible data structures and strong API contracts.",
+        "frontend": "The Next.js frontend consumes the Wagtail API, utilizing generated TypeScript types to ensure robust integration with the flexible content model.",
+        "mobile": "Flutter clients integrate seamlessly with the Wagtail API, benefiting from well-defined contracts derived from the flexible StreamField content.",
+        "fullstack": "Our architecture centers on Wagtail Headless CMS, prioritizing StreamField flexibility and strict API contracts for adaptable, multi-client content delivery."
+      },
+      "keyChunks": [
+        {
+          "chunk": "design Wagtail Headless CMS",
+          "meaning": "thiết kế Wagtail Headless CMS"
+        },
+        {
+          "chunk": "StreamField flexibility",
+          "meaning": "tính linh hoạt của StreamField"
+        },
+        {
+          "chunk": "robust API contracts",
+          "meaning": "các hợp đồng API mạnh mẽ"
+        }
+      ],
+      "intonation": "We ↗design Wagtail Headless CMS with a focus on StreamField flexibility and robust API contracts for diverse client ↘integrations.",
+      "alternatives": [
+        "Our Wagtail Headless architecture prioritizes StreamField's adaptability and strong API contracts for broad client compatibility.",
+        "We architect the Wagtail CMS for maximum StreamField flexibility and reliable API contracts to support various integrations."
+      ],
+      "interviewTip": "Khi trình bày về kiến trúc, hãy nhấn mạnh các yếu tố cốt lõi như tính linh hoạt, khả năng mở rộng và cách các quyết định thiết kế hỗ trợ các mục tiêu kinh doanh.",
+      "difficulty": "C1"
+    },
+    {
+      "id": "ai-2026-w48-10",
+      "category": "incident",
+      "categoryLabel": "Incident & Debugging [AI]",
+      "scenePhoto": "../assets/photo-teamwork.jpg",
+      "sentence": "The Sentry incident was traced to a Celery worker crash caused by an unhandled exception during batch processing.",
+      "english": "The Sentry incident was traced to a Celery worker crash caused by an unhandled exception during batch processing.",
+      "ipa": "/ðə ˈsɛntri ˈɪnsɪdənt wɒz treɪst tuː ə ˈsɛləri ˈwɜːrkər kræʃ kɔːzd baɪ æn ˈʌnˈhændəld ˈɛksɛpʃən ˈdʊərɪŋ ˈbætʃ ˈprəʊsɛsɪŋ/",
+      "stressGuide": "Nhấn mạnh: Sentry incident, traced, Celery worker crash, unhandled exception, batch processing.",
+      "meaningVi": "Sự cố Sentry được truy nguyên là do một Celery worker bị lỗi, gây ra bởi một ngoại lệ không được xử lý trong quá trình xử lý hàng loạt.",
+      "vietnamese": "Sự cố Sentry được truy nguyên là do một Celery worker bị lỗi, gây ra bởi một ngoại lệ không được xử lý trong quá trình xử lý hàng loạt.",
+      "nuanceVi": "Câu này thể hiện khả năng phân tích nguyên nhân gốc rễ ('traced to', 'caused by') và sự hiểu biết về các thành phần hệ thống ('Sentry incident', 'Celery worker crash', 'unhandled exception', 'batch processing').",
+      "insteadOf": "A Celery worker crashed and caused the Sentry alert.",
+      "contextTitle": "Xử lý sự cố hệ thống",
+      "context": "Xử lý sự cố hệ thống",
+      "dialogue": "Incident Commander: 'What's the root cause of the recent Sentry alert?' - Engineer: 'The Sentry incident was traced to a Celery worker crash caused by an unhandled exception during batch processing.'",
+      "presets": {
+        "backend": "The Sentry incident was traced to a Celery worker crash caused by an unhandled exception during batch processing.",
+        "frontend": "The Sentry alert stemmed from a frontend rendering error; we're investigating potential race conditions in the Three.js update loop.",
+        "mobile": "The incident reported via Sentry appears related to a GetX state management issue during concurrent data fetching on the mobile app.",
+        "fullstack": "We've identified the Sentry incident originating from a Celery worker failure during batch processing, impacting backend services and potentially frontend data."
+      },
+      "keyChunks": [
+        {
+          "chunk": "Sentry incident was traced",
+          "meaning": "Sự cố Sentry được truy nguyên"
+        },
+        {
+          "chunk": "Celery worker crash",
+          "meaning": "Celery worker bị lỗi"
+        },
+        {
+          "chunk": "unhandled exception during batch processing",
+          "meaning": "ngoại lệ không được xử lý trong quá trình xử lý hàng loạt"
+        }
+      ],
+      "intonation": "The ↗Sentry incident was traced to a Celery worker crash caused by an unhandled exception during batch ↘processing.",
+      "alternatives": [
+        "We've pinpointed the Sentry alert's origin to a Celery worker failing due to an unhandled exception in batch processing.",
+        "The root cause of the Sentry incident is a Celery worker crash resulting from an uncaught exception during batch job execution."
+      ],
+      "interviewTip": "Khi mô tả sự cố, hãy tập trung vào việc xác định nguyên nhân gốc rễ và các bước bạn đã thực hiện để giải quyết, thể hiện khả năng gỡ lỗi hiệu quả.",
+      "difficulty": "C1"
+    }
+  ]
+}

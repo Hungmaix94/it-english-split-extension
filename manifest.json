@@ -11,6 +11,9 @@
     "sidePanel",
     "system.display"
   ],
+  "host_permissions": [
+    "https://pub-dd118e9f58254711a5ec2f75e6bf0530.r2.dev/*"
+  ],
   "action": {
     "default_title": "IT English Split-View (19:00)",
     "default_icon": {

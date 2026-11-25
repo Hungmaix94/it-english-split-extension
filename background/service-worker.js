@@ -26,15 +26,24 @@ export const DEFAULT_STATE = {
     originalMainBounds: null,
     activeBanner: false
   },
+  aiSync: {
+    weekLabel: null,
+    lastSyncedAt: null,
+    sentences: []
+  },
   selectedSentenceId: 'standup-01',
   selectedCategory: 'all'
 };
+
+export const WEEKLY_AI_FEED_URL =
+  'https://pub-dd118e9f58254711a5ec2f75e6bf0530.r2.dev/it-english/weekly-sentences.json';
 
 export const ALARM_NAMES = {
   MORNING: 'DAILY_ENGLISH_MORNING',
   DAILY: 'DAILY_ENGLISH_1900',
   SNOOZE: 'SNOOZE_ENGLISH_ALARM',
-  AUTO_SPLIT_FALLBACK: 'AUTO_SPLIT_FALLBACK'
+  AUTO_SPLIT_FALLBACK: 'AUTO_SPLIT_FALLBACK',
+  WEEKLY_SYNC: 'WEEKLY_AI_SYNC'
 };
 
 export const DISPLAY_MODES = ['split', 'sidePanel'];
@@ -89,6 +98,7 @@ export async function getState() {
     schedule: { ...DEFAULT_STATE.schedule, ...(saved.schedule || {}) },
     progress: { ...DEFAULT_STATE.progress, ...(saved.progress || {}) },
     alarmState: { ...DEFAULT_STATE.alarmState, ...(saved.alarmState || {}) },
+    aiSync: { ...DEFAULT_STATE.aiSync, ...(saved.aiSync || {}) },
     selectedSentenceId: saved.selectedSentenceId || DEFAULT_STATE.selectedSentenceId,
     selectedCategory: saved.selectedCategory || DEFAULT_STATE.selectedCategory
   };
@@ -545,8 +555,48 @@ export async function scheduleDailyAlarm(state) {
     periodInMinutes: 1440 // Daily late-afternoon / evening slot
   });
 
+  await chrome.alarms.create(ALARM_NAMES.WEEKLY_SYNC, {
+    delayInMinutes: 10080,
+    periodInMinutes: 10080 // Weekly AI dialogue sync (every 7 days)
+  });
+
   state.alarmState.nextAlarmTime = Math.min(nextMorning, nextEvening);
   await saveState(state);
+}
+
+/**
+ * Fetches weekly AI-generated IT English sentences from Cloudflare R2 CDN
+ */
+export async function syncWeeklyAiSentences(customState) {
+  const state = customState || (await getState());
+  if (typeof fetch !== 'function') {
+    return { ok: false, error: 'fetch unavailable', state };
+  }
+  try {
+    const resp = await fetch(`${WEEKLY_AI_FEED_URL}?t=${Date.now()}`, { cache: 'no-store' });
+    if (!resp.ok) {
+      return { ok: false, error: `HTTP ${resp.status}`, state };
+    }
+    const data = await resp.json();
+    const list = Array.isArray(data?.sentences) ? data.sentences : [];
+    if (list.length === 0) {
+      return { ok: false, error: 'Empty AI sentence pack', state };
+    }
+    state.aiSync = {
+      weekLabel: data.weekLabel || 'AI-Weekly',
+      lastSyncedAt: Date.now(),
+      sentences: list
+    };
+    await saveState(state);
+    if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+      Promise.resolve(
+        chrome.runtime.sendMessage({ type: 'STATE_UPDATED', state, reason: 'WEEKLY_AI_SYNC' })
+      ).catch(() => {});
+    }
+    return { ok: true, state, data: state.aiSync };
+  } catch (err) {
+    return { ok: false, error: err?.message || 'Failed to fetch weekly AI feed', state };
+  }
 }
 
 /**
@@ -701,6 +751,10 @@ export async function handleRuntimeMessage(message, sender) {
       return { ok: true, state, data: { categoryId } };
     }
 
+    case 'SYNC_AI_SENTENCES': {
+      return await syncWeeklyAiSentences(state);
+    }
+
     default:
       return { ok: false, error: `Unknown message type: ${type}`, state };
   }
@@ -730,6 +784,8 @@ if (typeof chrome !== 'undefined' && chrome.runtime?.onInstalled) {
         await executeReminderFlow({ source: alarm.name === ALARM_NAMES.SNOOZE ? 'snooze' : 'alarm' });
       } else if (alarm.name === ALARM_NAMES.AUTO_SPLIT_FALLBACK) {
         await handleAutoSplitFallback();
+      } else if (alarm.name === ALARM_NAMES.WEEKLY_SYNC) {
+        await syncWeeklyAiSentences();
       }
     });
   }
