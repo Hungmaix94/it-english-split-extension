@@ -1,30 +1,28 @@
 /* ==========================================================================
-   IT English Daily Split-View - Minimalist Focus Glassmorphism (320px-480px)
-   Single-Card Focus Mode: Zero visual clutter, progressive disclosure drawer,
-   frosted neutral glass, strictly enforces scrollWidth <= clientWidth, WCAG AA.
+   IT English Daily Split-View - Zen 1-Sentence Glass Flashcard (320px-480px)
+   Maximum focus: Only 1 English sentence + 1 Vietnamese meaning on screen.
    ========================================================================== */
 
 :root {
   --font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, monospace;
 
-  /* Glassmorphism Studio Palette (Neutral Specular Elevation, 0 AI Glow Slop) */
   --bg-app: #070b14;
-  --bg-surface: rgba(17, 25, 40, 0.56);
+  --bg-surface: rgba(17, 25, 40, 0.54);
   --bg-surface-elevated: rgba(30, 41, 59, 0.62);
 
-  --glass-blur: blur(24px) saturate(180%);
+  --glass-blur: blur(26px) saturate(180%);
   --glass-border: rgba(255, 255, 255, 0.14);
   --glass-border-strong: rgba(255, 255, 255, 0.24);
-  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.24);
 
   --text-main: #f8fafc;
   --text-secondary: #e2e8f0;
   --text-muted: #cbd5e1;
   --text-subtle: #94a3b8;
 
-  --border-subtle: rgba(255, 255, 255, 0.11);
+  --border-subtle: rgba(255, 255, 255, 0.10);
   --border-highlight: rgba(255, 255, 255, 0.22);
 
   --accent-cyan: #38bdf8;
@@ -35,26 +33,18 @@
   --accent-indigo: #a5b4fc;
 
   --radius-sm: 10px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 8px 24px -6px rgba(2, 6, 23, 0.55);
-  --shadow-md: 0 20px 44px -10px rgba(2, 6, 23, 0.72);
+  --shadow-sm: 0 8px 24px -6px rgba(2, 6, 23, 0.5);
+  --shadow-md: 0 24px 48px -12px rgba(2, 6, 23, 0.75);
 }
 
-/* ==========================================================================
-   Reset & Ambient Aurora Background
-   ========================================================================== */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-::selection {
-  background-color: rgba(56, 189, 248, 0.28);
-  color: #ffffff;
 }
 
 html, body {
@@ -65,29 +55,24 @@ html, body {
   color: var(--text-main);
   font-family: var(--font-family);
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.5;
   overflow-x: hidden;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
 }
 
-/* Ambient Light Orbs behind the Frosted Glass */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 15% 18%, rgba(56, 189, 248, 0.24) 0%, rgba(56, 189, 248, 0) 50%),
-    radial-gradient(circle at 85% 32%, rgba(251, 191, 36, 0.14) 0%, rgba(251, 191, 36, 0) 52%),
-    radial-gradient(circle at 25% 78%, rgba(52, 211, 153, 0.16) 0%, rgba(52, 211, 153, 0) 50%);
+    radial-gradient(circle at 18% 22%, rgba(56, 189, 248, 0.24) 0%, rgba(56, 189, 248, 0) 52%),
+    radial-gradient(circle at 82% 38%, rgba(251, 191, 36, 0.14) 0%, rgba(251, 191, 36, 0) 50%),
+    radial-gradient(circle at 30% 80%, rgba(52, 211, 153, 0.15) 0%, rgba(52, 211, 153, 0) 52%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* ==========================================================================
-   App Layout Shell
-   ========================================================================== */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -98,83 +83,59 @@ body::before {
   position: relative;
   z-index: 1;
   overflow-x: hidden;
-  padding-bottom: 92px;
+  padding-bottom: 76px;
 }
 
-/* ==========================================================================
-   19:00 Alarm Reminder Banner (Frosted Crimson Glass)
-   ========================================================================== */
+/* 19:00 Alarm Banner */
 .alarm-banner {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: linear-gradient(135deg, rgba(153, 27, 27, 0.82) 0%, rgba(124, 45, 18, 0.78) 100%);
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(153, 27, 27, 0.82);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid rgba(254, 202, 202, 0.35);
-  box-shadow: var(--glass-highlight);
+  border-bottom: 1px solid rgba(254, 202, 202, 0.3);
   padding: 10px 16px;
   color: #ffffff;
-  animation: slideDown 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideDown 220ms ease-out;
 }
 
 .alarm-banner.hidden {
   display: none !important;
 }
 
-.banner-content {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.banner-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #fde68a;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
 .banner-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   min-width: 0;
 }
 
 .banner-text strong {
   font-size: 13px;
-  font-weight: 700;
-  line-height: 1.35;
 }
 
 .banner-subtext {
   font-size: 12px;
   color: #fee2e2;
-  line-height: 1.4;
 }
 
 .banner-actions {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-/* ==========================================================================
-   Ultra-Compact App Header (Minimalist Top Glass Bar)
-   ========================================================================== */
+/* Minimal Header */
 .app-header {
-  background: rgba(12, 18, 32, 0.62);
+  background: rgba(10, 15, 28, 0.55);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 10px 16px 8px;
+  padding: 10px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .header-top {
@@ -188,7 +149,7 @@ body::before {
 .brand-cluster {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -197,7 +158,7 @@ body::before {
   align-items: center;
   gap: 5px;
   background: rgba(251, 191, 36, 0.14);
-  border: 1px solid rgba(251, 191, 36, 0.38);
+  border: 1px solid rgba(251, 191, 36, 0.35);
   padding: 3px 10px;
   border-radius: var(--radius-full);
   color: var(--accent-amber);
@@ -206,26 +167,11 @@ body::before {
   flex-shrink: 0;
 }
 
-.streak-icon {
-  color: var(--accent-amber);
-  flex-shrink: 0;
-}
-
-.progress-inline-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.index-display {
+  font-family: var(--font-mono);
   font-size: 12px;
+  font-weight: 600;
   color: var(--text-subtle);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-subtle);
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-}
-
-.progress-counter {
-  font-weight: 700;
-  color: var(--accent-cyan-light);
 }
 
 .header-quick-actions {
@@ -237,128 +183,9 @@ body::before {
   flex-wrap: wrap;
 }
 
-.daily-progress-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.progress-track {
-  height: 3px;
-  background-color: rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald));
-  border-radius: var(--radius-full);
-  width: 100%;
-  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: left center;
-}
-
-/* Schedule Details Drawer */
-.schedule-details {
-  padding-top: 2px;
-}
-
-.schedule-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--text-subtle);
-  user-select: none;
-  list-style: none;
-}
-
-.schedule-summary::-webkit-details-marker {
-  display: none;
-}
-
-.summary-left {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.next-alarm-text {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.summary-edit-hint {
-  font-size: 12px;
-  color: var(--accent-cyan-light);
-  font-weight: 600;
-}
-
-.schedule-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--border-subtle);
-}
-
-.form-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12.5px;
-  gap: 8px;
-}
-
-.form-label {
-  color: var(--text-muted);
-}
-
-.time-input {
-  background-color: rgba(7, 11, 20, 0.68);
-  border: 1px solid var(--glass-border-strong);
-  color: var(--text-main);
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 12.5px;
-  font-family: var(--font-mono);
-}
-
-.toggle-checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--accent-cyan);
-  cursor: pointer;
-}
-
-.form-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 2px;
-}
-
-.status-msg {
-  font-size: 12px;
-  color: var(--accent-emerald);
-}
-
-/* ==========================================================================
-   Category Filter Tabs (Translucent Glass Pills)
-   ========================================================================== */
+/* Category Pills */
 .category-nav {
-  padding: 8px 16px;
-  background: rgba(7, 11, 20, 0.48);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border-subtle);
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  width: 100%;
 }
 
 .category-tabs {
@@ -376,40 +203,32 @@ body::before {
 .tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding: 5px 11px;
   min-height: 32px;
   border-radius: var(--radius-full);
   font-size: 12px;
   font-weight: 500;
-  background: rgba(30, 41, 59, 0.44);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-muted);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-subtle);
   white-space: nowrap;
   cursor: pointer;
   flex-shrink: 0;
-  transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .tab-btn:hover {
-    color: var(--text-main);
-    background: rgba(51, 65, 85, 0.58);
-  }
+  transition: color 150ms ease, background 150ms ease;
 }
 
 .tab-btn.active {
   background-color: #f8fafc;
   color: #070b14;
   border-color: #ffffff;
-  box-shadow: var(--shadow-sm);
   font-weight: 700;
 }
 
 .tab-count {
   font-size: 12px;
   font-weight: 700;
-  padding: 0 6px;
+  padding: 0 5px;
   border-radius: var(--radius-full);
   background-color: rgba(255, 255, 255, 0.10);
   color: var(--text-secondary);
@@ -421,38 +240,38 @@ body::before {
 }
 
 /* ==========================================================================
-   Study Workspace & Single Focus Hero Glass Card
+   Zen Flashcard Workspace (Vertically Centered Single Glass Card)
    ========================================================================== */
 .study-workspace {
-  padding: 18px 16px;
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 14px;
   flex: 1;
 }
 
 .card {
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.08) 0%, rgba(15, 23, 42, 0.48) 100%);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.09) 0%, rgba(15, 23, 42, 0.52) 100%);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-highlight), var(--shadow-sm);
   border-radius: var(--radius-lg);
-  padding: 18px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-/* Hero Focus Card — Spacious, Calm, 100% Centered on the Sentence */
 .hero-card {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.11) 0%, rgba(15, 23, 42, 0.58) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.13) 0%, rgba(15, 23, 42, 0.62) 100%);
+  border: 1px solid var(--glass-border-strong);
   box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.36),
     var(--shadow-md);
-  padding: 24px 20px;
-  gap: 20px;
+  padding: 28px 24px;
+  gap: 24px;
 }
 
 .card-meta {
@@ -472,7 +291,7 @@ body::before {
 .badge-topic {
   background: rgba(56, 189, 248, 0.16);
   color: var(--accent-cyan-light);
-  border: 1px solid rgba(125, 211, 252, 0.32);
+  border: 1px solid rgba(125, 211, 252, 0.3);
 }
 
 .badge-level {
@@ -498,51 +317,41 @@ body::before {
 .sentence-hero-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .sentence-english {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   color: #ffffff;
-  line-height: 1.42;
-  letter-spacing: -0.02em;
+  line-height: 1.38;
+  letter-spacing: -0.025em;
   word-break: break-word;
   text-wrap: pretty;
 }
 
-.sentence-ipa {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: #7dd3fc;
-  line-height: 1.5;
-  word-break: break-word;
-}
-
 .hero-vietnamese {
-  font-size: 15px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  padding-top: 12px;
+  font-size: 15.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding-top: 16px;
   border-top: 1px solid var(--border-subtle);
   text-wrap: pretty;
 }
 
-/* Audio Player & Visualizer */
+/* Audio Player */
 .tts-controller {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding-top: 4px;
 }
 
 .tts-buttons {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .btn-audio {
@@ -554,12 +363,12 @@ body::before {
   font-weight: 700;
   font-size: 13px;
   min-height: 36px;
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: var(--radius-full);
   border: 1px solid #ffffff;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: transform 120ms ease, background-color 150ms ease;
+  transition: transform 120ms ease;
   flex-shrink: 0;
 }
 
@@ -571,13 +380,7 @@ body::before {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-main);
   border: 1px solid var(--glass-border-strong);
-  box-shadow: var(--glass-highlight);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-audio-slow:hover {
-    background: rgba(255, 255, 255, 0.14);
-  }
+  padding: 8px 14px;
 }
 
 /* Audio Waveform Visualizer */
@@ -619,7 +422,7 @@ body::before {
 }
 
 /* ==========================================================================
-   Progressive Disclosure: Deep Dive Drawer (Visible Above the Fold!)
+   Subtle Single-Line Disclosure Pill
    ========================================================================== */
 .deep-dive-drawer {
   display: flex;
@@ -630,47 +433,22 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 13px 16px;
-  background: rgba(255, 255, 255, 0.06);
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-highlight);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-subtle);
+  font-size: 12.5px;
+  font-weight: 500;
   cursor: pointer;
   user-select: none;
   list-style: none;
-  transition: background 150ms ease, border-color 150ms ease;
 }
 
 .deep-dive-summary::-webkit-details-marker {
   display: none;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .deep-dive-summary:hover {
-    background: rgba(255, 255, 255, 0.11);
-    border-color: var(--glass-border-strong);
-  }
-}
-
-.deep-dive-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.deep-dive-label svg {
-  color: var(--accent-cyan-light);
-  flex-shrink: 0;
-}
-
-.deep-dive-chevron {
-  color: var(--text-subtle);
-  transition: transform 200ms ease;
 }
 
 .deep-dive-drawer[open] .deep-dive-chevron {
@@ -680,36 +458,23 @@ body::before {
 .deep-dive-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   margin-top: 12px;
 }
 
-/* ==========================================================================
-   Expanded Detail Cards inside Deep Dive Drawer
-   ========================================================================== */
+/* Expanded Detail Sections */
 .detail-card {
-  padding: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
   gap: 10px;
 }
 
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 6px;
-}
-
-.section-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.section-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.sentence-ipa {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--accent-cyan-light);
+  line-height: 1.5;
+  word-break: break-word;
 }
 
 .key-chunks-list {
@@ -724,22 +489,21 @@ body::before {
   align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 6px 12px;
+  gap: 4px 10px;
   padding: 4px 0;
   border-bottom: 1px solid var(--border-subtle);
 }
 
 .chunk-text {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--accent-cyan-light);
 }
 
 .chunk-meaning {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--text-muted);
-  line-height: 1.4;
 }
 
 .stress-box,
@@ -748,128 +512,53 @@ body::before {
   flex-direction: column;
   gap: 4px;
   padding-top: 6px;
+  border-top: 1px solid var(--border-subtle);
 }
 
-.stress-title,
 .instead-title {
   font-size: 12px;
   font-weight: 700;
-  color: var(--accent-amber);
-}
-
-.instead-title {
   color: var(--accent-rose);
 }
 
 .sentence-stress,
-.sentence-instead-of {
+.sentence-instead-of,
+.body-text,
+.scenario-banner,
+.chat-line,
+.alt-text,
+.pro-tip-text {
   font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.45;
   word-break: break-word;
+  text-wrap: pretty;
 }
 
 .sentence-intonation {
   color: #fde68a;
 }
 
-.meaning-item {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.meaning-item-divider {
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 8px;
-}
-
-.label-chip {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--accent-cyan-light);
-}
-
-.label-chip-accent {
-  color: var(--accent-amber);
-}
-
-.body-text,
-.scenario-banner,
-.chat-line,
-.chunk-meaning,
-.alt-text,
-.pro-tip-text,
-.sentence-stress,
-.sentence-instead-of {
-  text-wrap: pretty;
-}
-
-.body-text {
-  font-size: 13.5px;
-  color: var(--text-main);
-  line-height: 1.5;
-  word-break: break-word;
-}
-
-.nuance-text {
-  color: var(--text-secondary);
-}
-
-.scenario-banner {
-  font-size: 12.5px;
-  color: var(--text-muted);
-  line-height: 1.45;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.dialogue-chat {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.chat-bubble {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.chat-speaker-b {
-  border-top: 1px dashed var(--border-subtle);
-  padding-top: 8px;
-}
-
-.speaker-role {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-subtle);
-}
-
-.chat-speaker-b .speaker-role {
-  color: var(--accent-cyan-light);
-}
-
-.chat-line {
-  font-size: 13.5px;
-  line-height: 1.45;
-  color: var(--text-main);
-  word-break: break-word;
-}
-
+.dialogue-chat,
 .alternatives-grid {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+.chat-bubble,
 .alt-card {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding-top: 8px;
+  padding-top: 6px;
   border-top: 1px dashed var(--border-subtle);
+}
+
+.speaker-role {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-subtle);
 }
 
 .alt-badge {
@@ -882,26 +571,89 @@ body::before {
   color: var(--accent-emerald);
 }
 
-.alt-text {
-  font-size: 13px;
-  color: var(--text-main);
-  line-height: 1.45;
-  word-break: break-word;
-}
-
-.tip-card {
-  border-color: rgba(251, 191, 36, 0.28);
-}
-
-.pro-tip-text {
-  font-size: 13px;
+/* Schedule Drawer inside Deep Dive */
+.schedule-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
   color: var(--text-secondary);
-  line-height: 1.5;
-  word-break: break-word;
+  cursor: pointer;
+  list-style: none;
+}
+
+.schedule-summary::-webkit-details-marker {
+  display: none;
+}
+
+.progress-counter {
+  font-weight: 700;
+  color: var(--accent-cyan-light);
+}
+
+.daily-progress-container {
+  margin-top: 4px;
+}
+
+.progress-track {
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent-cyan);
+  width: 100%;
+  transition: transform 200ms ease-out;
+  transform-origin: left center;
+}
+
+.schedule-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  gap: 8px;
+}
+
+.time-input {
+  background-color: rgba(7, 11, 20, 0.7);
+  border: 1px solid var(--glass-border-strong);
+  color: var(--text-main);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.toggle-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-cyan);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-msg {
+  font-size: 12px;
+  color: var(--accent-emerald);
 }
 
 /* ==========================================================================
-   Fixed Bottom Frosted Glass Dock & Navigation
+   Clean 1-Line Bottom Bar
    ========================================================================== */
 .app-footer {
   position: fixed;
@@ -914,12 +666,8 @@ body::before {
   background: rgba(10, 15, 28, 0.72);
   backdrop-filter: blur(24px) saturate(190%);
   -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border-top: 1px solid var(--glass-border-strong);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.18), 0 -10px 30px rgba(2, 6, 23, 0.65);
-  padding: 10px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  border-top: 1px solid var(--border-subtle);
+  padding: 12px 16px;
   z-index: 50;
 }
 
@@ -927,7 +675,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
 }
 
 .btn {
@@ -966,32 +714,18 @@ body::before {
 .btn-ghost {
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-muted);
-  border: 1px solid var(--glass-border);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: var(--text-main);
-  }
+  border: 1px solid var(--border-subtle);
 }
 
 .btn-nav {
   background: rgba(30, 41, 59, 0.58);
   color: var(--text-main);
-  border: 1px solid var(--glass-border-strong);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--glass-border);
   font-size: 12.5px;
   min-height: 38px;
   padding: 8px 14px;
   border-radius: var(--radius-md);
   flex-shrink: 0;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-nav:hover {
-    background: rgba(51, 65, 85, 0.72);
-  }
 }
 
 .btn-mastered {
@@ -1005,18 +739,12 @@ body::before {
   padding: 8px 12px;
   border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: var(--shadow-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: transform 100ms ease, background-color 200ms ease;
   min-width: 0;
-}
-
-.btn-mastered:active {
-  transform: scale(0.98);
 }
 
 .btn-mastered.is-mastered {
@@ -1024,23 +752,6 @@ body::before {
   color: #070b14;
 }
 
-.footer-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: var(--text-subtle);
-}
-
-.index-display {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-/* ==========================================================================
-   Confetti Canvas
-   ========================================================================== */
 .confetti-canvas {
   position: fixed;
   top: 0;
@@ -1051,23 +762,11 @@ body::before {
   z-index: 100;
 }
 
-/* ==========================================================================
-   Animations
-   ========================================================================== */
 @keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-/* ==========================================================================
-   Accessibility: focus-visible & reduced motion
-   ========================================================================== */
 [hidden] {
   display: none !important;
 }
@@ -1087,7 +786,6 @@ input:focus-visible {
   }
 }
 
-/* Banner buttons sit on dark red: muted slate fails AA */
 .alarm-banner .btn-ghost {
   color: #fee2e2;
   border-color: rgba(254, 226, 226, 0.5);
