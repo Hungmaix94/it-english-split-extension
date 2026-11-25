@@ -1,6 +1,8 @@
 /* ==========================================================================
-   IT English Daily Split-View - Illustrated IT Interview Dialogue Card
-   Glassmorphism + Visual Scene Illustration + 2-Turn Interview Q&A Focus
+   IT English Daily Split-View - Visual Interview Flashcard (Glassmorphism)
+   - Intuitive visual scene illustration (zero cryptic boxes)
+   - Inline answer personalization
+   - Icon-only buttons everywhere (ONLY the "Đã thuộc" CTA carries text)
    ========================================================================== */
 
 :root {
@@ -34,7 +36,7 @@
 
   --radius-sm: 10px;
   --radius-md: 14px;
-  --radius-lg: 22px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
 
   --shadow-sm: 0 8px 24px -6px rgba(2, 6, 23, 0.5);
@@ -45,6 +47,18 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 html, body {
@@ -92,7 +106,7 @@ body::before {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  background: rgba(153, 27, 27, 0.82);
+  background: rgba(153, 27, 27, 0.84);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid rgba(254, 202, 202, 0.3);
@@ -135,7 +149,7 @@ body::before {
   padding: 10px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .header-top {
@@ -181,6 +195,75 @@ body::before {
   flex-shrink: 1;
   min-width: 0;
   flex-wrap: wrap;
+}
+
+/* Schedule Popover Panel */
+.schedule-details:not([open]) {
+  display: none;
+}
+
+.schedule-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(7, 11, 20, 0.72);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+.daily-progress-container {
+  margin-bottom: 2px;
+}
+
+.progress-track {
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent-cyan);
+  width: 100%;
+  transition: transform 200ms ease-out;
+  transform-origin: left center;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  gap: 8px;
+}
+
+.time-input {
+  background-color: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--glass-border-strong);
+  color: var(--text-main);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.toggle-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-cyan);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-msg {
+  font-size: 12px;
+  color: var(--accent-emerald);
 }
 
 /* Category Pills */
@@ -247,41 +330,40 @@ body::before {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 12px;
   flex: 1;
 }
 
 .card {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.09) 0%, rgba(15, 23, 42, 0.52) 100%);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.13) 0%, rgba(15, 23, 42, 0.62) 100%);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-highlight), var(--shadow-sm);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.36),
+    var(--shadow-md);
   border-radius: var(--radius-lg);
-  padding: 18px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.hero-card {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.13) 0%, rgba(15, 23, 42, 0.62) 100%);
-  border: 1px solid var(--glass-border-strong);
-  box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.36),
-    var(--shadow-md);
-  padding: 16px;
-  gap: 14px;
-}
-
-/* Scene Illustration Banner */
+/* Visual Scene Illustration Banner */
 .scene-illustration-wrap {
   position: relative;
   width: 100%;
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #0b1325;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #0d1527;
+}
+
+.scene-illustration-img {
+  width: 100%;
+  height: 158px;
+  object-fit: cover;
+  object-position: center 25%;
+  display: block;
 }
 
 .scene-illustration {
@@ -297,42 +379,46 @@ body::before {
 }
 
 .scene-overlay-badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 10px;
-  background: rgba(7, 11, 20, 0.65);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
   flex-wrap: wrap;
+  pointer-events: none;
 }
 
 .badge {
   font-size: 12px;
-  font-weight: 600;
-  padding: 2px 9px;
+  font-weight: 700;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .badge-topic {
-  background: rgba(56, 189, 248, 0.18);
+  background: rgba(7, 11, 20, 0.72);
   color: var(--accent-cyan-light);
-  border: 1px solid rgba(125, 211, 252, 0.32);
+  border: 1px solid rgba(125, 211, 252, 0.38);
 }
 
 .badge-level {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(7, 11, 20, 0.72);
   color: var(--text-secondary);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .mastered-pill {
   font-size: 12px;
   font-weight: 700;
-  padding: 2px 9px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  background: rgba(52, 211, 153, 0.20);
+  background: rgba(6, 78, 59, 0.85);
   color: var(--accent-emerald);
-  border: 1px solid rgba(52, 211, 153, 0.45);
+  border: 1px solid rgba(52, 211, 153, 0.5);
 }
 
 .mastered-pill.hidden {
@@ -344,14 +430,6 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.scenario-banner {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--accent-cyan-light);
-  letter-spacing: 0.01em;
-  text-wrap: pretty;
 }
 
 .chat-bubble {
@@ -379,8 +457,8 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-full);
   font-size: 12px;
   font-weight: 800;
@@ -409,18 +487,14 @@ body::before {
   color: var(--accent-amber);
 }
 
-.btn-mini-audio {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
+.personalized-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-emerald);
+  background: rgba(52, 211, 153, 0.14);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  padding: 1px 8px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
-  cursor: pointer;
 }
 
 .chat-question-line {
@@ -433,67 +507,140 @@ body::before {
 
 .sentence-english {
   font-family: var(--font-display);
-  font-size: 19.5px;
+  font-size: 20px;
   font-weight: 700;
   color: #ffffff;
   line-height: 1.4;
   letter-spacing: -0.02em;
   word-break: break-word;
   text-wrap: pretty;
+  cursor: pointer;
 }
 
 .hero-vietnamese {
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--text-muted);
   line-height: 1.48;
   text-wrap: pretty;
 }
 
-/* Audio Player */
+/* Inline Answer Personalization Editor */
+.personalize-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.preset-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  min-height: 32px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--accent-cyan-light);
+  border: 1px solid rgba(125, 211, 252, 0.3);
+  cursor: pointer;
+}
+
+.personalize-textarea {
+  width: 100%;
+  background: rgba(7, 11, 20, 0.72);
+  border: 1px solid var(--accent-cyan);
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.45;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.personalize-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   Icon-Only Buttons System (Only #btn-mark-mastered has text!)
+   ========================================================================== */
+.btn-icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  min-height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-border-strong);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 120ms ease, background 150ms ease;
+}
+
+.btn-icon-circle:active {
+  transform: scale(0.95);
+}
+
+.btn-icon-sm {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+}
+
+.btn-edit-answer,
+.speaker-header .btn-icon-sm {
+  margin-left: auto;
+}
+
+.btn-save-custom {
+  background-color: var(--accent-emerald);
+  color: #070b14;
+  border-color: var(--accent-emerald);
+}
+
+/* Audio Player Bar */
 .tts-controller {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-top: 8px;
+  padding-top: 10px;
   border-top: 1px solid var(--border-subtle);
 }
 
 .tts-buttons {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .btn-audio {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  min-height: 36px;
+}
+
+.btn-audio-main {
   background-color: #f8fafc;
   color: #070b14;
-  font-weight: 700;
-  font-size: 12.5px;
-  min-height: 36px;
-  padding: 7px 13px;
-  border-radius: var(--radius-full);
-  border: 1px solid #ffffff;
+  border-color: #ffffff;
   box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  transition: transform 120ms ease;
-  flex-shrink: 0;
 }
 
-.btn-audio:active {
-  transform: scale(0.97);
-}
-
-.btn-audio-secondary,
 .btn-audio-slow {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-main);
   border: 1px solid var(--glass-border-strong);
-  padding: 7px 11px;
 }
 
 /* Audio Waveform Visualizer */
@@ -534,52 +681,13 @@ body::before {
   100% { height: 18px; }
 }
 
-/* ==========================================================================
-   Subtle Single-Line Disclosure Pill
-   ========================================================================== */
-.deep-dive-drawer {
-  display: flex;
-  flex-direction: column;
-}
-
-.deep-dive-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 16px;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-full);
-  color: var(--text-subtle);
-  font-size: 12.5px;
-  font-weight: 500;
-  cursor: pointer;
-  user-select: none;
-  list-style: none;
-}
-
-.deep-dive-summary::-webkit-details-marker {
-  display: none;
-}
-
-.deep-dive-drawer[open] .deep-dive-chevron {
-  transform: rotate(180deg);
-}
-
-.deep-dive-content {
+/* Optional Extra Info Panel (Toggled by ℹ️ Icon Button) */
+.extra-info-panel {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 10px;
-}
-
-/* Expanded Detail Sections */
-.detail-card {
-  padding: 14px 16px;
-  border-radius: var(--radius-md);
-  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .sentence-ipa {
@@ -628,12 +736,6 @@ body::before {
   border-top: 1px solid var(--border-subtle);
 }
 
-.instead-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--accent-rose);
-}
-
 .sentence-stress,
 .sentence-instead-of,
 .body-text,
@@ -675,89 +777,8 @@ body::before {
   color: var(--accent-emerald);
 }
 
-/* Schedule Drawer inside Deep Dive */
-.schedule-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12.5px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  list-style: none;
-}
-
-.schedule-summary::-webkit-details-marker {
-  display: none;
-}
-
-.progress-counter {
-  font-weight: 700;
-  color: var(--accent-cyan-light);
-}
-
-.daily-progress-container {
-  margin-top: 4px;
-}
-
-.progress-track {
-  height: 4px;
-  background-color: rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: var(--accent-cyan);
-  width: 100%;
-  transition: transform 200ms ease-out;
-  transform-origin: left center;
-}
-
-.schedule-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.form-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12.5px;
-  gap: 8px;
-}
-
-.time-input {
-  background-color: rgba(7, 11, 20, 0.7);
-  border: 1px solid var(--glass-border-strong);
-  color: var(--text-main);
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-family: var(--font-mono);
-}
-
-.toggle-checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--accent-cyan);
-}
-
-.form-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.status-msg {
-  font-size: 12px;
-  color: var(--accent-emerald);
-}
-
 /* ==========================================================================
-   Clean 1-Line Bottom Bar
+   Bottom Bar: Icon-Only Prev/Next + "Đã thuộc" CTA
    ========================================================================== */
 .app-footer {
   position: fixed;
@@ -779,7 +800,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 }
 
 .btn {
@@ -797,7 +818,14 @@ body::before {
 .btn-sm {
   font-size: 12px;
   min-height: 32px;
-  padding: 4px 10px;
+  padding: 4px 8px;
+}
+
+.btn-icon-only {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: var(--radius-full);
 }
 
 .btn-primary {
@@ -822,13 +850,12 @@ body::before {
 }
 
 .btn-nav {
-  background: rgba(30, 41, 59, 0.58);
+  width: 42px;
+  height: 42px;
+  background: rgba(30, 41, 59, 0.62);
   color: var(--text-main);
-  border: 1px solid var(--glass-border);
-  font-size: 12.5px;
-  min-height: 38px;
-  padding: 8px 14px;
-  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius-full);
   flex-shrink: 0;
 }
 
@@ -837,11 +864,11 @@ body::before {
   background-color: #fbbf24;
   color: #0f172a;
   white-space: nowrap;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
-  min-height: 38px;
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
+  min-height: 42px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
   border: 1px solid rgba(255, 255, 255, 0.45);
   cursor: pointer;
   display: inline-flex;
@@ -878,7 +905,8 @@ body::before {
 button:focus-visible,
 summary:focus-visible,
 select:focus-visible,
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible {
   outline: 2px solid var(--accent-cyan-light);
   outline-offset: 2px;
 }

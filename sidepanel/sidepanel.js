@@ -454,6 +454,40 @@ function buildSceneIllustrationSvg(sentence) {
   </svg>`;
 }
 
+function buildRolePresetAnswer(sentence, preset) {
+  const base = sentence.english || sentence.sentence || '';
+  const id = sentence.id || '';
+  const presets = {
+    'interview-01': {
+      backend: 'In my previous role, I optimized our PostgreSQL indexing and Redis caching layer, which reduced API p99 latency by 45% during peak traffic.',
+      frontend: 'In my previous role, I led the React bundle splitting and rendering optimization, which improved Core Web Vitals LCP by 40% across all user devices.',
+      fullstack: 'In my previous role, I architected our microservices event pipeline with Kafka, reducing end-to-end checkout latency by 40% under heavy load.'
+    },
+    'interview-02': {
+      backend: 'When designing backend APIs for high availability, I eliminate single points of failure and implement rate limiting with circuit breakers.',
+      frontend: 'When building resilient frontend apps, I use error boundaries, optimistic UI updates, and graceful fallback states when upstream APIs fail.',
+      fullstack: 'When designing cloud systems for high availability, I ensure multi-zone auto-failover, health checks, and circuit breakers across services.'
+    },
+    'interview-03': {
+      backend: 'When teammates disagree on backend architecture, I build a quick PoC benchmark and let throughput and latency numbers guide our choice.',
+      frontend: 'When the team debates state management or UI patterns, I prototype both options and compare bundle size and render performance.',
+      fullstack: 'Whenever technical opinions differ, I run an objective proof-of-concept benchmark so real metrics guide our team decision.'
+    },
+    'interview-04': {
+      backend: 'Could you clarify the expected QPS, read-to-write ratio, and latency SLA so I can recommend the right database and indexing strategy?',
+      frontend: 'Could you clarify the target device profile, SEO requirements, and real-time update frequency so I can choose between SSR and CSR?',
+      fullstack: 'Could you elaborate on the expected read-to-write ratio and latency SLA so I can tailor the system architecture accordingly?'
+    }
+  };
+  if (presets[id] && presets[id][preset]) {
+    return presets[id][preset];
+  }
+  const alts = Array.isArray(sentence.alternatives) ? sentence.alternatives : [];
+  if (preset === 'backend' && alts[0]) return alts[0];
+  if (preset === 'frontend' && alts[1]) return alts[1];
+  return base;
+}
+
 export class SidepanelController {
   constructor() {
     this.state = createInitialState();
@@ -461,6 +495,25 @@ export class SidepanelController {
     this.currentIndex = 0;
     this.currentList = [...IT_SENTENCES];
     this.isPlayingAudio = false;
+    this.customAnswers = this.loadCustomAnswers();
+  }
+
+  loadCustomAnswers() {
+    try {
+      const raw = getStorageItem('itEnglishCustomAnswers');
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  saveCustomAnswers() {
+    setStorageItem('itEnglishCustomAnswers', JSON.stringify(this.customAnswers || {}));
+  }
+
+  getEffectiveAnswer(sentence) {
+    if (!sentence) return '';
+    return (this.customAnswers && this.customAnswers[sentence.id]) || sentence.english || sentence.sentence || '';
   }
 
   async init() {
@@ -644,12 +697,20 @@ export class SidepanelController {
       }
     }
 
-    // Parse 2-turn Interview / Workplace Dialogue
+    // Parse 2-turn Interview / Workplace Dialogue & Apply Personalized Answer
     const turns = parseDialogueTurns(sentence);
+    const effectiveAnswer = this.getEffectiveAnswer(sentence);
+    const hasCustom = Boolean(this.customAnswers && this.customAnswers[sentence.id]);
+
     const englishEl = document.getElementById('sentence-english');
     const ipaEl = document.getElementById('sentence-ipa');
-    if (englishEl) englishEl.textContent = sentence.english || sentence.sentence;
+    const personalizedBadge = document.getElementById('personalized-badge');
+    const textareaEl = document.getElementById('personalize-textarea');
+
+    if (englishEl) englishEl.textContent = effectiveAnswer;
     if (ipaEl) ipaEl.textContent = sentence.ipa;
+    if (personalizedBadge) personalizedBadge.hidden = !hasCustom;
+    if (textareaEl) textareaEl.value = effectiveAnswer;
 
     // Stress Guide & Instead Of
     const stressEl = document.getElementById('sentence-stress');
@@ -678,8 +739,8 @@ export class SidepanelController {
     if (scenarioEl) scenarioEl.textContent = preventOrphanWord(sentence.context || sentence.contextTitle || 'Tình huống Phỏng vấn IT');
     if (speakerALabel) speakerALabel.textContent = turns.roleA;
     if (speakerALine) speakerALine.textContent = `"${turns.lineA}"`;
-    if (speakerBLabel) speakerBLabel.textContent = `${turns.roleB} (Câu trả lời của bạn)`;
-    if (speakerBLine) speakerBLine.textContent = `"${turns.lineB}"`;
+    if (speakerBLabel) speakerBLabel.textContent = 'You';
+    if (speakerBLine) speakerBLine.textContent = `"${effectiveAnswer}"`;
 
     // Key Chunks (Supports array of strings or array of objects)
     const chunksList = document.getElementById('card-key-chunks');
@@ -756,7 +817,7 @@ export class SidepanelController {
       const sentence = this.currentList[this.currentIndex];
       if (!sentence) return;
 
-      const sentenceText = customText || sentence.english || sentence.sentence;
+      const sentenceText = customText || this.getEffectiveAnswer(sentence);
       if (audioWave) audioWave.classList.add('is-playing');
       this.isPlayingAudio = true;
 
@@ -778,7 +839,7 @@ export class SidepanelController {
         const sentence = this.currentList[this.currentIndex];
         if (!sentence) return;
         const turns = parseDialogueTurns(sentence);
-        const fullText = `${turns.lineA} ... ${sentence.english || sentence.sentence}`;
+        const fullText = `${turns.lineA} ... ${this.getEffectiveAnswer(sentence)}`;
         handleSpeech(1.0, fullText);
       });
     }
@@ -795,6 +856,81 @@ export class SidepanelController {
     }
     if (btnTtsSlow) {
       btnTtsSlow.addEventListener('click', () => handleSpeech(0.8));
+    }
+
+    // 1b. Personalize Answer & Icon Toggles (Settings gear & Info panel)
+    const btnPersonalize = document.getElementById('btn-personalize-answer');
+    const englishHeading = document.getElementById('sentence-english');
+    const editorPanel = document.getElementById('personalize-editor');
+    const textareaEl = document.getElementById('personalize-textarea');
+    const btnSaveAnswer = document.getElementById('btn-save-answer');
+    const btnResetAnswer = document.getElementById('btn-reset-answer');
+    const presetContainer = document.getElementById('preset-chips');
+
+    const togglePersonalize = () => {
+      if (!editorPanel) return;
+      editorPanel.hidden = !editorPanel.hidden;
+      if (!editorPanel.hidden && textareaEl) {
+        const sentence = this.currentList[this.currentIndex];
+        textareaEl.value = this.getEffectiveAnswer(sentence);
+        textareaEl.focus();
+      }
+    };
+
+    if (btnPersonalize) btnPersonalize.addEventListener('click', togglePersonalize);
+    if (englishHeading) englishHeading.addEventListener('click', togglePersonalize);
+
+    if (presetContainer) {
+      presetContainer.querySelectorAll('[data-preset]').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const sentence = this.currentList[this.currentIndex];
+          if (!sentence || !textareaEl) return;
+          textareaEl.value = buildRolePresetAnswer(sentence, chip.dataset.preset);
+        });
+      });
+    }
+
+    if (btnSaveAnswer) {
+      btnSaveAnswer.addEventListener('click', () => {
+        const sentence = this.currentList[this.currentIndex];
+        if (!sentence || !textareaEl) return;
+        const val = textareaEl.value.trim();
+        if (val) {
+          this.customAnswers[sentence.id] = val;
+        } else {
+          delete this.customAnswers[sentence.id];
+        }
+        this.saveCustomAnswers();
+        if (editorPanel) editorPanel.hidden = true;
+        this.renderCurrentSentence();
+      });
+    }
+
+    if (btnResetAnswer) {
+      btnResetAnswer.addEventListener('click', () => {
+        const sentence = this.currentList[this.currentIndex];
+        if (!sentence) return;
+        delete this.customAnswers[sentence.id];
+        this.saveCustomAnswers();
+        if (editorPanel) editorPanel.hidden = true;
+        this.renderCurrentSentence();
+      });
+    }
+
+    const btnToggleDetails = document.getElementById('btn-toggle-details');
+    const extraInfoPanel = document.getElementById('extra-info-panel');
+    if (btnToggleDetails && extraInfoPanel) {
+      btnToggleDetails.addEventListener('click', () => {
+        extraInfoPanel.hidden = !extraInfoPanel.hidden;
+      });
+    }
+
+    const btnToggleSettings = document.getElementById('btn-toggle-settings');
+    const scheduleDetails = document.getElementById('schedule-details');
+    if (btnToggleSettings && scheduleDetails) {
+      btnToggleSettings.addEventListener('click', () => {
+        scheduleDetails.open = !scheduleDetails.open;
+      });
     }
 
     // 2. Navigation
