@@ -456,36 +456,23 @@ function buildSceneIllustrationSvg(sentence) {
 
 function buildRolePresetAnswer(sentence, preset) {
   const base = sentence.english || sentence.sentence || '';
-  const id = sentence.id || '';
-  const presets = {
-    'interview-01': {
-      backend: 'In my previous role, I optimized our PostgreSQL indexing and Redis caching layer, which reduced API p99 latency by 45% during peak traffic.',
-      frontend: 'In my previous role, I led the React bundle splitting and rendering optimization, which improved Core Web Vitals LCP by 40% across all user devices.',
-      fullstack: 'In my previous role, I architected our microservices event pipeline with Kafka, reducing end-to-end checkout latency by 40% under heavy load.'
-    },
-    'interview-02': {
-      backend: 'When designing backend APIs for high availability, I eliminate single points of failure and implement rate limiting with circuit breakers.',
-      frontend: 'When building resilient frontend apps, I use error boundaries, optimistic UI updates, and graceful fallback states when upstream APIs fail.',
-      fullstack: 'When designing cloud systems for high availability, I ensure multi-zone auto-failover, health checks, and circuit breakers across services.'
-    },
-    'interview-03': {
-      backend: 'When teammates disagree on backend architecture, I build a quick PoC benchmark and let throughput and latency numbers guide our choice.',
-      frontend: 'When the team debates state management or UI patterns, I prototype both options and compare bundle size and render performance.',
-      fullstack: 'Whenever technical opinions differ, I run an objective proof-of-concept benchmark so real metrics guide our team decision.'
-    },
-    'interview-04': {
-      backend: 'Could you clarify the expected QPS, read-to-write ratio, and latency SLA so I can recommend the right database and indexing strategy?',
-      frontend: 'Could you clarify the target device profile, SEO requirements, and real-time update frequency so I can choose between SSR and CSR?',
-      fullstack: 'Could you elaborate on the expected read-to-write ratio and latency SLA so I can tailor the system architecture accordingly?'
-    }
-  };
-  if (presets[id] && presets[id][preset]) {
-    return presets[id][preset];
+  if (sentence.presets && sentence.presets[preset]) {
+    return sentence.presets[preset];
   }
   const alts = Array.isArray(sentence.alternatives) ? sentence.alternatives : [];
-  if (preset === 'backend' && alts[0]) return alts[0];
-  if (preset === 'frontend' && alts[1]) return alts[1];
+  if ((preset === 'backend' || preset === 'mobile') && alts[0]) return alts[0];
+  if ((preset === 'frontend' || preset === 'fullstack') && alts[1]) return alts[1];
   return base;
+}
+
+function getScenePhotoForSentence(sentence) {
+  if (sentence && sentence.scenePhoto) return sentence.scenePhoto;
+  const cat = (sentence && sentence.category) || 'interview';
+  if (cat === 'architecture') return '../assets/photo-architecture.jpg';
+  if (cat === 'codereview' || cat === 'standup' || cat === 'incident') {
+    return '../assets/photo-teamwork.jpg';
+  }
+  return '../assets/photo-interview.jpg';
 }
 
 export class SidepanelController {
@@ -493,9 +480,11 @@ export class SidepanelController {
     this.state = createInitialState();
     this.activeCategory = 'all';
     this.currentIndex = 0;
-    this.currentList = [...IT_SENTENCES];
-    this.isPlayingAudio = false;
     this.customAnswers = this.loadCustomAnswers();
+    this.customQuestions = this.loadCustomQuestions();
+    this.customCards = this.loadCustomCards();
+    this.currentList = [...this.customCards, ...IT_SENTENCES];
+    this.isPlayingAudio = false;
   }
 
   loadCustomAnswers() {
@@ -509,6 +498,42 @@ export class SidepanelController {
 
   saveCustomAnswers() {
     setStorageItem('itEnglishCustomAnswers', JSON.stringify(this.customAnswers || {}));
+  }
+
+  loadCustomQuestions() {
+    try {
+      const raw = getStorageItem('itEnglishCustomQuestions');
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  saveCustomQuestions() {
+    setStorageItem('itEnglishCustomQuestions', JSON.stringify(this.customQuestions || {}));
+  }
+
+  loadCustomCards() {
+    try {
+      const raw = getStorageItem('itEnglishCustomCards');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  saveCustomCards() {
+    setStorageItem('itEnglishCustomCards', JSON.stringify(this.customCards || []));
+  }
+
+  getAllSentences() {
+    return [...(this.customCards || []), ...IT_SENTENCES];
+  }
+
+  getEffectiveQuestion(sentence, defaultLineA = '') {
+    if (!sentence) return defaultLineA;
+    return (this.customQuestions && this.customQuestions[sentence.id]) || defaultLineA;
   }
 
   getEffectiveAnswer(sentence) {
@@ -559,7 +584,7 @@ export class SidepanelController {
   }
 
   updateFilteredList() {
-    this.currentList = filterSentences(IT_SENTENCES, this.activeCategory);
+    this.currentList = filterSentences(this.getAllSentences(), this.activeCategory);
     if (this.currentIndex >= this.currentList.length) {
       this.currentIndex = 0;
     }
@@ -681,9 +706,14 @@ export class SidepanelController {
     const levelBadge = document.getElementById('sentence-level-badge');
     const masteredPill = document.getElementById('sentence-mastered-indicator');
     const illustrationEl = document.getElementById('scene-illustration');
+    const illustrationImgEl = document.getElementById('scene-illustration-img');
 
     if (topicBadge) topicBadge.textContent = sentence.categoryLabel || 'IT Interview';
     if (levelBadge) levelBadge.textContent = sentence.difficulty || sentence.level || 'B2';
+    if (illustrationImgEl) {
+      illustrationImgEl.src = getScenePhotoForSentence(sentence);
+      illustrationImgEl.alt = sentence.contextTitle || sentence.categoryLabel || 'Bối cảnh phỏng vấn IT thực tế';
+    }
     if (illustrationEl) {
       illustrationEl.innerHTML = buildSceneIllustrationSvg(sentence);
     }
@@ -697,19 +727,26 @@ export class SidepanelController {
       }
     }
 
-    // Parse 2-turn Interview / Workplace Dialogue & Apply Personalized Answer
+    // Parse 2-turn Interview / Workplace Dialogue & Apply Personalized Question + Answer
     const turns = parseDialogueTurns(sentence);
+    const effectiveQuestion = this.getEffectiveQuestion(sentence, turns.lineA);
     const effectiveAnswer = this.getEffectiveAnswer(sentence);
-    const hasCustom = Boolean(this.customAnswers && this.customAnswers[sentence.id]);
+    const hasCustom = Boolean(
+      (this.customAnswers && this.customAnswers[sentence.id]) ||
+      (this.customQuestions && this.customQuestions[sentence.id]) ||
+      sentence.isCustomCard
+    );
 
     const englishEl = document.getElementById('sentence-english');
     const ipaEl = document.getElementById('sentence-ipa');
     const personalizedBadge = document.getElementById('personalized-badge');
+    const questionInputEl = document.getElementById('personalize-question-input');
     const textareaEl = document.getElementById('personalize-textarea');
 
     if (englishEl) englishEl.textContent = effectiveAnswer;
     if (ipaEl) ipaEl.textContent = sentence.ipa;
     if (personalizedBadge) personalizedBadge.hidden = !hasCustom;
+    if (questionInputEl) questionInputEl.value = effectiveQuestion;
     if (textareaEl) textareaEl.value = effectiveAnswer;
 
     // Stress Guide & Instead Of
@@ -738,7 +775,7 @@ export class SidepanelController {
 
     if (scenarioEl) scenarioEl.textContent = preventOrphanWord(sentence.context || sentence.contextTitle || 'Tình huống Phỏng vấn IT');
     if (speakerALabel) speakerALabel.textContent = turns.roleA;
-    if (speakerALine) speakerALine.textContent = `"${turns.lineA}"`;
+    if (speakerALine) speakerALine.textContent = `"${effectiveQuestion}"`;
     if (speakerBLabel) speakerBLabel.textContent = 'You';
     if (speakerBLine) speakerBLine.textContent = `"${effectiveAnswer}"`;
 
@@ -839,7 +876,8 @@ export class SidepanelController {
         const sentence = this.currentList[this.currentIndex];
         if (!sentence) return;
         const turns = parseDialogueTurns(sentence);
-        const fullText = `${turns.lineA} ... ${this.getEffectiveAnswer(sentence)}`;
+        const qText = this.getEffectiveQuestion(sentence, turns.lineA);
+        const fullText = `${qText} ... ${this.getEffectiveAnswer(sentence)}`;
         handleSpeech(1.0, fullText);
       });
     }
@@ -848,7 +886,7 @@ export class SidepanelController {
         const sentence = this.currentList[this.currentIndex];
         if (!sentence) return;
         const turns = parseDialogueTurns(sentence);
-        handleSpeech(1.0, turns.lineA);
+        handleSpeech(1.0, this.getEffectiveQuestion(sentence, turns.lineA));
       });
     }
     if (btnTtsNormal) {
@@ -858,13 +896,15 @@ export class SidepanelController {
       btnTtsSlow.addEventListener('click', () => handleSpeech(0.8));
     }
 
-    // 1b. Personalize Answer & Icon Toggles (Settings gear & Info panel)
+    // 1b. Personalize Question & Answer + Add Custom Q&A Card
     const btnPersonalize = document.getElementById('btn-personalize-answer');
     const englishHeading = document.getElementById('sentence-english');
     const editorPanel = document.getElementById('personalize-editor');
+    const questionInputEl = document.getElementById('personalize-question-input');
     const textareaEl = document.getElementById('personalize-textarea');
     const btnSaveAnswer = document.getElementById('btn-save-answer');
     const btnResetAnswer = document.getElementById('btn-reset-answer');
+    const btnAddCustomCard = document.getElementById('btn-add-custom-card');
     const presetContainer = document.getElementById('preset-chips');
 
     const togglePersonalize = () => {
@@ -872,6 +912,8 @@ export class SidepanelController {
       editorPanel.hidden = !editorPanel.hidden;
       if (!editorPanel.hidden && textareaEl) {
         const sentence = this.currentList[this.currentIndex];
+        const turns = parseDialogueTurns(sentence);
+        if (questionInputEl) questionInputEl.value = this.getEffectiveQuestion(sentence, turns.lineA);
         textareaEl.value = this.getEffectiveAnswer(sentence);
         textareaEl.focus();
       }
@@ -900,7 +942,55 @@ export class SidepanelController {
         } else {
           delete this.customAnswers[sentence.id];
         }
+        if (questionInputEl) {
+          const qVal = questionInputEl.value.trim();
+          const turns = parseDialogueTurns(sentence);
+          if (qVal && qVal !== turns.lineA) {
+            this.customQuestions[sentence.id] = qVal;
+          } else {
+            delete this.customQuestions[sentence.id];
+          }
+          this.saveCustomQuestions();
+        }
         this.saveCustomAnswers();
+        if (editorPanel) editorPanel.hidden = true;
+        this.renderCurrentSentence();
+      });
+    }
+
+    if (btnAddCustomCard) {
+      btnAddCustomCard.addEventListener('click', () => {
+        const qVal = (questionInputEl && questionInputEl.value.trim()) || 'Can you walk me through a challenge you solved recently?';
+        const aVal = (textareaEl && textareaEl.value.trim()) || '';
+        if (!aVal) return;
+        const newCard = {
+          id: `custom-${Date.now()}`,
+          isCustomCard: true,
+          category: 'interview',
+          categoryLabel: 'Cá nhân hóa',
+          scenePhoto: '../assets/photo-interview.jpg',
+          sentence: aVal,
+          english: aVal,
+          ipa: '/Personal Interview Q&A Card/',
+          stressGuide: 'Nhấn mạnh động từ hành động và số liệu kết quả thực tế của bạn.',
+          meaningVi: 'Thẻ câu hỏi & câu trả lời phỏng vấn do bạn tự cá nhân hóa.',
+          vietnamese: 'Thẻ câu hỏi & câu trả lời phỏng vấn do bạn tự cá nhân hóa.',
+          nuanceVi: 'Câu chuyện thực tế từ dự án của riêng bạn.',
+          insteadOf: '',
+          contextTitle: 'Câu hỏi phỏng vấn cá nhân hóa',
+          context: 'Câu hỏi phỏng vấn cá nhân hóa',
+          dialogue: `Interviewer: '${qVal.replace(/'/g, '')}' - Candidate: '${aVal.replace(/'/g, '')}'`,
+          keyChunks: [{ chunk: 'Personal Story', meaning: 'Kinh nghiệm dự án thực tế' }],
+          intonation: `${aVal} ↘`,
+          alternatives: [aVal, aVal],
+          interviewTip: 'Luyện đọc to 3 lần với tốc độ 1.0x để phản xạ tự nhiên khi phỏng vấn.',
+          difficulty: 'Custom'
+        };
+        this.customCards = [newCard, ...(this.customCards || [])];
+        this.saveCustomCards();
+        this.updateFilteredList();
+        this.currentIndex = 0;
+        this.renderCategories();
         if (editorPanel) editorPanel.hidden = true;
         this.renderCurrentSentence();
       });
@@ -911,7 +1001,9 @@ export class SidepanelController {
         const sentence = this.currentList[this.currentIndex];
         if (!sentence) return;
         delete this.customAnswers[sentence.id];
+        delete this.customQuestions[sentence.id];
         this.saveCustomAnswers();
+        this.saveCustomQuestions();
         if (editorPanel) editorPanel.hidden = true;
         this.renderCurrentSentence();
       });

@@ -551,6 +551,7 @@ body::before {
   cursor: pointer;
 }
 
+.personalize-input,
 .personalize-textarea {
   width: 100%;
   background: rgba(7, 11, 20, 0.72);
@@ -558,9 +559,18 @@ body::before {
   border-radius: var(--radius-sm);
   color: #ffffff;
   font-family: var(--font-family);
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.45;
-  padding: 8px 10px;
+  padding: 7px 10px;
+}
+
+.personalize-input {
+  border-color: rgba(125, 211, 252, 0.45);
+  color: var(--text-secondary);
+}
+
+.personalize-textarea {
+  font-size: 14px;
   resize: vertical;
 }
 
