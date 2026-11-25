@@ -1,7 +1,7 @@
 /* ==========================================================================
-   IT English Daily Split-View - Modern Glassmorphism Studio (320px-480px)
-   Frosted glass surfaces, specular rim highlights, ambient aurora mesh light,
-   strictly enforces scrollWidth <= clientWidth, 0 nested cards, WCAG AA.
+   IT English Daily Split-View - Minimalist Focus Glassmorphism (320px-480px)
+   Single-Card Focus Mode: Zero visual clutter, progressive disclosure drawer,
+   frosted aurora glass, strictly enforces scrollWidth <= clientWidth, WCAG AA.
    ========================================================================== */
 
 :root {
@@ -13,20 +13,19 @@
   --bg-app: #060913;
   --bg-surface: rgba(17, 25, 40, 0.56);
   --bg-surface-elevated: rgba(30, 41, 59, 0.62);
-  --bg-surface-soft: rgba(15, 23, 42, 0.45);
 
-  --glass-blur: blur(22px) saturate(180%);
+  --glass-blur: blur(24px) saturate(185%);
   --glass-border: rgba(255, 255, 255, 0.14);
   --glass-border-strong: rgba(255, 255, 255, 0.24);
-  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.24);
 
   --text-main: #f8fafc;
   --text-secondary: #e2e8f0;
   --text-muted: #cbd5e1;
   --text-subtle: #94a3b8;
 
-  --border-subtle: rgba(255, 255, 255, 0.12);
-  --border-highlight: rgba(255, 255, 255, 0.24);
+  --border-subtle: rgba(255, 255, 255, 0.11);
+  --border-highlight: rgba(255, 255, 255, 0.22);
 
   --accent-cyan: #22d3ee;
   --accent-cyan-light: #67e8f9;
@@ -37,11 +36,11 @@
 
   --radius-sm: 10px;
   --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-lg: 20px;
   --radius-full: 9999px;
 
   --shadow-sm: 0 8px 24px -6px rgba(2, 6, 23, 0.55);
-  --shadow-md: 0 16px 36px -8px rgba(2, 6, 23, 0.7);
+  --shadow-md: 0 20px 44px -10px rgba(2, 6, 23, 0.75);
 }
 
 /* ==========================================================================
@@ -79,10 +78,9 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 12% 14%, rgba(34, 211, 238, 0.30) 0%, rgba(34, 211, 238, 0) 48%),
-    radial-gradient(circle at 88% 36%, rgba(99, 102, 241, 0.28) 0%, rgba(99, 102, 241, 0) 52%),
-    radial-gradient(circle at 22% 78%, rgba(16, 185, 129, 0.20) 0%, rgba(16, 185, 129, 0) 50%),
-    radial-gradient(circle at 82% 88%, rgba(245, 158, 11, 0.16) 0%, rgba(245, 158, 11, 0) 45%);
+    radial-gradient(circle at 14% 16%, rgba(34, 211, 238, 0.32) 0%, rgba(34, 211, 238, 0) 50%),
+    radial-gradient(circle at 86% 32%, rgba(99, 102, 241, 0.30) 0%, rgba(99, 102, 241, 0) 52%),
+    radial-gradient(circle at 25% 80%, rgba(16, 185, 129, 0.20) 0%, rgba(16, 185, 129, 0) 50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -100,7 +98,7 @@ body::before {
   position: relative;
   z-index: 1;
   overflow-x: hidden;
-  padding-bottom: 104px;
+  padding-bottom: 92px;
 }
 
 /* ==========================================================================
@@ -109,13 +107,13 @@ body::before {
 .alarm-banner {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  background: linear-gradient(135deg, rgba(153, 27, 27, 0.78) 0%, rgba(124, 45, 18, 0.75) 100%);
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(153, 27, 27, 0.82) 0%, rgba(124, 45, 18, 0.78) 100%);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid rgba(254, 202, 202, 0.35);
   box-shadow: var(--glass-highlight);
-  padding: 12px 16px;
+  padding: 10px 16px;
   color: #ffffff;
   animation: slideDown 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -142,18 +140,18 @@ body::before {
 .banner-text {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   min-width: 0;
 }
 
 .banner-text strong {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.35;
 }
 
 .banner-subtext {
-  font-size: 12.5px;
+  font-size: 12px;
   color: #fee2e2;
   line-height: 1.4;
 }
@@ -166,18 +164,17 @@ body::before {
 }
 
 /* ==========================================================================
-   App Header & Progress Track (Top Frosted Glass Panel)
+   Ultra-Compact App Header (Minimalist Top Glass Bar)
    ========================================================================== */
 .app-header {
-  background: linear-gradient(180deg, rgba(17, 25, 40, 0.74) 0%, rgba(17, 25, 40, 0.52) 100%);
+  background: rgba(12, 18, 32, 0.65);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.06);
-  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 10px 16px 8px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .header-top {
@@ -199,14 +196,13 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.20) 0%, rgba(245, 158, 11, 0.10) 100%);
-  border: 1px solid rgba(251, 191, 36, 0.42);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(245, 158, 11, 0.15);
-  padding: 4px 11px;
+  background: rgba(251, 191, 36, 0.14);
+  border: 1px solid rgba(251, 191, 36, 0.38);
+  padding: 3px 10px;
   border-radius: var(--radius-full);
   color: var(--accent-amber);
   font-weight: 700;
-  font-size: 12.5px;
+  font-size: 12px;
   flex-shrink: 0;
 }
 
@@ -215,11 +211,21 @@ body::before {
   flex-shrink: 0;
 }
 
-.header-brand-tag {
+.progress-inline-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
-  font-weight: 600;
   color: var(--text-subtle);
-  letter-spacing: 0.02em;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.progress-counter {
+  font-weight: 700;
+  color: var(--accent-cyan-light);
 }
 
 .header-quick-actions {
@@ -234,26 +240,11 @@ body::before {
 .daily-progress-container {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-}
-
-.progress-labels {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: var(--text-subtle);
-}
-
-.progress-counter {
-  font-weight: 700;
-  color: var(--accent-cyan-light);
 }
 
 .progress-track {
-  height: 6px;
-  background-color: rgba(255, 255, 255, 0.09);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
@@ -262,7 +253,7 @@ body::before {
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald));
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
   border-radius: var(--radius-full);
   width: 100%;
   transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -271,8 +262,7 @@ body::before {
 
 /* Schedule Details Drawer */
 .schedule-details {
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 8px;
+  padding-top: 2px;
 }
 
 .schedule-summary {
@@ -280,11 +270,10 @@ body::before {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  font-size: 12.5px;
-  color: var(--text-muted);
+  font-size: 12px;
+  color: var(--text-subtle);
   user-select: none;
   list-style: none;
-  padding: 2px 0;
 }
 
 .schedule-summary::-webkit-details-marker {
@@ -295,21 +284,26 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-weight: 500;
 }
 
 .next-alarm-text {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.summary-edit-hint {
+  font-size: 12px;
   color: var(--accent-cyan-light);
+  font-weight: 600;
 }
 
 .schedule-panel {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-  padding-top: 10px;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px dashed var(--border-subtle);
 }
 
@@ -329,7 +323,7 @@ body::before {
   background-color: rgba(6, 9, 19, 0.65);
   border: 1px solid var(--glass-border-strong);
   color: var(--text-main);
-  padding: 5px 10px;
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
   font-size: 12.5px;
   font-family: var(--font-mono);
@@ -358,10 +352,10 @@ body::before {
    Category Filter Tabs (Translucent Glass Pills)
    ========================================================================== */
 .category-nav {
-  padding: 10px 16px;
-  background: rgba(6, 9, 19, 0.58);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 8px 16px;
+  background: rgba(6, 9, 19, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
@@ -370,7 +364,7 @@ body::before {
 
 .category-tabs {
   display: flex;
-  gap: 7px;
+  gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -384,15 +378,14 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 5px 11px;
   min-height: 32px;
   border-radius: var(--radius-full);
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
-  background: rgba(30, 41, 59, 0.48);
+  background: rgba(30, 41, 59, 0.42);
   color: var(--text-muted);
   border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   white-space: nowrap;
   cursor: pointer;
   flex-shrink: 0;
@@ -402,8 +395,7 @@ body::before {
 @media (hover: hover) and (pointer: fine) {
   .tab-btn:hover {
     color: var(--text-main);
-    background: rgba(51, 65, 85, 0.62);
-    border-color: var(--glass-border-strong);
+    background: rgba(51, 65, 85, 0.58);
   }
 }
 
@@ -411,14 +403,14 @@ body::before {
   background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
   color: #060913;
   border-color: rgba(255, 255, 255, 0.55);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 4px 14px rgba(34, 211, 238, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 4px 12px rgba(34, 211, 238, 0.3);
   font-weight: 700;
 }
 
 .tab-count {
   font-size: 12px;
   font-weight: 700;
-  padding: 1px 6px;
+  padding: 0 6px;
   border-radius: var(--radius-full);
   background-color: rgba(255, 255, 255, 0.10);
   color: var(--text-secondary);
@@ -430,39 +422,39 @@ body::before {
 }
 
 /* ==========================================================================
-   Study Workspace & Frosted Glass Cards (Zero Nested Cards)
+   Study Workspace & Single Focus Hero Glass Card
    ========================================================================== */
 .study-workspace {
-  padding: 14px 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   flex: 1;
 }
 
 .card {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.52) 0%, rgba(15, 23, 42, 0.38) 100%);
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.50) 0%, rgba(15, 23, 42, 0.36) 100%);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-highlight), var(--shadow-sm);
   border-radius: var(--radius-lg);
-  padding: 16px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-/* Hero Sentence Card — Prismatic Glass Centerpiece */
+/* Hero Focus Card — Spacious, Calm, 100% Centered on the Sentence */
 .hero-card {
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.16) 0%, rgba(15, 23, 42, 0.58) 52%, rgba(99, 102, 241, 0.15) 100%);
+  background: linear-gradient(140deg, rgba(34, 211, 238, 0.16) 0%, rgba(15, 23, 42, 0.56) 50%, rgba(99, 102, 241, 0.14) 100%);
   border: 1px solid rgba(103, 232, 249, 0.38);
   box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.34),
-    0 18px 38px -10px rgba(6, 182, 212, 0.22),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.36),
+    0 20px 44px -12px rgba(6, 182, 212, 0.22),
     var(--shadow-md);
-  position: relative;
-  gap: 14px;
+  padding: 20px 18px;
+  gap: 16px;
 }
 
 .card-meta {
@@ -477,14 +469,12 @@ body::before {
   font-weight: 600;
   padding: 3px 10px;
   border-radius: var(--radius-full);
-  letter-spacing: 0.01em;
 }
 
 .badge-topic {
   background: rgba(34, 211, 238, 0.18);
   color: var(--accent-cyan-light);
-  border: 1px solid rgba(103, 232, 249, 0.38);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(103, 232, 249, 0.35);
 }
 
 .badge-level {
@@ -510,27 +500,35 @@ body::before {
 .sentence-hero-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .sentence-english {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 700;
   color: #ffffff;
   line-height: 1.42;
   letter-spacing: -0.02em;
   word-break: break-word;
   text-wrap: pretty;
-  text-shadow: 0 2px 12px rgba(2, 6, 23, 0.35);
 }
 
 .sentence-ipa {
   font-family: var(--font-mono);
   font-size: 13px;
   color: #7dd3fc;
-  line-height: 1.5;
+  line-height: 1.45;
   word-break: break-word;
+}
+
+.hero-vietnamese {
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+  text-wrap: pretty;
 }
 
 /* Audio Player & Visualizer */
@@ -539,7 +537,7 @@ body::before {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 4px 0 2px;
+  padding-top: 2px;
 }
 
 .tts-buttons {
@@ -556,14 +554,14 @@ body::before {
   background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
   color: #060913;
   font-weight: 700;
-  font-size: 12.5px;
+  font-size: 13px;
   min-height: 36px;
-  padding: 8px 15px;
+  padding: 8px 16px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 6px 16px rgba(34, 211, 238, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 6px 16px rgba(34, 211, 238, 0.3);
   cursor: pointer;
-  transition: transform 120ms ease, background 150ms ease;
+  transition: transform 120ms ease;
   flex-shrink: 0;
 }
 
@@ -622,11 +620,147 @@ body::before {
   100% { height: 18px; }
 }
 
-/* Flattened Stress & Instead-of Sections inside Glass Hero Card */
+/* Key Chunks inside Hero Card (Compact Scannable Rows) */
+.hero-chunks-section {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chunks-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-subtle);
+  letter-spacing: 0.02em;
+}
+
+.key-chunks-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chunk-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 4px 0;
+}
+
+.chunk-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-cyan-light);
+}
+
+.chunk-meaning {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Progressive Disclosure: Deep Dive Drawer (Collapsed by Default)
+   ========================================================================== */
+.deep-dive-drawer {
+  display: flex;
+  flex-direction: column;
+}
+
+.deep-dive-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(17, 25, 40, 0.48);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.deep-dive-summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .deep-dive-summary:hover {
+    background: rgba(30, 41, 59, 0.62);
+    border-color: var(--glass-border-strong);
+  }
+}
+
+.deep-dive-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deep-dive-label svg {
+  color: var(--accent-cyan-light);
+  flex-shrink: 0;
+}
+
+.deep-dive-chevron {
+  color: var(--text-subtle);
+  transition: transform 200ms ease;
+}
+
+.deep-dive-drawer[open] .deep-dive-chevron {
+  transform: rotate(180deg);
+}
+
+.deep-dive-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   Expanded Detail Cards inside Deep Dive Drawer
+   ========================================================================== */
+.detail-card {
+  padding: 15px;
+  gap: 10px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 6px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .stress-box,
 .instead-of-box {
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 11px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -637,15 +771,15 @@ body::before {
   font-size: 12px;
   font-weight: 700;
   color: var(--accent-amber);
-  letter-spacing: 0.02em;
 }
 
 .instead-title {
   color: var(--accent-rose);
 }
 
-.sentence-stress {
-  font-size: 13.5px;
+.sentence-stress,
+.sentence-instead-of {
+  font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.5;
   word-break: break-word;
@@ -653,68 +787,23 @@ body::before {
 
 .sentence-intonation {
   color: #fde68a;
-  font-weight: 500;
-}
-
-.sentence-instead-of {
-  font-size: 13.5px;
-  color: var(--text-muted);
-  line-height: 1.5;
-  word-break: break-word;
-}
-
-/* ==========================================================================
-   Detail Sections (Meaning, Dialogue, Key Chunks, Pro Tip)
-   ========================================================================== */
-.detail-card {
-  gap: 12px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 8px;
-}
-
-.section-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-cyan-light);
-  flex-shrink: 0;
-}
-
-.section-title {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--text-main);
-  letter-spacing: -0.01em;
-}
-
-.section-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .meaning-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .meaning-item-divider {
   border-top: 1px solid var(--border-subtle);
-  padding-top: 10px;
+  padding-top: 8px;
 }
 
 .label-chip {
   font-size: 12px;
   font-weight: 700;
   color: var(--accent-cyan-light);
-  letter-spacing: 0.01em;
 }
 
 .label-chip-accent {
@@ -733,9 +822,9 @@ body::before {
 }
 
 .body-text {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-main);
-  line-height: 1.55;
+  line-height: 1.5;
   word-break: break-word;
 }
 
@@ -743,38 +832,35 @@ body::before {
   color: var(--text-secondary);
 }
 
-/* Dialogue Thread (Flattened Editorial Conversation inside Frosted Card) */
 .scenario-banner {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--text-muted);
   line-height: 1.45;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
 .dialogue-chat {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .chat-bubble {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 2px 0;
+  gap: 2px;
 }
 
 .chat-speaker-b {
   border-top: 1px dashed var(--border-subtle);
-  padding-top: 10px;
+  padding-top: 8px;
 }
 
 .speaker-role {
   font-size: 12px;
   font-weight: 700;
   color: var(--text-subtle);
-  letter-spacing: 0.02em;
 }
 
 .chat-speaker-b .speaker-role {
@@ -782,68 +868,22 @@ body::before {
 }
 
 .chat-line {
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 13.5px;
+  line-height: 1.45;
   color: var(--text-main);
   word-break: break-word;
-}
-
-/* Key Chunks & Alternatives (Flattened Hairline List inside Frosted Card) */
-.key-chunks-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-}
-
-.chunk-item {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.chunk-item:first-child {
-  padding-top: 2px;
-}
-
-.chunk-text {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent-cyan-light);
-}
-
-.chunk-meaning {
-  font-size: 13px;
-  color: var(--text-muted);
-  line-height: 1.45;
-}
-
-.alternatives-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 6px;
-}
-
-.alt-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-subtle);
-  letter-spacing: 0.02em;
 }
 
 .alternatives-grid {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .alt-card {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   padding-top: 8px;
   border-top: 1px dashed var(--border-subtle);
 }
@@ -859,26 +899,21 @@ body::before {
 }
 
 .alt-text {
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--text-main);
-  line-height: 1.5;
+  line-height: 1.45;
   word-break: break-word;
 }
 
-/* Pro Tip Card (Warm Amber Frosted Glass Tint) */
 .tip-card {
-  background: linear-gradient(145deg, rgba(251, 191, 36, 0.12) 0%, rgba(17, 25, 40, 0.50) 100%);
-  border-color: rgba(251, 191, 36, 0.32);
-}
-
-.tip-card .section-icon {
-  color: var(--accent-amber);
+  background: linear-gradient(145deg, rgba(251, 191, 36, 0.10) 0%, rgba(17, 25, 40, 0.46) 100%);
+  border-color: rgba(251, 191, 36, 0.28);
 }
 
 .pro-tip-text {
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.55;
+  line-height: 1.5;
   word-break: break-word;
 }
 
@@ -893,15 +928,15 @@ body::before {
   margin-inline: auto;
   width: 100%;
   max-width: 480px;
-  background: rgba(12, 18, 32, 0.68);
+  background: rgba(10, 15, 28, 0.72);
   backdrop-filter: blur(24px) saturate(190%);
   -webkit-backdrop-filter: blur(24px) saturate(190%);
   border-top: 1px solid var(--glass-border-strong);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.20), 0 -10px 30px rgba(2, 6, 23, 0.65);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.18), 0 -10px 30px rgba(2, 6, 23, 0.65);
   padding: 10px 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   z-index: 50;
 }
 
@@ -950,7 +985,6 @@ body::before {
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-muted);
   border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -964,7 +998,7 @@ body::before {
   background: rgba(30, 41, 59, 0.58);
   color: var(--text-main);
   border: 1px solid var(--glass-border-strong);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   font-size: 12.5px;
   min-height: 38px;
   padding: 8px 14px;
