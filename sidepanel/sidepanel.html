@@ -65,7 +65,7 @@
       <details id="schedule-details" class="schedule-details">
         <summary class="schedule-summary">
           <span class="summary-left">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             <span id="next-alarm-display" class="next-alarm-text">Hẹn giờ: 19:00 hàng ngày</span>
           </span>
           <span class="summary-edit-hint">Đổi giờ ▾</span>
@@ -103,9 +103,9 @@
       </div>
     </nav>
 
-    <!-- MAIN STUDY WORKSPACE: SINGLE FOCUS CARD + PROGRESSIVE DISCLOSURE -->
+    <!-- MAIN STUDY WORKSPACE: ULTRA-FOCUSED 1-SENTENCE FLASHCARD -->
     <main class="study-workspace">
-      <!-- HERO FOCUS SENTENCE CARD (100% Visual Attention) -->
+      <!-- HERO FOCUS SENTENCE CARD (Only 3 things: Sentence, IPA, Meaning + Audio) -->
       <article id="hero-sentence-card" class="card hero-card" aria-label="Thẻ câu học tập chính">
         <div class="card-meta">
           <span id="sentence-topic-badge" class="badge badge-topic">Daily Standup</span>
@@ -146,25 +146,43 @@
             <span class="wave-bar"></span>
           </div>
         </div>
-
-        <!-- KEY CHUNKS PILLS (Scannable in 3 seconds) -->
-        <div class="hero-chunks-section">
-          <div class="chunks-eyebrow">Cụm từ ăn điểm</div>
-          <ul id="card-key-chunks" class="key-chunks-list"></ul>
-        </div>
       </article>
 
-      <!-- PROGRESSIVE DISCLOSURE: DEEP DIVE DRAWER (Collapsed by default so screen stays clean & focused!) -->
+      <!-- PROGRESSIVE DISCLOSURE: DEEP DIVE DRAWER (Visible above the fold, collapsed by default!) -->
       <details id="deep-dive-drawer" class="deep-dive-drawer">
         <summary class="deep-dive-summary">
           <span class="deep-dive-label">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            <span>Xem hội thoại mẫu, biến thể &amp; mẹo phỏng vấn</span>
+            <span>Mở rộng: Cụm từ · Hội thoại mẫu · Mẹo phỏng vấn</span>
           </span>
           <span class="deep-dive-chevron" aria-hidden="true">▾</span>
         </summary>
 
         <div class="deep-dive-content">
+          <!-- KEY CHUNKS & ALTERNATIVES -->
+          <section class="card detail-card" aria-label="Cụm từ ăn điểm và cách diễn đạt tương đương">
+            <div class="section-header">
+              <h2 class="section-title">Cụm Từ Ăn Điểm &amp; Biến Thể</h2>
+            </div>
+            <div class="section-body">
+              <ul id="card-key-chunks" class="key-chunks-list"></ul>
+              <div class="instead-of-box">
+                <div class="instead-title">Thay vì nói đơn giản</div>
+                <div id="sentence-instead-of" class="sentence-instead-of"></div>
+              </div>
+              <div id="card-alternatives" class="alternatives-grid">
+                <div class="alt-card alt-casual">
+                  <span class="alt-badge">Casual · Slack / Teams</span>
+                  <p id="alt-casual-text" class="alt-text"></p>
+                </div>
+                <div class="alt-card alt-formal">
+                  <span class="alt-badge">Formal · Email / PR</span>
+                  <p id="alt-formal-text" class="alt-text"></p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <!-- REAL IT DIALOGUE (A-B) -->
           <section id="card-dialogue" class="card detail-card" aria-label="Hội thoại thực tế trong công việc">
             <div class="section-header">
@@ -180,29 +198,6 @@
                 <div class="chat-bubble chat-speaker-b">
                   <span id="speaker-b-label" class="speaker-role">You (Engineer)</span>
                   <p id="dialogue-speaker-b" class="chat-line"></p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ALTERNATIVES & INSTEAD OF -->
-          <section class="card detail-card" aria-label="Cách diễn đạt tương đương">
-            <div class="section-header">
-              <h2 class="section-title">Biến Thể &amp; Phản Xạ Thay Thế</h2>
-            </div>
-            <div class="section-body">
-              <div class="instead-of-box">
-                <div class="instead-title">Thay vì nói đơn giản</div>
-                <div id="sentence-instead-of" class="sentence-instead-of"></div>
-              </div>
-              <div id="card-alternatives" class="alternatives-grid">
-                <div class="alt-card alt-casual">
-                  <span class="alt-badge">Casual · Slack / Teams</span>
-                  <p id="alt-casual-text" class="alt-text"></p>
-                </div>
-                <div class="alt-card alt-formal">
-                  <span class="alt-badge">Formal · Email / PR</span>
-                  <p id="alt-formal-text" class="alt-text"></p>
                 </div>
               </div>
             </div>
