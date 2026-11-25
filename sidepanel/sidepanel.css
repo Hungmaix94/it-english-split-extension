@@ -1,6 +1,7 @@
 /* ==========================================================================
-   IT English Daily Split-View - Editorial Dark Studio Stylesheet (320px-480px)
-   Strictly enforces scrollWidth <= clientWidth, 0 nested cards, WCAG AA contrast.
+   IT English Daily Split-View - Modern Glassmorphism Studio (320px-480px)
+   Frosted glass surfaces, specular rim highlights, ambient aurora mesh light,
+   strictly enforces scrollWidth <= clientWidth, 0 nested cards, WCAG AA.
    ========================================================================== */
 
 :root {
@@ -8,19 +9,24 @@
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, 'Liberation Mono', monospace;
 
-  /* Editorial Dark Studio Palette — Deep Obsidian + Focused Cyan & Warm Amber */
-  --bg-app: #090d16;
-  --bg-surface: #111827;
-  --bg-surface-elevated: #1e293b;
-  --bg-surface-soft: rgba(17, 24, 39, 0.75);
+  /* Glassmorphism Aurora Palette */
+  --bg-app: #060913;
+  --bg-surface: rgba(17, 25, 40, 0.56);
+  --bg-surface-elevated: rgba(30, 41, 59, 0.62);
+  --bg-surface-soft: rgba(15, 23, 42, 0.45);
+
+  --glass-blur: blur(22px) saturate(180%);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-strong: rgba(255, 255, 255, 0.24);
+  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
 
   --text-main: #f8fafc;
   --text-secondary: #e2e8f0;
   --text-muted: #cbd5e1;
   --text-subtle: #94a3b8;
 
-  --border-subtle: rgba(148, 163, 184, 0.16);
-  --border-highlight: rgba(148, 163, 184, 0.3);
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-highlight: rgba(255, 255, 255, 0.24);
 
   --accent-cyan: #22d3ee;
   --accent-cyan-light: #67e8f9;
@@ -29,17 +35,17 @@
   --accent-rose: #fb7185;
   --accent-indigo: #a5b4fc;
 
-  --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 2px 8px -2px rgba(2, 6, 23, 0.45);
-  --shadow-md: 0 8px 20px -4px rgba(2, 6, 23, 0.55);
+  --shadow-sm: 0 8px 24px -6px rgba(2, 6, 23, 0.55);
+  --shadow-md: 0 16px 36px -8px rgba(2, 6, 23, 0.7);
 }
 
 /* ==========================================================================
-   Reset & Base Geometry
+   Reset & Ambient Aurora Background
    ========================================================================== */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -48,7 +54,7 @@
 }
 
 ::selection {
-  background-color: rgba(34, 211, 238, 0.25);
+  background-color: rgba(34, 211, 238, 0.28);
   color: #ffffff;
 }
 
@@ -67,6 +73,20 @@ html, body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Ambient Aurora Light Orbs behind the Frosted Glass */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 14%, rgba(34, 211, 238, 0.30) 0%, rgba(34, 211, 238, 0) 48%),
+    radial-gradient(circle at 88% 36%, rgba(99, 102, 241, 0.28) 0%, rgba(99, 102, 241, 0) 52%),
+    radial-gradient(circle at 22% 78%, rgba(16, 185, 129, 0.20) 0%, rgba(16, 185, 129, 0) 50%),
+    radial-gradient(circle at 82% 88%, rgba(245, 158, 11, 0.16) 0%, rgba(245, 158, 11, 0) 45%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ==========================================================================
    App Layout Shell
    ========================================================================== */
@@ -78,19 +98,23 @@ html, body {
   max-width: 480px;
   margin: 0 auto;
   position: relative;
+  z-index: 1;
   overflow-x: hidden;
-  padding-bottom: 100px;
+  padding-bottom: 104px;
 }
 
 /* ==========================================================================
-   19:00 Alarm Reminder Banner
+   19:00 Alarm Reminder Banner (Frosted Crimson Glass)
    ========================================================================== */
 .alarm-banner {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: linear-gradient(135deg, #7c2d12 0%, #991b1b 100%);
+  background: linear-gradient(135deg, rgba(153, 27, 27, 0.78) 0%, rgba(124, 45, 18, 0.75) 100%);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid rgba(254, 202, 202, 0.35);
+  box-shadow: var(--glass-highlight);
   padding: 12px 16px;
   color: #ffffff;
   animation: slideDown 240ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -142,11 +166,14 @@ html, body {
 }
 
 /* ==========================================================================
-   App Header & Progress Track
+   App Header & Progress Track (Top Frosted Glass Panel)
    ========================================================================== */
 .app-header {
-  background-color: var(--bg-surface);
-  border-bottom: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, rgba(17, 25, 40, 0.74) 0%, rgba(17, 25, 40, 0.52) 100%);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.06);
   padding: 12px 16px;
   display: flex;
   flex-direction: column;
@@ -172,9 +199,10 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(251, 191, 36, 0.12);
-  border: 1px solid rgba(251, 191, 36, 0.35);
-  padding: 4px 10px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.20) 0%, rgba(245, 158, 11, 0.10) 100%);
+  border: 1px solid rgba(251, 191, 36, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 12px rgba(245, 158, 11, 0.15);
+  padding: 4px 11px;
   border-radius: var(--radius-full);
   color: var(--accent-amber);
   font-weight: 700;
@@ -219,12 +247,13 @@ html, body {
 
 .progress-counter {
   font-weight: 700;
-  color: var(--accent-cyan);
+  color: var(--accent-cyan-light);
 }
 
 .progress-track {
-  height: 5px;
-  background-color: rgba(148, 163, 184, 0.14);
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
@@ -233,6 +262,7 @@ html, body {
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald));
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
   border-radius: var(--radius-full);
   width: 100%;
   transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -271,7 +301,7 @@ html, body {
 .next-alarm-text {
   font-size: 12px;
   font-weight: 600;
-  color: var(--accent-cyan);
+  color: var(--accent-cyan-light);
 }
 
 .schedule-panel {
@@ -296,8 +326,8 @@ html, body {
 }
 
 .time-input {
-  background-color: var(--bg-app);
-  border: 1px solid var(--border-highlight);
+  background-color: rgba(6, 9, 19, 0.65);
+  border: 1px solid var(--glass-border-strong);
   color: var(--text-main);
   padding: 5px 10px;
   border-radius: var(--radius-sm);
@@ -325,12 +355,13 @@ html, body {
 }
 
 /* ==========================================================================
-   Category Filter Tabs (Horizontal Scrollable, High-Contrast Pills)
+   Category Filter Tabs (Translucent Glass Pills)
    ========================================================================== */
 .category-nav {
   padding: 10px 16px;
-  background-color: rgba(9, 13, 22, 0.92);
-  backdrop-filter: blur(10px);
+  background: rgba(6, 9, 19, 0.58);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
@@ -339,7 +370,7 @@ html, body {
 
 .category-tabs {
   display: flex;
-  gap: 6px;
+  gap: 7px;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -353,32 +384,34 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 11px;
+  padding: 6px 12px;
   min-height: 32px;
   border-radius: var(--radius-full);
   font-size: 12.5px;
   font-weight: 500;
-  background-color: var(--bg-surface);
+  background: rgba(30, 41, 59, 0.48);
   color: var(--text-muted);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   white-space: nowrap;
   cursor: pointer;
   flex-shrink: 0;
-  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tab-btn:hover {
     color: var(--text-main);
-    background-color: var(--bg-surface-elevated);
-    border-color: var(--border-highlight);
+    background: rgba(51, 65, 85, 0.62);
+    border-color: var(--glass-border-strong);
   }
 }
 
 .tab-btn.active {
-  background-color: var(--accent-cyan);
-  color: #090d16;
-  border-color: var(--accent-cyan);
+  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+  color: #060913;
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 4px 14px rgba(34, 211, 238, 0.35);
   font-weight: 700;
 }
 
@@ -387,17 +420,17 @@ html, body {
   font-weight: 700;
   padding: 1px 6px;
   border-radius: var(--radius-full);
-  background-color: rgba(148, 163, 184, 0.16);
+  background-color: rgba(255, 255, 255, 0.10);
   color: var(--text-secondary);
 }
 
 .tab-btn.active .tab-count {
-  background-color: #090d16;
+  background-color: #060913;
   color: var(--accent-cyan-light);
 }
 
 /* ==========================================================================
-   Study Workspace & Editorial Cards (Zero Nested Cards)
+   Study Workspace & Frosted Glass Cards (Zero Nested Cards)
    ========================================================================== */
 .study-workspace {
   padding: 14px 16px;
@@ -408,8 +441,11 @@ html, body {
 }
 
 .card {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.52) 0%, rgba(15, 23, 42, 0.38) 100%);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), var(--shadow-sm);
   border-radius: var(--radius-lg);
   padding: 16px;
   display: flex;
@@ -417,10 +453,14 @@ html, body {
   gap: 12px;
 }
 
-/* Hero Sentence Card — Spotlight Centerpiece */
+/* Hero Sentence Card — Prismatic Glass Centerpiece */
 .hero-card {
-  border-color: rgba(34, 211, 238, 0.32);
-  background: radial-gradient(120% 90% at 10% 0%, rgba(34, 211, 238, 0.11) 0%, #111827 65%);
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.16) 0%, rgba(15, 23, 42, 0.58) 52%, rgba(99, 102, 241, 0.15) 100%);
+  border: 1px solid rgba(103, 232, 249, 0.38);
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.34),
+    0 18px 38px -10px rgba(6, 182, 212, 0.22),
+    var(--shadow-md);
   position: relative;
   gap: 14px;
 }
@@ -441,15 +481,16 @@ html, body {
 }
 
 .badge-topic {
-  background-color: rgba(34, 211, 238, 0.14);
+  background: rgba(34, 211, 238, 0.18);
   color: var(--accent-cyan-light);
-  border: 1px solid rgba(34, 211, 238, 0.3);
+  border: 1px solid rgba(103, 232, 249, 0.38);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 .badge-level {
-  background-color: rgba(148, 163, 184, 0.12);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--glass-border);
 }
 
 .mastered-pill {
@@ -457,9 +498,9 @@ html, body {
   font-weight: 700;
   padding: 3px 10px;
   border-radius: var(--radius-full);
-  background: rgba(52, 211, 153, 0.16);
+  background: rgba(52, 211, 153, 0.20);
   color: var(--accent-emerald);
-  border: 1px solid rgba(52, 211, 153, 0.4);
+  border: 1px solid rgba(52, 211, 153, 0.45);
 }
 
 .mastered-pill.hidden {
@@ -481,6 +522,7 @@ html, body {
   letter-spacing: -0.02em;
   word-break: break-word;
   text-wrap: pretty;
+  text-shadow: 0 2px 12px rgba(2, 6, 23, 0.35);
 }
 
 .sentence-ipa {
@@ -511,16 +553,17 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background-color: var(--accent-cyan);
-  color: #090d16;
+  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+  color: #060913;
   font-weight: 700;
   font-size: 12.5px;
   min-height: 36px;
-  padding: 8px 14px;
+  padding: 8px 15px;
   border-radius: var(--radius-full);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 6px 16px rgba(34, 211, 238, 0.3);
   cursor: pointer;
-  transition: transform 120ms ease, background-color 150ms ease;
+  transition: transform 120ms ease, background 150ms ease;
   flex-shrink: 0;
 }
 
@@ -529,14 +572,15 @@ html, body {
 }
 
 .btn-audio-slow {
-  background-color: var(--bg-surface-elevated);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--text-main);
-  border: 1px solid var(--border-highlight);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .btn-audio-slow:hover {
-    background-color: #293548;
+    background: rgba(255, 255, 255, 0.14);
   }
 }
 
@@ -552,7 +596,7 @@ html, body {
 .wave-bar {
   width: 3px;
   height: 4px;
-  background-color: var(--accent-cyan);
+  background-color: var(--accent-cyan-light);
   border-radius: var(--radius-full);
   transition: height 150ms ease;
 }
@@ -578,7 +622,7 @@ html, body {
   100% { height: 18px; }
 }
 
-/* Flattened Stress & Instead-of Sections inside Hero Card (Zero Nested Card Box) */
+/* Flattened Stress & Instead-of Sections inside Glass Hero Card */
 .stress-box,
 .instead-of-box {
   border-top: 1px solid var(--border-subtle);
@@ -638,7 +682,7 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-cyan);
+  color: var(--accent-cyan-light);
   flex-shrink: 0;
 }
 
@@ -699,7 +743,7 @@ html, body {
   color: var(--text-secondary);
 }
 
-/* Dialogue Thread (Flattened Editorial Conversation — Zero Nested Boxes) */
+/* Dialogue Thread (Flattened Editorial Conversation inside Frosted Card) */
 .scenario-banner {
   font-size: 13px;
   color: var(--text-muted);
@@ -744,7 +788,7 @@ html, body {
   word-break: break-word;
 }
 
-/* Key Chunks & Alternatives (Flattened Hairline List — Zero Nested Boxes) */
+/* Key Chunks & Alternatives (Flattened Hairline List inside Frosted Card) */
 .key-chunks-list {
   list-style: none;
   display: flex;
@@ -821,9 +865,10 @@ html, body {
   word-break: break-word;
 }
 
-/* Pro Tip Card */
+/* Pro Tip Card (Warm Amber Frosted Glass Tint) */
 .tip-card {
-  border-color: rgba(251, 191, 36, 0.28);
+  background: linear-gradient(145deg, rgba(251, 191, 36, 0.12) 0%, rgba(17, 25, 40, 0.50) 100%);
+  border-color: rgba(251, 191, 36, 0.32);
 }
 
 .tip-card .section-icon {
@@ -838,7 +883,7 @@ html, body {
 }
 
 /* ==========================================================================
-   Fixed Footer & Navigation
+   Fixed Bottom Frosted Glass Dock & Navigation
    ========================================================================== */
 .app-footer {
   position: fixed;
@@ -848,14 +893,16 @@ html, body {
   margin-inline: auto;
   width: 100%;
   max-width: 480px;
-  background-color: var(--bg-surface);
-  border-top: 1px solid var(--border-subtle);
+  background: rgba(12, 18, 32, 0.68);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border-top: 1px solid var(--glass-border-strong);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.20), 0 -10px 30px rgba(2, 6, 23, 0.65);
   padding: 10px 16px;
   display: flex;
   flex-direction: column;
   gap: 6px;
   z-index: 50;
-  box-shadow: 0 -6px 16px rgba(2, 6, 23, 0.45);
 }
 
 .nav-controls {
@@ -884,8 +931,9 @@ html, body {
 }
 
 .btn-primary {
-  background-color: var(--accent-cyan);
-  color: #090d16;
+  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+  color: #060913;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .btn-secondary {
@@ -899,22 +947,24 @@ html, body {
 }
 
 .btn-ghost {
-  background-color: transparent;
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-muted);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .btn-ghost:hover {
-    background-color: var(--bg-surface-elevated);
+    background: rgba(255, 255, 255, 0.12);
     color: var(--text-main);
   }
 }
 
 .btn-nav {
-  background-color: var(--bg-surface-elevated);
+  background: rgba(30, 41, 59, 0.58);
   color: var(--text-main);
-  border: 1px solid var(--border-highlight);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   font-size: 12.5px;
   min-height: 38px;
   padding: 8px 14px;
@@ -924,13 +974,13 @@ html, body {
 
 @media (hover: hover) and (pointer: fine) {
   .btn-nav:hover {
-    background-color: #293548;
+    background: rgba(51, 65, 85, 0.72);
   }
 }
 
 .btn-mastered {
   flex: 1;
-  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  background: linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%);
   color: #0f172a;
   white-space: nowrap;
   font-size: 13px;
@@ -938,7 +988,8 @@ html, body {
   min-height: 38px;
   padding: 8px 12px;
   border-radius: var(--radius-md);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 6px 18px rgba(245, 158, 11, 0.28);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -953,8 +1004,9 @@ html, body {
 }
 
 .btn-mastered.is-mastered {
-  background: linear-gradient(90deg, #34d399, #10b981);
-  color: #090d16;
+  background: linear-gradient(135deg, #6ee7b7 0%, #34d399 55%, #10b981 100%);
+  color: #060913;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 6px 18px rgba(16, 185, 129, 0.3);
 }
 
 .footer-meta {
