@@ -2,11 +2,11 @@
 
 export const CATEGORIES = [
   { id: 'all', label: 'All Topics', icon: '📚' },
+  { id: 'interview', label: 'Phỏng vấn IT', icon: '💼' },
   { id: 'standup', label: 'Daily Standup', icon: '☀️' },
   { id: 'codereview', label: 'Code Review & PR', icon: '🔍' },
-  { id: 'architecture', label: 'System & Architecture', icon: '📐' },
-  { id: 'incident', label: 'Incident & Debugging', icon: '🚨' },
-  { id: 'interview', label: 'IT Technical Interview', icon: '💼' }
+  { id: 'architecture', label: 'System Design', icon: '📐' },
+  { id: 'incident', label: 'Incident & Debug', icon: '🚨' }
 ];
 
 export const IT_SENTENCES = [

@@ -1,6 +1,6 @@
 /* ==========================================================================
-   IT English Daily Split-View - Zen 1-Sentence Glass Flashcard (320px-480px)
-   Maximum focus: Only 1 English sentence + 1 Vietnamese meaning on screen.
+   IT English Daily Split-View - Illustrated IT Interview Dialogue Card
+   Glassmorphism + Visual Scene Illustration + 2-Turn Interview Q&A Focus
    ========================================================================== */
 
 :root {
@@ -9,8 +9,8 @@
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, monospace;
 
   --bg-app: #070b14;
-  --bg-surface: rgba(17, 25, 40, 0.54);
-  --bg-surface-elevated: rgba(30, 41, 59, 0.62);
+  --bg-surface: rgba(17, 25, 40, 0.56);
+  --bg-surface-elevated: rgba(30, 41, 59, 0.64);
 
   --glass-blur: blur(26px) saturate(180%);
   --glass-border: rgba(255, 255, 255, 0.14);
@@ -34,7 +34,7 @@
 
   --radius-sm: 10px;
   --radius-md: 14px;
-  --radius-lg: 24px;
+  --radius-lg: 22px;
   --radius-full: 9999px;
 
   --shadow-sm: 0 8px 24px -6px rgba(2, 6, 23, 0.5);
@@ -66,9 +66,9 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 18% 22%, rgba(56, 189, 248, 0.24) 0%, rgba(56, 189, 248, 0) 52%),
-    radial-gradient(circle at 82% 38%, rgba(251, 191, 36, 0.14) 0%, rgba(251, 191, 36, 0) 50%),
-    radial-gradient(circle at 30% 80%, rgba(52, 211, 153, 0.15) 0%, rgba(52, 211, 153, 0) 52%);
+    radial-gradient(circle at 18% 20%, rgba(56, 189, 248, 0.24) 0%, rgba(56, 189, 248, 0) 52%),
+    radial-gradient(circle at 84% 36%, rgba(251, 191, 36, 0.14) 0%, rgba(251, 191, 36, 0) 50%),
+    radial-gradient(circle at 28% 82%, rgba(52, 211, 153, 0.15) 0%, rgba(52, 211, 153, 0) 52%);
   pointer-events: none;
   z-index: 0;
 }
@@ -83,7 +83,7 @@ body::before {
   position: relative;
   z-index: 1;
   overflow-x: hidden;
-  padding-bottom: 76px;
+  padding-bottom: 74px;
 }
 
 /* 19:00 Alarm Banner */
@@ -135,7 +135,7 @@ body::before {
   padding: 10px 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .header-top {
@@ -240,14 +240,14 @@ body::before {
 }
 
 /* ==========================================================================
-   Zen Flashcard Workspace (Vertically Centered Single Glass Card)
+   Main Workspace & Illustrated Interview Dialogue Card
    ========================================================================== */
 .study-workspace {
-  padding: 20px 16px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
   flex: 1;
 }
 
@@ -258,7 +258,7 @@ body::before {
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-highlight), var(--shadow-sm);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -270,28 +270,53 @@ body::before {
   box-shadow:
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.36),
     var(--shadow-md);
-  padding: 28px 24px;
-  gap: 24px;
+  padding: 16px;
+  gap: 14px;
 }
 
-.card-meta {
+/* Scene Illustration Banner */
+.scene-illustration-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0b1325;
+}
+
+.scene-illustration {
+  width: 100%;
+  display: block;
+  line-height: 0;
+}
+
+.scene-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.scene-overlay-badges {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  padding: 8px 10px;
+  background: rgba(7, 11, 20, 0.65);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   flex-wrap: wrap;
 }
 
 .badge {
   font-size: 12px;
   font-weight: 600;
-  padding: 3px 10px;
+  padding: 2px 9px;
   border-radius: var(--radius-full);
 }
 
 .badge-topic {
-  background: rgba(56, 189, 248, 0.16);
+  background: rgba(56, 189, 248, 0.18);
   color: var(--accent-cyan-light);
-  border: 1px solid rgba(125, 211, 252, 0.3);
+  border: 1px solid rgba(125, 211, 252, 0.32);
 }
 
 .badge-level {
@@ -303,7 +328,7 @@ body::before {
 .mastered-pill {
   font-size: 12px;
   font-weight: 700;
-  padding: 3px 10px;
+  padding: 2px 9px;
   border-radius: var(--radius-full);
   background: rgba(52, 211, 153, 0.20);
   color: var(--accent-emerald);
@@ -314,29 +339,113 @@ body::before {
   display: none;
 }
 
-.sentence-hero-content {
+/* Interview Dialogue Q&A Flow */
+.interview-dialogue-flow {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
+}
+
+.scenario-banner {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent-cyan-light);
+  letter-spacing: 0.01em;
+  text-wrap: pretty;
+}
+
+.chat-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chat-speaker-a {
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.chat-speaker-b {
+  gap: 8px;
+}
+
+.speaker-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.speaker-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.speaker-avatar-a {
+  background: rgba(56, 189, 248, 0.18);
+  color: var(--accent-cyan-light);
+  border: 1px solid rgba(125, 211, 252, 0.35);
+}
+
+.speaker-avatar-b {
+  background: rgba(251, 191, 36, 0.20);
+  color: var(--accent-amber);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+}
+
+.speaker-role {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-subtle);
+}
+
+.chat-speaker-b .speaker-role {
+  color: var(--accent-amber);
+}
+
+.btn-mini-audio {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+}
+
+.chat-question-line {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  text-wrap: pretty;
 }
 
 .sentence-english {
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 19.5px;
   font-weight: 700;
   color: #ffffff;
-  line-height: 1.38;
-  letter-spacing: -0.025em;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
   word-break: break-word;
   text-wrap: pretty;
 }
 
 .hero-vietnamese {
-  font-size: 15.5px;
+  font-size: 13.5px;
   color: var(--text-muted);
-  line-height: 1.5;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-subtle);
+  line-height: 1.48;
   text-wrap: pretty;
 }
 
@@ -345,25 +454,28 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .tts-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .btn-audio {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   background-color: #f8fafc;
   color: #070b14;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12.5px;
   min-height: 36px;
-  padding: 8px 18px;
+  padding: 7px 13px;
   border-radius: var(--radius-full);
   border: 1px solid #ffffff;
   box-shadow: var(--shadow-sm);
@@ -376,11 +488,12 @@ body::before {
   transform: scale(0.97);
 }
 
+.btn-audio-secondary,
 .btn-audio-slow {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-main);
   border: 1px solid var(--glass-border-strong);
-  padding: 8px 14px;
+  padding: 7px 11px;
 }
 
 /* Audio Waveform Visualizer */
@@ -433,7 +546,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  padding: 9px 16px;
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -459,7 +572,7 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 /* Expanded Detail Sections */
@@ -524,7 +637,6 @@ body::before {
 .sentence-stress,
 .sentence-instead-of,
 .body-text,
-.scenario-banner,
 .chat-line,
 .alt-text,
 .pro-tip-text {
@@ -539,26 +651,18 @@ body::before {
   color: #fde68a;
 }
 
-.dialogue-chat,
 .alternatives-grid {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.chat-bubble,
 .alt-card {
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding-top: 6px;
   border-top: 1px dashed var(--border-subtle);
-}
-
-.speaker-role {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-subtle);
 }
 
 .alt-badge {

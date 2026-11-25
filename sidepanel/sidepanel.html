@@ -8,12 +8,12 @@
 </head>
 <body>
   <div class="app-container" id="app-container">
-    <!-- 19:00 ALARM REMINDER BANNER (Hidden unless alarm fires) -->
+    <!-- 19:00 ALARM REMINDER BANNER -->
     <section id="alarm-banner" class="alarm-banner hidden" role="region" aria-label="19:00 Reminder Banner">
       <div class="banner-content">
         <div class="banner-text">
-          <strong>Đến giờ luyện 1 câu IT English!</strong>
-          <span class="banner-subtext">1 phút mỗi tối.</span>
+          <strong>Đến giờ luyện hội thoại Phỏng vấn IT!</strong>
+          <span class="banner-subtext">Nghe câu hỏi và đọc to câu trả lời mẫu bên dưới.</span>
         </div>
       </div>
       <div class="banner-actions">
@@ -22,7 +22,7 @@
       </div>
     </section>
 
-    <!-- MINIMAL TOP BAR: Only Streak + Counter + Snooze -->
+    <!-- MINIMAL TOP BAR -->
     <header class="app-header">
       <div class="header-top">
         <div class="brand-cluster">
@@ -39,33 +39,64 @@
         </div>
       </div>
 
-      <!-- TOPIC PILLS -->
-      <nav class="category-nav" aria-label="5 Chủ đề IT">
+      <!-- TOPIC PILLS (IT Interview first) -->
+      <nav class="category-nav" aria-label="Chủ đề Phỏng vấn và Công việc IT">
         <div id="category-tabs" class="category-tabs" role="tablist"></div>
       </nav>
     </header>
 
-    <!-- ZEN FLASHCARD WORKSPACE: ONLY 1 SENTENCE + 1 MEANING + AUDIO -->
+    <!-- MAIN WORKSPACE: ILLUSTRATED IT INTERVIEW DIALOGUE CARD -->
     <main class="study-workspace">
-      <article id="hero-sentence-card" class="card hero-card" aria-label="Thẻ câu giao tiếp">
-        <div class="card-meta">
-          <span id="sentence-topic-badge" class="badge badge-topic">Daily Standup</span>
-          <span id="sentence-level-badge" class="badge badge-level">B2</span>
-          <span id="sentence-mastered-indicator" class="mastered-pill hidden">✓ Đã thuộc</span>
+      <article id="hero-sentence-card" class="card hero-card" aria-label="Thẻ hội thoại phỏng vấn IT">
+        <!-- 1. CONTEXTUAL SCENE ILLUSTRATION BANNER -->
+        <div class="scene-illustration-wrap">
+          <div id="scene-illustration" class="scene-illustration" aria-hidden="true"></div>
+          <div class="scene-overlay-badges">
+            <span id="sentence-topic-badge" class="badge badge-topic">IT Technical Interview</span>
+            <span id="sentence-level-badge" class="badge badge-level">B2</span>
+            <span id="sentence-mastered-indicator" class="mastered-pill hidden">✓ Đã thuộc</span>
+          </div>
         </div>
 
-        <div class="sentence-hero-content">
-          <h1 id="sentence-english" class="sentence-english">Loading...</h1>
-          <p id="card-vietnamese" class="hero-vietnamese"></p>
+        <!-- 2. INTERVIEWER QUESTION + CANDIDATE ANSWER DIALOGUE -->
+        <div id="card-dialogue" class="interview-dialogue-flow" aria-label="Đoạn hội thoại phỏng vấn">
+          <p id="dialogue-scenario" class="scenario-banner"></p>
+
+          <!-- Turn A: Interviewer / Lead Prompt -->
+          <div class="chat-bubble chat-speaker-a">
+            <div class="speaker-header">
+              <span class="speaker-avatar speaker-avatar-a" aria-hidden="true">Q</span>
+              <span id="speaker-a-label" class="speaker-role">Interviewer</span>
+              <button type="button" id="btn-tts-question" class="btn-mini-audio" title="Nghe câu hỏi của Interviewer" aria-label="Nghe câu hỏi">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+              </button>
+            </div>
+            <p id="dialogue-speaker-a" class="chat-line chat-question-line"></p>
+          </div>
+
+          <!-- Turn B: Candidate / Your Winning Response (Spotlight) -->
+          <div class="chat-bubble chat-speaker-b">
+            <div class="speaker-header">
+              <span class="speaker-avatar speaker-avatar-b" aria-hidden="true">A</span>
+              <span id="speaker-b-label" class="speaker-role">You (Candidate / Engineer)</span>
+            </div>
+            <h1 id="sentence-english" class="sentence-english">Loading...</h1>
+            <p id="dialogue-speaker-b" class="sr-only" hidden></p>
+            <p id="card-vietnamese" class="hero-vietnamese"></p>
+          </div>
         </div>
 
+        <!-- 3. AUDIO CONTROLS (Play Full Dialogue or Answer) -->
         <div class="tts-controller">
           <div class="tts-buttons">
-            <button type="button" id="btn-tts-normal" class="btn btn-audio">
+            <button type="button" id="btn-tts-dialogue" class="btn btn-audio" title="Nghe trọn vẹn cuộc hội thoại Hỏi - Đáp">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-              <span>Nghe 1.0x</span>
+              <span>Nghe hội thoại</span>
             </button>
-            <button type="button" id="btn-tts-slow" class="btn btn-audio btn-audio-slow">
+            <button type="button" id="btn-tts-normal" class="btn btn-audio btn-audio-secondary" title="Chỉ nghe câu trả lời 1.0x">
+              <span>Trả lời 1.0x</span>
+            </button>
+            <button type="button" id="btn-tts-slow" class="btn btn-audio btn-audio-slow" title="Nghe chậm 0.8x để nhại theo">
               <span>0.8x</span>
             </button>
           </div>
@@ -80,15 +111,14 @@
         </div>
       </article>
 
-      <!-- SINGLE MINIMAL DISCLOSURE PILL: Everything else is tucked away here -->
+      <!-- COLLAPSIBLE DRAWER: IPA, Key Chunks, Variations, Schedule -->
       <details id="deep-dive-drawer" class="deep-dive-drawer">
         <summary class="deep-dive-summary">
-          <span>Chi tiết · Phiên âm · Hội thoại · Hẹn giờ</span>
+          <span>Chi tiết · Phiên âm · Từ khóa · Hẹn giờ</span>
           <span class="deep-dive-chevron" aria-hidden="true">▾</span>
         </summary>
 
         <div class="deep-dive-content">
-          <!-- IPA & STRESS -->
           <section class="card detail-card" aria-label="Phiên âm và ngữ điệu">
             <div id="sentence-ipa" class="sentence-ipa">/.../</div>
             <div class="stress-box">
@@ -101,32 +131,16 @@
             </div>
           </section>
 
-          <!-- KEY CHUNKS & ALTERNATIVES -->
           <section class="card detail-card" aria-label="Cụm từ và biến thể">
             <ul id="card-key-chunks" class="key-chunks-list"></ul>
             <div id="card-alternatives" class="alternatives-grid">
               <div class="alt-card alt-casual">
-                <span class="alt-badge">Casual</span>
+                <span class="alt-badge">Cách nói 1</span>
                 <p id="alt-casual-text" class="alt-text"></p>
               </div>
               <div class="alt-card alt-formal">
-                <span class="alt-badge">Formal</span>
+                <span class="alt-badge">Cách nói 2</span>
                 <p id="alt-formal-text" class="alt-text"></p>
-              </div>
-            </div>
-          </section>
-
-          <!-- DIALOGUE & TIP -->
-          <section id="card-dialogue" class="card detail-card" aria-label="Hội thoại mẫu">
-            <p id="dialogue-scenario" class="scenario-banner"></p>
-            <div class="dialogue-chat">
-              <div class="chat-bubble chat-speaker-a">
-                <span id="speaker-a-label" class="speaker-role">A</span>
-                <p id="dialogue-speaker-a" class="chat-line"></p>
-              </div>
-              <div class="chat-bubble chat-speaker-b">
-                <span id="speaker-b-label" class="speaker-role">B</span>
-                <p id="dialogue-speaker-b" class="chat-line"></p>
               </div>
             </div>
           </section>
@@ -136,7 +150,6 @@
             <p id="pro-tip-text" class="pro-tip-text"></p>
           </section>
 
-          <!-- SCHEDULE SETTINGS & DAILY GOAL -->
           <details id="schedule-details" class="card detail-card schedule-details" open>
             <summary class="schedule-summary">
               <span id="next-alarm-display" class="next-alarm-text">Hẹn giờ: 19:00</span>
@@ -176,12 +189,12 @@
     <!-- CLEAN 3-BUTTON BOTTOM BAR -->
     <footer class="app-footer">
       <div class="nav-controls">
-        <button type="button" id="btn-prev" class="btn btn-nav" title="Câu trước">← Trước</button>
+        <button type="button" id="btn-prev" class="btn btn-nav" title="Hội thoại trước">← Trước</button>
         <button type="button" id="btn-mark-mastered" class="btn btn-mastered">
           <span class="btn-fire-icon" aria-hidden="true">✓</span>
           <span id="mark-mastered-label">Đã thuộc</span>
         </button>
-        <button type="button" id="btn-next" class="btn btn-nav" title="Câu tiếp">Tiếp →</button>
+        <button type="button" id="btn-next" class="btn btn-nav" title="Hội thoại tiếp">Tiếp →</button>
       </div>
     </footer>
   </div>

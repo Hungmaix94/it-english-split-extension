@@ -73,7 +73,12 @@ const CATEGORY_ALIASES = {
  */
 export function filterSentences(sentences = IT_SENTENCES, categoryId = 'all') {
   if (!categoryId || categoryId === 'all') {
-    return [...sentences];
+    // Prioritize IT Interview dialogues first when viewing 'all'
+    return [...sentences].sort((a, b) => {
+      const aInt = a.category === 'interview' ? 0 : 1;
+      const bInt = b.category === 'interview' ? 0 : 1;
+      return aInt - bInt;
+    });
   }
   const targetCategory = CATEGORY_ALIASES[categoryId] || categoryId;
   const normalizedTarget = String(targetCategory).toLowerCase().replace(/[^a-z]/g, '');
@@ -273,6 +278,182 @@ function preventOrphanWord(str) {
   return str.trim().replace(/\s+(\S+)\s+(\S+)$/, '\u00A0$1\u00A0$2');
 }
 
+function parseDialogueTurns(sentence) {
+  if (sentence.dialogue && typeof sentence.dialogue === 'object' && sentence.dialogue.speakerA) {
+    return {
+      roleA: sentence.dialogue.speakerA.role || 'Interviewer',
+      lineA: sentence.dialogue.speakerA.line || '',
+      roleB: sentence.dialogue.speakerB?.role || 'You (Candidate)',
+      lineB: sentence.dialogue.speakerB?.line || sentence.english || sentence.sentence || ''
+    };
+  }
+  const raw = String(sentence.dialogue || '');
+  const parts = raw.split(/\s+-\s+/);
+  const parseTurn = (seg, fallbackRole, fallbackLine) => {
+    if (!seg) return { role: fallbackRole, line: fallbackLine };
+    const m = seg.match(/^([^:]+):\s*['"]?([\s\S]*?)['"]?$/);
+    if (m) {
+      return { role: m[1].trim(), line: m[2].replace(/^['"]|['"]$/g, '').trim() };
+    }
+    return { role: fallbackRole, line: seg.replace(/^['"]|['"]$/g, '').trim() };
+  };
+  const first = parseTurn(parts[0], 'Interviewer', 'Can you walk me through your approach?');
+  const second = parseTurn(parts[1], 'You (Candidate)', sentence.english || sentence.sentence || '');
+  // If first speaker is Dev/Author, swap or keep natural Q -> A flow
+  if (/^dev|^candidate/i.test(first.role) && parts[1]) {
+    return {
+      roleA: second.role,
+      lineA: second.line,
+      roleB: first.role,
+      lineB: first.line
+    };
+  }
+  return {
+    roleA: first.role,
+    lineA: first.line,
+    roleB: second.role,
+    lineB: second.line
+  };
+}
+
+function buildSceneIllustrationSvg(sentence) {
+  const id = sentence.id || '';
+  const cat = sentence.category || 'interview';
+
+  // 1. Interview 01: Database Sharding & p99 Latency (-40%)
+  if (id === 'interview-01') {
+    return `<svg viewBox="0 0 380 116" fill="none" xmlns="http://www.w3.org/2000/svg" class="scene-svg">
+      <rect width="380" height="116" rx="14" fill="url(#bg1)"/>
+      <!-- Interviewer & Candidate Avatars -->
+      <g transform="translate(16, 18)">
+        <circle cx="22" cy="22" r="18" fill="#1E293B" stroke="#67E8F9" stroke-width="1.5"/>
+        <circle cx="22" cy="17" r="6" fill="#67E8F9"/>
+        <path d="M12 32c2-5 18-5 20 0" stroke="#67E8F9" stroke-width="2" stroke-linecap="round"/>
+        <text x="22" y="54" fill="#94A3B8" font-size="9" font-weight="600" text-anchor="middle">INTERVIEWER</text>
+        <path d="M46 20h18" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="3 3"/>
+      </g>
+      <!-- System Design Board: DB Shards + p99 Latency Drop -->
+      <g transform="translate(88, 12)">
+        <rect width="198" height="92" rx="10" fill="#0B1325" fill-opacity="0.85" stroke="#334155"/>
+        <text x="12" y="18" fill="#7DD3FC" font-size="9.5" font-weight="700" font-family="monospace">DB SHARDING · BLACK FRIDAY</text>
+        <rect x="12" y="28" width="52" height="24" rx="5" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+        <text x="38" y="43" fill="#E2E8F0" font-size="8.5" font-weight="700" text-anchor="middle">Shard 01</text>
+        <rect x="72" y="28" width="52" height="24" rx="5" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+        <text x="98" y="43" fill="#E2E8F0" font-size="8.5" font-weight="700" text-anchor="middle">Shard 02</text>
+        <rect x="132" y="28" width="52" height="24" rx="5" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+        <text x="158" y="43" fill="#E2E8F0" font-size="8.5" font-weight="700" text-anchor="middle">Shard 03</text>
+        <!-- Latency Trend Line -->
+        <path d="M14 78 L55 76 L95 62 L145 60" stroke="#34D399" stroke-width="2.2" stroke-linecap="round"/>
+        <rect x="122" y="62" width="64" height="20" rx="10" fill="#064E3B" stroke="#34D399"/>
+        <text x="154" y="75" fill="#6EE7B7" font-size="9" font-weight="700" text-anchor="middle">p99 -40% ↓</text>
+      </g>
+      <!-- Candidate Avatar -->
+      <g transform="translate(306, 18)">
+        <circle cx="28" cy="22" r="18" fill="#1E293B" stroke="#FBBF24" stroke-width="1.5"/>
+        <circle cx="28" cy="17" r="6" fill="#FBBF24"/>
+        <path d="M18 32c2-5 18-5 20 0" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/>
+        <text x="28" y="54" fill="#FDE68A" font-size="9" font-weight="700" text-anchor="middle">YOU (STAR)</text>
+      </g>
+      <defs>
+        <linearGradient id="bg1" x1="0" y1="0" x2="380" y2="116" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#0F172A" stop-opacity="0.9"/>
+          <stop offset="1" stop-color="#1E1B4B" stop-opacity="0.6"/>
+        </linearGradient>
+      </defs>
+    </svg>`;
+  }
+
+  // 2. Interview 02: High Availability & Circuit Breaker
+  if (id === 'interview-02') {
+    return `<svg viewBox="0 0 380 116" fill="none" xmlns="http://www.w3.org/2000/svg" class="scene-svg">
+      <rect width="380" height="116" rx="14" fill="#0D1527"/>
+      <text x="18" y="22" fill="#7DD3FC" font-size="9.5" font-weight="700" font-family="monospace">HIGH AVAILABILITY · CIRCUIT BREAKER FAILOVER</text>
+      <!-- Node 1: Gateway -->
+      <rect x="18" y="36" width="84" height="44" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.4"/>
+      <text x="60" y="55" fill="#F8FAFC" font-size="9.5" font-weight="700" text-anchor="middle">API Gateway</text>
+      <text x="60" y="69" fill="#94A3B8" font-size="8" text-anchor="middle">Zero SPOF</text>
+      <path d="M104 58h30" stroke="#38BDF8" stroke-width="2"/>
+      <!-- Node 2: Circuit Breaker -->
+      <rect x="136" y="34" width="106" height="48" rx="9" fill="#1E1B4B" stroke="#FBBF24" stroke-width="1.5"/>
+      <text x="189" y="54" fill="#FDE68A" font-size="9.5" font-weight="700" text-anchor="middle">Circuit Breaker</text>
+      <text x="189" y="69" fill="#FBBF24" font-size="8" font-family="monospace" text-anchor="middle">Auto-Failover ⚡</text>
+      <path d="M244 58h28" stroke="#34D399" stroke-width="2"/>
+      <!-- Node 3: Healthy Replica -->
+      <rect x="274" y="36" width="88" height="44" rx="8" fill="#064E3B" stroke="#34D399" stroke-width="1.4"/>
+      <text x="318" y="55" fill="#ECFDF5" font-size="9.5" font-weight="700" text-anchor="middle">Replica Node</text>
+      <text x="318" y="69" fill="#6EE7B7" font-size="8.5" font-weight="700" text-anchor="middle">99.99% UP ✓</text>
+      <text x="190" y="102" fill="#94A3B8" font-size="9" text-anchor="middle">Preventing cascading failures across distributed services</text>
+    </svg>`;
+  }
+
+  // 3. Interview 03: Conflict Resolution via Empirical PoC Benchmark
+  if (id === 'interview-03') {
+    return `<svg viewBox="0 0 380 116" fill="none" xmlns="http://www.w3.org/2000/svg" class="scene-svg">
+      <rect width="380" height="116" rx="14" fill="#0D1527"/>
+      <text x="18" y="22" fill="#A5B4FC" font-size="9.5" font-weight="700" font-family="monospace">TECH CONFLICT RESOLUTION · POC BENCHMARK</text>
+      <!-- Bar A -->
+      <text x="20" y="48" fill="#E2E8F0" font-size="9.5" font-weight="600">Option A (PoC)</text>
+      <rect x="110" y="36" width="110" height="16" rx="4" fill="#34D399"/>
+      <text x="228" y="48" fill="#6EE7B7" font-size="9.5" font-weight="700" font-family="monospace">12ms · Winner ✓</text>
+      <!-- Bar B -->
+      <text x="20" y="74" fill="#94A3B8" font-size="9.5" font-weight="600">Option B (PoC)</text>
+      <rect x="110" y="62" width="195" height="16" rx="4" fill="#475569"/>
+      <text x="312" y="74" fill="#94A3B8" font-size="9.5" font-family="monospace">48ms</text>
+      <!-- Footer badge -->
+      <rect x="18" y="88" width="344" height="18" rx="5" fill="#1E293B"/>
+      <text x="190" y="100" fill="#7DD3FC" font-size="8.8" font-weight="600" text-anchor="middle">Empirical data &amp; objective metrics guide team decisions</text>
+    </svg>`;
+  }
+
+  // 4. Interview 04 / Architecture: Read-to-Write Ratio & SLA
+  if (id === 'interview-04' || cat === 'architecture') {
+    return `<svg viewBox="0 0 380 116" fill="none" xmlns="http://www.w3.org/2000/svg" class="scene-svg">
+      <rect width="380" height="116" rx="14" fill="#0D1527"/>
+      <text x="18" y="22" fill="#7DD3FC" font-size="9.5" font-weight="700" font-family="monospace">SYSTEM DESIGN · CLARIFYING SLA &amp; WORKLOAD</text>
+      <rect x="18" y="34" width="106" height="64" rx="8" fill="#1E293B" stroke="#38BDF8"/>
+      <text x="71" y="54" fill="#94A3B8" font-size="8.5" text-anchor="middle">READ : WRITE</text>
+      <text x="71" y="76" fill="#38BDF8" font-size="16" font-weight="800" font-family="monospace" text-anchor="middle">100 : 1</text>
+      <rect x="136" y="34" width="108" height="64" rx="8" fill="#1E293B" stroke="#34D399"/>
+      <text x="190" y="54" fill="#94A3B8" font-size="8.5" text-anchor="middle">LATENCY SLA</text>
+      <text x="190" y="76" fill="#34D399" font-size="15" font-weight="800" font-family="monospace" text-anchor="middle">p99 &lt; 10ms</text>
+      <rect x="256" y="34" width="106" height="64" rx="8" fill="#1E293B" stroke="#FBBF24"/>
+      <text x="309" y="54" fill="#94A3B8" font-size="8.5" text-anchor="middle">STORAGE ENGINE</text>
+      <text x="309" y="75" fill="#FDE68A" font-size="11.5" font-weight="700" text-anchor="middle">Redis + Read</text>
+      <text x="309" y="89" fill="#FDE68A" font-size="10" font-weight="600" text-anchor="middle">Replicas</text>
+    </svg>`;
+  }
+
+  // 5. Code Review & PR
+  if (cat === 'codereview') {
+    return `<svg viewBox="0 0 380 116" fill="none" xmlns="http://www.w3.org/2000/svg" class="scene-svg">
+      <rect width="380" height="116" rx="14" fill="#0D1527"/>
+      <text x="18" y="22" fill="#A5B4FC" font-size="9.5" font-weight="700" font-family="monospace">PULL REQUEST REVIEW · CLEAN ARCHITECTURE</text>
+      <rect x="18" y="34" width="154" height="66" rx="8" fill="#1E293B" stroke="#FB7185"/>
+      <text x="30" y="52" fill="#FDA4AF" font-size="9" font-family="monospace">- Fat Controller</text>
+      <text x="30" y="68" fill="#94A3B8" font-size="8.5" font-family="monospace">- Duplicated checks</text>
+      <text x="30" y="84" fill="#94A3B8" font-size="8.5" font-family="monospace">- N+1 / Race risk</text>
+      <path d="M180 67h22" stroke="#38BDF8" stroke-width="2"/>
+      <rect x="208" y="34" width="154" height="66" rx="8" fill="#064E3B" stroke="#34D399"/>
+      <text x="220" y="52" fill="#6EE7B7" font-size="9" font-family="monospace">+ Reusable Middleware</text>
+      <text x="220" y="68" fill="#ECFDF5" font-size="8.5" font-family="monospace">+ Thin Controller ✓</text>
+      <text x="220" y="84" fill="#6EE7B7" font-size="8.5" font-family="monospace">+ Constructive PR Review</text>
+    </svg>`;
+  }
+
+  // 6. Standup & Incident Default Scene
+  return `<svg viewBox="0 0 380 116" fill="none" xmlns="http://www.w3.org/2000/svg" class="scene-svg">
+    <rect width="380" height="116" rx="14" fill="#0D1527"/>
+    <text x="18" y="22" fill="#7DD3FC" font-size="9.5" font-weight="700" font-family="monospace">AGILE ENGINEERING SYNC · PROACTIVE OWNERSHIP</text>
+    <rect x="18" y="34" width="150" height="66" rx="8" fill="#1E293B" stroke="#FB7185"/>
+    <text x="93" y="56" fill="#FDA4AF" font-size="9.5" font-weight="700" text-anchor="middle">⚠️ Upstream Blocker</text>
+    <text x="93" y="74" fill="#CBD5E1" font-size="8.5" text-anchor="middle">Auth API / Production Issue</text>
+    <path d="M176 67h26" stroke="#FBBF24" stroke-width="2"/>
+    <rect x="210" y="34" width="152" height="66" rx="8" fill="#064E3B" stroke="#34D399"/>
+    <text x="286" y="56" fill="#6EE7B7" font-size="9.5" font-weight="700" text-anchor="middle">✓ Proactive Pivot</text>
+    <text x="286" y="74" fill="#ECFDF5" font-size="8.5" text-anchor="middle">Unblocked &amp; Delivering Value</text>
+  </svg>`;
+}
+
 export class SidepanelController {
   constructor() {
     this.state = createInitialState();
@@ -442,13 +623,17 @@ export class SidepanelController {
     const sentence = this.currentList[this.currentIndex];
     if (!sentence) return;
 
-    // Badges
+    // Badges & Scene Illustration
     const topicBadge = document.getElementById('sentence-topic-badge');
     const levelBadge = document.getElementById('sentence-level-badge');
     const masteredPill = document.getElementById('sentence-mastered-indicator');
+    const illustrationEl = document.getElementById('scene-illustration');
 
-    if (topicBadge) topicBadge.textContent = sentence.categoryLabel || 'IT English';
-    if (levelBadge) levelBadge.textContent = sentence.difficulty || sentence.level || 'Professional';
+    if (topicBadge) topicBadge.textContent = sentence.categoryLabel || 'IT Interview';
+    if (levelBadge) levelBadge.textContent = sentence.difficulty || sentence.level || 'B2';
+    if (illustrationEl) {
+      illustrationEl.innerHTML = buildSceneIllustrationSvg(sentence);
+    }
 
     const isMastered = this.state.progress.learnedIds?.includes(sentence.id);
     if (masteredPill) {
@@ -459,7 +644,8 @@ export class SidepanelController {
       }
     }
 
-    // Hero English & IPA
+    // Parse 2-turn Interview / Workplace Dialogue
+    const turns = parseDialogueTurns(sentence);
     const englishEl = document.getElementById('sentence-english');
     const ipaEl = document.getElementById('sentence-ipa');
     if (englishEl) englishEl.textContent = sentence.english || sentence.sentence;
@@ -482,27 +668,18 @@ export class SidepanelController {
     if (viEl) viEl.textContent = preventOrphanWord(sentence.vietnamese || sentence.meaningVi);
     if (nuanceEl) nuanceEl.textContent = preventOrphanWord(sentence.nuanceVi || sentence.nuance || 'Tự tin, chuyên nghiệp');
 
-    // Dialogue (Supports both object { speakerA, speakerB } and formatted string)
+    // Dialogue Q & A rendered directly on the Main Hero Card
     const scenarioEl = document.getElementById('dialogue-scenario');
     const speakerALabel = document.getElementById('speaker-a-label');
     const speakerALine = document.getElementById('dialogue-speaker-a');
     const speakerBLabel = document.getElementById('speaker-b-label');
     const speakerBLine = document.getElementById('dialogue-speaker-b');
 
-    if (scenarioEl) scenarioEl.textContent = preventOrphanWord(`Scenario: ${sentence.context || sentence.contextTitle || 'Hội thoại IT'}`);
-
-    if (sentence.dialogue && typeof sentence.dialogue === 'object' && sentence.dialogue.speakerA) {
-      if (speakerALabel) speakerALabel.textContent = sentence.dialogue.speakerA.role || 'Speaker A';
-      if (speakerALine) speakerALine.textContent = `"${sentence.dialogue.speakerA.line || ''}"`;
-      if (speakerBLabel) speakerBLabel.textContent = sentence.dialogue.speakerB.role || 'Speaker B';
-      if (speakerBLine) speakerBLine.textContent = `"${sentence.dialogue.speakerB.line || ''}"`;
-    } else if (typeof sentence.dialogue === 'string') {
-      const parts = sentence.dialogue.split(' - ');
-      if (speakerALabel) speakerALabel.textContent = 'Colleague / Lead';
-      if (speakerALine) speakerALine.textContent = parts[0] || sentence.dialogue;
-      if (speakerBLabel) speakerBLabel.textContent = 'You (Engineer)';
-      if (speakerBLine) speakerBLine.textContent = parts[1] || `"${sentence.english || sentence.sentence}"`;
-    }
+    if (scenarioEl) scenarioEl.textContent = preventOrphanWord(sentence.context || sentence.contextTitle || 'Tình huống Phỏng vấn IT');
+    if (speakerALabel) speakerALabel.textContent = turns.roleA;
+    if (speakerALine) speakerALine.textContent = `"${turns.lineA}"`;
+    if (speakerBLabel) speakerBLabel.textContent = `${turns.roleB} (Câu trả lời của bạn)`;
+    if (speakerBLine) speakerBLine.textContent = `"${turns.lineB}"`;
 
     // Key Chunks (Supports array of strings or array of objects)
     const chunksList = document.getElementById('card-key-chunks');
@@ -568,16 +745,18 @@ export class SidepanelController {
   }
 
   setupEventListeners() {
-    // 1. TTS Controls
+    // 1. TTS Controls (Full Dialogue Q&A, Question only, Answer 1.0x & 0.8x)
+    const btnTtsDialogue = document.getElementById('btn-tts-dialogue');
+    const btnTtsQuestion = document.getElementById('btn-tts-question');
     const btnTtsNormal = document.getElementById('btn-tts-normal');
     const btnTtsSlow = document.getElementById('btn-tts-slow');
     const audioWave = document.getElementById('audio-wave');
 
-    const handleSpeech = (rate) => {
+    const handleSpeech = (rate, customText = null) => {
       const sentence = this.currentList[this.currentIndex];
       if (!sentence) return;
 
-      const sentenceText = sentence.english || sentence.sentence;
+      const sentenceText = customText || sentence.english || sentence.sentence;
       if (audioWave) audioWave.classList.add('is-playing');
       this.isPlayingAudio = true;
 
@@ -594,6 +773,23 @@ export class SidepanelController {
       );
     };
 
+    if (btnTtsDialogue) {
+      btnTtsDialogue.addEventListener('click', () => {
+        const sentence = this.currentList[this.currentIndex];
+        if (!sentence) return;
+        const turns = parseDialogueTurns(sentence);
+        const fullText = `${turns.lineA} ... ${sentence.english || sentence.sentence}`;
+        handleSpeech(1.0, fullText);
+      });
+    }
+    if (btnTtsQuestion) {
+      btnTtsQuestion.addEventListener('click', () => {
+        const sentence = this.currentList[this.currentIndex];
+        if (!sentence) return;
+        const turns = parseDialogueTurns(sentence);
+        handleSpeech(1.0, turns.lineA);
+      });
+    }
     if (btnTtsNormal) {
       btnTtsNormal.addEventListener('click', () => handleSpeech(1.0));
     }
