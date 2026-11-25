@@ -8,13 +8,13 @@ Tiện ích Chrome (Manifest V3) giúp lập trình viên luyện **Tiếng Anh 
 
 ## 🎬 Video hướng dẫn sử dụng & Demo thực tế
 
-> 📺 **Xem video hướng dẫn thao tác (MP4):**
-> - **[👉 Bấm vào đây để xem / tải Video Hướng Dẫn Sử Dụng (demo-it-english-split-view.mp4)](./demo-it-english-split-view.mp4)**
-> - Hoặc xem trực tiếp bản đính kèm tại trang **[GitHub Releases v1.0.0](https://github.com/Hungmaix94/it-english-split-extension/releases/tag/v1.0.0)**.
+> 📺 **Xem trực tiếp Video Hướng Dẫn Sử Dụng (Cloudflare R2 CDN - MP4):**
+> - **[👉 Bấm vào đây để phát trực tiếp Video Hướng Dẫn (demo-it-english-split-view.mp4)](https://pub-dd118e9f58254711a5ec2f75e6bf0530.r2.dev/test-videos/demo-it-english-split-view.mp4)**
+> - URL trực tiếp: `https://pub-dd118e9f58254711a5ec2f75e6bf0530.r2.dev/test-videos/demo-it-english-split-view.mp4`
 
 <p align="center">
-  <a href="./demo-it-english-split-view.mp4">
-    <img src="./assets/ui-preview.png" alt="Giao diện IT English Split-View Extension" width="380" />
+  <a href="https://pub-dd118e9f58254711a5ec2f75e6bf0530.r2.dev/test-videos/demo-it-english-split-view.mp4">
+    <img src="./assets/ui-preview.png" alt="Bấm để xem Video hướng dẫn IT English Split-View Extension" width="380" />
   </a>
 </p>
 
